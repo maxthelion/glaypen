@@ -35,7 +35,7 @@ export default class LCD implements Renderable {
                         }
                         this.ctx.fillRect(index * stepWidth, step[1] * stepHeight, stepWidth, stepHeight);
                     }
-                }
+                })
 
             } else {
                 let maxStep = this.grooveBox.pitchHistory.maxStep;

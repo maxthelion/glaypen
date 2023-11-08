@@ -2,6 +2,8 @@ import PlayButton from "./ui/playbutton.js";
 import HistoryCanvas from "./ui/historycanvas.js";
 import LCD from "./ui/lcd.js";
 import ClipMatrix from "./ui/clipmatrix.js";
+import PrefsButton from "./ui/prefsbutton.js";
+import PrefsModal from "./ui/prefsmodal.js";
 var UI = /** @class */ (function () {
     function UI(groovebox) {
         var _this = this;
@@ -18,6 +20,7 @@ var UI = /** @class */ (function () {
         this.grooveBox = groovebox;
         this.clipMatrix = new ClipMatrix(this, groovebox);
         this.renderables = [this.historyCanvas, this.lcd, this.clipMatrix];
+        this.prefsButton = new PrefsButton(this, groovebox);
     }
     UI.prototype.update = function () {
         this.sequencerSteps.forEach(function (sequencerStep) {
@@ -35,6 +38,17 @@ var UI = /** @class */ (function () {
         var direction = event.deltaY > 0 ? 1 : -1;
         this.grooveBox.moveWindow(direction);
         event.preventDefault();
+    };
+    UI.prototype.showPrefsModal = function () {
+        this.prefsModal = new PrefsModal(this, this.grooveBox);
+        document.getElementById("app").classList.add("blurred");
+    };
+    UI.prototype.closePrefsModal = function () {
+        var _a;
+        if (this.prefsModal !== undefined) {
+            (_a = this.prefsModal.element) === null || _a === void 0 ? void 0 : _a.remove();
+            document.getElementById("app").classList.remove("blurred");
+        }
     };
     return UI;
 }());

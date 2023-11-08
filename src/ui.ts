@@ -5,16 +5,20 @@ import GrooveBox from "./groovebox.js";
 import HistoryCanvas from "./ui/historycanvas.js";
 import LCD from "./ui/lcd.js";
 import ClipMatrix from "./ui/clipmatrix.js";
+import PrefsButton from "./ui/prefsbutton.js";
+import PrefsModal from "./ui/prefsmodal.js";
 
 
 export default class UI {
     sequencerSteps: Array<HTMLElement>;
     playButton: PlayButton;
+    prefsButton: PrefsButton;
     historyCanvas: HistoryCanvas;
     grooveBox: GrooveBox;
     lcd: LCD;
     clipMatrix: ClipMatrix;
     renderables: Array<Renderable>;
+    prefsModal?: PrefsModal;
 
     constructor(groovebox: GrooveBox) {
         var sequencerSteps = document.querySelectorAll(".step");
@@ -30,6 +34,7 @@ export default class UI {
         this.grooveBox = groovebox;
         this.clipMatrix = new ClipMatrix(this, groovebox);
         this.renderables = [this.historyCanvas, this.lcd, this.clipMatrix];
+        this.prefsButton = new PrefsButton(this, groovebox);
     }
 
     update() {
@@ -52,4 +57,18 @@ export default class UI {
         this.grooveBox.moveWindow(direction)
         event.preventDefault(); 
     }
+
+    showPrefsModal() {
+        this.prefsModal = new PrefsModal(this, this.grooveBox);
+        
+        document.getElementById("app").classList.add("blurred");
+    }
+
+    closePrefsModal() {
+        if (this.prefsModal !== undefined) {
+            this.prefsModal.element?.remove();
+            document.getElementById("app").classList.remove("blurred");
+        }
+    }
+
 }

@@ -55,6 +55,27 @@ var GrooveBox = /** @class */ (function () {
             this.saveClipToIndex(index);
         }
     };
+    GrooveBox.prototype.showPrefsModal = function () {
+        this.ui.showPrefsModal();
+    };
+    GrooveBox.prototype.closePrefsModal = function () {
+        this.ui.closePrefsModal();
+    };
+    GrooveBox.prototype.getMidiOutputs = function () {
+        return navigator.requestMIDIAccess().then(function (midiAccess) {
+            var outputs = Array.from(midiAccess.outputs.values());
+            return outputs;
+        });
+    };
+    GrooveBox.prototype.setMidiOutput = function (outputId) {
+        var groooveBox = this;
+        navigator.requestMIDIAccess().then(function (midiAccess) {
+            var selectedOutput = midiAccess.outputs.get(outputId);
+            if (selectedOutput) {
+                groooveBox.selectedOutput = selectedOutput;
+            }
+        });
+    };
     return GrooveBox;
 }());
 export default GrooveBox;

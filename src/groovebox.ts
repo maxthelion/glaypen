@@ -66,5 +66,29 @@ export default class GrooveBox {
             this.saveClipToIndex(index);
         }
     }
+
+    showPrefsModal() {
+        this.ui.showPrefsModal();
+    }
+    closePrefsModal() {
+        this.ui.closePrefsModal();
+    }
+
+    getMidiOutputs(): Promise<MIDIOutput[]> {
+        return navigator.requestMIDIAccess().then(function(midiAccess) {
+            var outputs = Array.from(midiAccess.outputs.values());
+            return outputs;
+        });
+    }
+
+    setMidiOutput(outputId: MIDIOutput) {
+        var groooveBox = this;
+        navigator.requestMIDIAccess().then(function(midiAccess) {
+            var selectedOutput = midiAccess.outputs.get(outputId);
+            if (selectedOutput) {
+                groooveBox.selectedOutput = selectedOutput;
+            }
+        });
+    }
 }
 
