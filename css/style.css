@@ -1,0 +1,50 @@
+* {
+    font-family: Arial, Helvetica, sans-serif;
+}
+#app {
+    width: 1600px;
+    margin: 0 auto;
+}
+#wrapper {
+    display: grid;
+    grid-template-columns: 1fr 800px 1fr;
+}
+#wrapper > div {
+    border: 1px solid #ccc;
+}
+#sequence-steps {
+    display: grid;
+    grid-template-columns: repeat(16, 1fr);
+}
+#sequence-steps div {
+    background-color: #ccc;
+    margin: 10px;
+    text-align: center;
+    line-height: 100px;
+    font-size: 20px;
+    color: #fff;
+}
+.rightcol #clipMatrix{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 100px 100px 100px 100px;
+    grid-gap: 10px;
+}
+
+.rightcol .clipButtonCell {
+    background-color: bisque;
+    text-align: center;
+    vertical-align: middle;
+}
+.clipButtonCell.active {
+    background-color:aqua !important;
+}
+div.active {
+    background-color: #000 !important;
+}
+#historycanvas {
+    background-color: aquamarine;
+}
+#lcd {
+    background-color:darkolivegreen;
+}
