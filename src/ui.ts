@@ -7,6 +7,9 @@ import LCD from "./ui/lcd.js";
 import ClipMatrix from "./ui/clipmatrix.js";
 import PrefsButton from "./ui/prefsbutton.js";
 import PrefsModal from "./ui/prefsmodal.js";
+import GeneratorParamsPanel from "./ui/generatorparamspanel.js";
+import ModeSelector from "./ui/modeselector.js";
+
 
 
 export default class UI {
@@ -33,7 +36,9 @@ export default class UI {
         this.lcd = new LCD(this, groovebox);
         this.grooveBox = groovebox;
         this.clipMatrix = new ClipMatrix(this, groovebox);
-        this.renderables = [this.historyCanvas, this.lcd, this.clipMatrix];
+        let generaterParamsPanel = new GeneratorParamsPanel(this, groovebox);
+        let modeSelector = new ModeSelector(this, groovebox);
+        this.renderables = [this.historyCanvas, this.lcd, this.clipMatrix, generaterParamsPanel,modeSelector];
         this.prefsButton = new PrefsButton(this, groovebox);
     }
 

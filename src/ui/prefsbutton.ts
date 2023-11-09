@@ -1,9 +1,10 @@
 import GrooveBox from "../groovebox";
+import UI from "../ui";
 
 export default class PrefsButton {
     grooveBox: GrooveBox;
     element: HTMLElement | null;
-    constructor(grooveBox: GrooveBox){
+    constructor(ui:UI, grooveBox: GrooveBox){
         this.grooveBox = grooveBox;
         this.element = document.querySelector("#prefsbtn");
         if (this.element !== null) {

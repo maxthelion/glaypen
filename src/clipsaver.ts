@@ -17,4 +17,8 @@ export default class ClipSaver {
     clipIndexes() {
         return this.savedClips.map((clip, index) => index);
     }
+
+    clipAtIndex(index: number) {
+        return this.savedClips[index];
+    }
 }

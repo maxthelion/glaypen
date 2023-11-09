@@ -4,6 +4,8 @@ import LCD from "./ui/lcd.js";
 import ClipMatrix from "./ui/clipmatrix.js";
 import PrefsButton from "./ui/prefsbutton.js";
 import PrefsModal from "./ui/prefsmodal.js";
+import GeneratorParamsPanel from "./ui/generatorparamspanel.js";
+import ModeSelector from "./ui/modeselector.js";
 var UI = /** @class */ (function () {
     function UI(groovebox) {
         var _this = this;
@@ -19,7 +21,9 @@ var UI = /** @class */ (function () {
         this.lcd = new LCD(this, groovebox);
         this.grooveBox = groovebox;
         this.clipMatrix = new ClipMatrix(this, groovebox);
-        this.renderables = [this.historyCanvas, this.lcd, this.clipMatrix];
+        var generaterParamsPanel = new GeneratorParamsPanel(this, groovebox);
+        var modeSelector = new ModeSelector(this, groovebox);
+        this.renderables = [this.historyCanvas, this.lcd, this.clipMatrix, generaterParamsPanel, modeSelector];
         this.prefsButton = new PrefsButton(this, groovebox);
     }
     UI.prototype.update = function () {

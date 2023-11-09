@@ -1,5 +1,5 @@
 var PrefsButton = /** @class */ (function () {
-    function PrefsButton(grooveBox) {
+    function PrefsButton(ui, grooveBox) {
         var _this = this;
         this.grooveBox = grooveBox;
         this.element = document.querySelector("#prefsbtn");

@@ -8,12 +8,29 @@ import ClipSaver from "./clipsaver.js";
 var GrooveBox = /** @class */ (function () {
     function GrooveBox(selectedOutput) {
         var _this = this;
+        this.scales = [
+            ["Major", [0, 2, 4, 5, 7, 9, 11]],
+            ["Harmonic Minor", [0, 2, 3, 5, 7, 8, 11]],
+            ["Melodic Minor", [0, 2, 3, 5, 7, 9, 11]],
+            ["Major Pentatonic", [0, 2, 4, 7, 9]],
+            ["Minor Pentatonic", [0, 3, 5, 7, 10]],
+        ];
+        this.modeIndex = 0;
         this.ui = new UI(this);
         this.selectedOutput = selectedOutput;
         this.sequencer = new Sequencer(this);
         this.transport = new Transport(this);
         this.pitchHistory = new PitchHistory();
         this.clipSaver = new ClipSaver(this);
+        this.generatorParams = {
+            tonic: 48,
+            scaleIndex: 4,
+            stepsInBar: 16,
+            stepProbability: 0.8,
+            pitchRange: 4,
+            octaveRange: 2,
+            octaveProbability: 0.1
+        };
         // draw loop
         setInterval(function () {
             _this.ui.update();
@@ -29,9 +46,10 @@ var GrooveBox = /** @class */ (function () {
             this.windowStart = minStep;
         }
         var selectedSteps = this.pitchHistory.stepsForWindow(this.windowStart);
-        console.log("selectedSteps", selectedSteps);
         var clip = new Clip(this, selectedSteps);
+        clip.color = this.randomColor(this.windowStart);
         this.sequencer = new ClipSequencer(this, clip);
+        this.setMode(1);
     };
     GrooveBox.prototype.playPitch = function (pitch) {
         console.log("playPitch", pitch);
@@ -39,6 +57,12 @@ var GrooveBox = /** @class */ (function () {
         this.selectedOutput.send(noteOnMessage); // Send note on message to first MIDI output device
         var noteOffMessage = [0x80, pitch, 0x40]; // Note off, middle C,
         this.selectedOutput.send(noteOffMessage, window.performance.now() + 400.0); // In one second
+    };
+    GrooveBox.prototype.setMode = function (modeIndex) {
+        this.modeIndex = modeIndex;
+        if (modeIndex == 0) {
+            this.sequencer = new Sequencer(this);
+        }
     };
     GrooveBox.prototype.saveClipToIndex = function (index) {
         var clip = this.sequencer.clip;
@@ -54,6 +78,7 @@ var GrooveBox = /** @class */ (function () {
         else {
             this.saveClipToIndex(index);
         }
+        this.setMode(2);
     };
     GrooveBox.prototype.showPrefsModal = function () {
         this.ui.showPrefsModal();
@@ -76,6 +101,23 @@ var GrooveBox = /** @class */ (function () {
             }
         });
     };
+    GrooveBox.prototype.randomColor = function (seed) {
+        var random = new SeededRandom(seed);
+        var r = Math.floor(random.next() * 256);
+        var g = Math.floor(random.next() * 256);
+        var b = Math.floor(random.next() * 256);
+        return "rgb(".concat(r, ",").concat(g, ",").concat(b, ")");
+    };
     return GrooveBox;
 }());
 export default GrooveBox;
+var SeededRandom = /** @class */ (function () {
+    function SeededRandom(seed) {
+        this.seed = seed;
+    }
+    SeededRandom.prototype.next = function () {
+        this.seed = (this.seed * 9301 + 49297) % 233280;
+        return this.seed / 233280;
+    };
+    return SeededRandom;
+}());

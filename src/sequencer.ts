@@ -2,7 +2,6 @@ import GrooveBox from "./groovebox.js";
 import Clip from "./clip.js";
 
 export default class Sequencer {
-    tonic: number;
     minorScalePitches: number[];
     grooveBox: GrooveBox;
     currentStep: number;
@@ -10,7 +9,6 @@ export default class Sequencer {
     
     constructor(grooveBox: GrooveBox) {
         this.grooveBox = grooveBox;
-        this.tonic = 48;
         this.minorScalePitches = [0, 2, 3, 5, 7, 8, 10];
         this.currentStep = 0;
         this.clip = undefined;
@@ -21,16 +19,30 @@ export default class Sequencer {
         this.update(step, step);
     }
 
-    update(currentStep: number, absoluteStep: number) {
-        if (Math.random() > 0.2) {
-            console.log("Sequencer update", absoluteStep)
-            var pitchInterval = Math.floor( Math.random() * 4);
-            var octave = Math.floor( Math.random() * 3);
-            var pitch = this.tonic + this.minorScalePitches[pitchInterval] + (octave * 12);
-            this.grooveBox.playPitch(pitch);
-            this.grooveBox.pitchHistory.addPitch(absoluteStep, pitch);
-        } else {
-            this.grooveBox.pitchHistory.incrementMaxStep();
+    update(absoluteStep: number) {
+        let currentStep = absoluteStep % 16;
+        let tonic = this.grooveBox.generatorParams.tonic;
+        let scaleIndex = this.grooveBox.generatorParams.scaleIndex;
+        let scalePitches = this.grooveBox.scales[scaleIndex][1];
+        let stepsInBar = this.grooveBox.generatorParams.stepsInBar;
+        let stepProbability = this.grooveBox.generatorParams.stepProbability;
+        let pitchRange = this.grooveBox.generatorParams.pitchRange;
+        let octaveRange = this.grooveBox.generatorParams.octaveRange;
+        let octaveProbability = this.grooveBox.generatorParams.octaveProbability;
+         if (currentStep % (16 / stepsInBar) == 0) {
+            if (Math.random() <= (stepProbability) ) {
+                console.log("Sequencer update", absoluteStep)
+                var pitchInterval = Math.floor( Math.random() * pitchRange);
+                
+                var pitch = tonic + scalePitches[pitchInterval];
+                if (Math.random() > (octaveProbability) ) {
+                    pitch += Math.floor( Math.random() * octaveRange) * 12;
+                }   
+                this.grooveBox.playPitch(pitch);
+                this.grooveBox.pitchHistory.addPitch(absoluteStep, pitch);
+            } else {
+                this.grooveBox.pitchHistory.incrementMaxStep();
+            }
         }
     }
 }

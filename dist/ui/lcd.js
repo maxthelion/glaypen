@@ -13,6 +13,8 @@ var LCD = /** @class */ (function () {
         if (this.ctx !== null) {
             this.ctx.clearRect(0, 0, this.htmlCanvas.width, this.htmlCanvas.height);
             if (this.grooveBox.sequencer.clip !== undefined) {
+                var clip = this.grooveBox.sequencer.clip;
+                this.htmlCanvas.style.backgroundColor = clip.color;
                 var stepWidth = this.canvasWidth / 16;
                 var stepHeight = this.canvasHeight / 128;
                 this.grooveBox.sequencer.clip.steps.forEach(function (step, index) {

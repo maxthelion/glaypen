@@ -10,6 +10,9 @@ var ClipSaver = /** @class */ (function () {
     ClipSaver.prototype.clipIndexes = function () {
         return this.savedClips.map(function (clip, index) { return index; });
     };
+    ClipSaver.prototype.clipAtIndex = function (index) {
+        return this.savedClips[index];
+    };
     return ClipSaver;
 }());
 export default ClipSaver;

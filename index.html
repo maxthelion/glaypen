@@ -11,14 +11,74 @@
 
     <div id="app">
         <div id="topbar">
-            <div>Mode etc</div>
+            <div id="modeselect">
+                <div class="modebtn">
+                    <a href="#" id="generatormodebtn" class="modebtn active">Generator</a>
+                </div>
+                <div class="modebtn">
+                    <a href="#" id="extractmodebtn" class="modebtn">Extract</a>
+                </div>
+                <div class="modebtn">
+                    <a href="#" id="clipmodebtn" class="modebtn">Clip</a>
+                </div>
+            </div>
+            <div class="transport">
+                <div>
+                    <a id="playbtn" href="#">
+                        Play
+                    </a>
+                </div>
+            </div>
             <div id="prefs">
-                <a href="#" id="prefsbtn">MIDI Prefs</a>
+                <div>
+                    <a href="#" id="prefsbtn">MIDI Prefs</a>
+                </div>
             </div>
         </div>
         <div id="wrapper">
             <div class="leftcol">
-                stuff
+                <h3>Generator</h3>
+                <div id="generatorparams">
+                    <div>
+                        <input type="range" id="stepsinbar" min="1" max="16" value="16" step="1">
+                        <label for="stepsinbar">Steps in bar</label>
+                    </div>
+                    <div>
+                        <input type="range" id="stepprobability" min="0" max="128" value="96" step="1">
+                        <label for="stepsinbar">Step probability</label>
+                    </div>
+                    <div>
+                        <input type="range" id="tonic" min="0" max="128" value="60" step="1">
+                        <label for="tonic">Root note</label>
+                    </div>
+                    <div>
+                        <select name="scale" id="scale">
+                            <option value="0">Major</option>
+                            <option value="1">Harmonic Minor</option>
+                            <option value="2">Melodic Minor</option>
+                            <option value="3">Phrygian</option>
+                            <option value="4">Lydian</option>
+                            <option value="5">Mixolydian</option>
+                            <option value="6">Locrian</option>
+                            <option value="7">Dorian</option>
+                            <option value="9">Major Pentatonic</option>
+                            <option value="10">Minor Pentatonic</option>
+                        </select>
+                        <label for="scale">Scale</label>
+                    </div>
+                    <div>
+                        <input type="range" id="pitchrange" min="0" max="10" value="5" step="1">
+                        <label for="octave">Pitch range</label>
+                    </div>
+                    <div>
+                        <input type="range" id="octaverange" min="1" max="10" value="1" step="1">
+                        <label for="octave">Octave range</label>
+                    </div>
+                    <div>
+                        <input type="range" id="octaveprobability" min="0" max="128" value="5" step="1">
+                        <label for="octave">Octave probability</label>
+                    </div>
+                </div>
             </div>
             <div class="midcol">
                 <canvas id="lcd" width="800" height="400"></canvas>
@@ -32,9 +92,7 @@
         <div>
             <canvas id="historycanvas" width="1600" height="100"></canvas>
         </div>
-        <a id="playbtn" href="#">
-            Play
-        </a>
+
         <div id="sequence-steps">
             <div class="step">1</div>
             <div class="step">2</div>

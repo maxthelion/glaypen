@@ -11,8 +11,8 @@ export default class LCD implements Renderable {
     ui: UI;
 
     constructor(ui:UI, grooveBox: GrooveBox) {
-        this.htmlCanvas = <HTMLCanvasElement>document.querySelector("#lcd");
-        this.ctx = this.htmlCanvas.getContext("2d");
+        this.htmlCanvas = <HTMLCanvasElement>document.querySelector("#lcd")!;
+        this.ctx = this.htmlCanvas.getContext("2d")!;
         this.grooveBox = grooveBox;
         this.ui = ui;
         this.canvasWidth = this.htmlCanvas.width;
@@ -24,16 +24,18 @@ export default class LCD implements Renderable {
         if (this.ctx !== null) {
             this.ctx.clearRect(0, 0, this.htmlCanvas.width, this.htmlCanvas.height);
             if (this.grooveBox.sequencer.clip !== undefined) {
+                let clip = this.grooveBox.sequencer.clip
+                this.htmlCanvas.style.backgroundColor = clip.color;
                 var stepWidth = this.canvasWidth / 16;
                 var stepHeight = this.canvasHeight / 128;
                 this.grooveBox.sequencer.clip.steps.forEach((step, index) => {
                     if (step !== undefined) {
                         if (index === this.grooveBox.sequencer.currentStep) {
-                            this.ctx.fillStyle = "rgba(255, 255, 255, 1)";
+                            this.ctx!.fillStyle = "rgba(255, 255, 255, 1)";
                         } else {
-                            this.ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+                            this.ctx!.fillStyle = "rgba(255, 255, 255, 0.5)";
                         }
-                        this.ctx.fillRect(index * stepWidth, step[1] * stepHeight, stepWidth, stepHeight);
+                        this.ctx!.fillRect(index * stepWidth, step[1] * stepHeight, stepWidth, stepHeight);
                     }
                 })
 
