@@ -6,7 +6,6 @@ var PitchHistory = /** @class */ (function () {
     }
     PitchHistory.prototype.addPitch = function (step, pitch) {
         this.pitches.push([step, pitch]);
-        this.incrementMaxStep();
     };
     PitchHistory.prototype.incrementMaxStep = function () {
         this.maxStep += 1;

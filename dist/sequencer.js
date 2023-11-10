@@ -15,7 +15,7 @@ var Sequencer = /** @class */ (function () {
         var scaleIndex = this.grooveBox.generatorParams.scaleIndex;
         var scalePitches = this.grooveBox.scales[scaleIndex][1];
         var stepsInBar = this.grooveBox.generatorParams.stepsInBar;
-        var stepProbability = this.grooveBox.generatorParams.stepProbability;
+        var stepProbability = this.grooveBox.generatorParams.stepProbability / 128;
         var pitchRange = this.grooveBox.generatorParams.pitchRange;
         var octaveRange = this.grooveBox.generatorParams.octaveRange;
         var octaveProbability = this.grooveBox.generatorParams.octaveProbability;
@@ -30,10 +30,8 @@ var Sequencer = /** @class */ (function () {
                 this.grooveBox.playPitch(pitch);
                 this.grooveBox.pitchHistory.addPitch(absoluteStep, pitch);
             }
-            else {
-                this.grooveBox.pitchHistory.incrementMaxStep();
-            }
         }
+        this.grooveBox.pitchHistory.incrementMaxStep();
     };
     return Sequencer;
 }());

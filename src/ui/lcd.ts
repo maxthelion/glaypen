@@ -23,7 +23,7 @@ export default class LCD implements Renderable {
     update() {
         if (this.ctx !== null) {
             this.ctx.clearRect(0, 0, this.htmlCanvas.width, this.htmlCanvas.height);
-            if (this.grooveBox.sequencer.clip !== undefined) {
+            if (this.grooveBox.modeIndex !== 0) {
                 let clip = this.grooveBox.sequencer.clip
                 this.htmlCanvas.style.backgroundColor = clip.color;
                 var stepWidth = this.canvasWidth / 16;

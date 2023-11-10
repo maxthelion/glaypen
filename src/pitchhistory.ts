@@ -7,7 +7,6 @@ export default class PitchHistory {
     }
     addPitch(step: number,pitch: number) {
         this.pitches.push([step, pitch]);
-        this.incrementMaxStep();
     }
 
     incrementMaxStep() {

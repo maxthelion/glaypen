@@ -25,7 +25,7 @@ export default class Sequencer {
         let scaleIndex = this.grooveBox.generatorParams.scaleIndex;
         let scalePitches = this.grooveBox.scales[scaleIndex][1];
         let stepsInBar = this.grooveBox.generatorParams.stepsInBar;
-        let stepProbability = this.grooveBox.generatorParams.stepProbability;
+        let stepProbability = this.grooveBox.generatorParams.stepProbability / 128;
         let pitchRange = this.grooveBox.generatorParams.pitchRange;
         let octaveRange = this.grooveBox.generatorParams.octaveRange;
         let octaveProbability = this.grooveBox.generatorParams.octaveProbability;
@@ -40,9 +40,8 @@ export default class Sequencer {
                 }   
                 this.grooveBox.playPitch(pitch);
                 this.grooveBox.pitchHistory.addPitch(absoluteStep, pitch);
-            } else {
-                this.grooveBox.pitchHistory.incrementMaxStep();
             }
         }
+        this.grooveBox.pitchHistory.incrementMaxStep();
     }
 }

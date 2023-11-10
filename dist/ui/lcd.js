@@ -12,7 +12,7 @@ var LCD = /** @class */ (function () {
         var _this = this;
         if (this.ctx !== null) {
             this.ctx.clearRect(0, 0, this.htmlCanvas.width, this.htmlCanvas.height);
-            if (this.grooveBox.sequencer.clip !== undefined) {
+            if (this.grooveBox.modeIndex !== 0) {
                 var clip = this.grooveBox.sequencer.clip;
                 this.htmlCanvas.style.backgroundColor = clip.color;
                 var stepWidth = this.canvasWidth / 16;
