@@ -7,6 +7,7 @@ import Clip from "./clip.js";
 import PitchHistory from "./pitchhistory.js";
 import ClipSaver from "./clipsaver.js";
 import StorageBox from "./storagebox.js";
+import MidiInputHandler from "./midiinputhandler.js";
 
 export interface GeneratorParams {
     [key: string]: number;
@@ -40,6 +41,8 @@ export default class GrooveBox {
     storageBox: StorageBox = new StorageBox();
     midiAccess: MIDIAccess;
     generativeSequencer?: Sequencer;
+    clockInput: MIDIInput;
+    midiInputHandler: MidiInputHandler;
 
     constructor(midiAccess: MIDIAccess) {
         this.clipSaver = new ClipSaver(this);
@@ -47,9 +50,12 @@ export default class GrooveBox {
         this.ui = new UI(this);
         this.midiAccess = midiAccess;
         this.selectedOutput = this.getMidiOutput();
+        this.clockInput = this.getMidiInput();
+        this.midiInputHandler = new MidiInputHandler(this, this.clockInput);
         this.sequencer = new Sequencer(this);
         this.transport = new Transport(this);
         this.pitchHistory = new PitchHistory();
+
         this.setMode(0);
         // draw loop
         setInterval(() => {
@@ -152,6 +158,11 @@ export default class GrooveBox {
     setGeneratorParam(paramName: string, value: number) {
         this.generatorParams[paramName] = value;
         this.storageBox.setGeneratorParams(this.generatorParams);
+    }
+
+    getMidiInput(): MIDIInput {
+        let inputId = "-1687982579"
+        return this.midiAccess.inputs.get(inputId)
     }
     
     randomColor(seed: number): string {

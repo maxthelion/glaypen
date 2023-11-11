@@ -5,6 +5,7 @@ export default class Transport {
     grooveBox: GrooveBox;
     playing: boolean = false;
     loop: Loop
+    tickNumber: number = 0;
 
     constructor(groovebox: GrooveBox) {
         this.grooveBox = groovebox;
@@ -16,6 +17,13 @@ export default class Transport {
             this.stop();
         } else  {
             this.start();
+        }
+    }
+
+    tick() {
+        this.tickNumber++;
+        if(this.tickNumber % 6 === 0) {
+            this.loop.update();
         }
     }
 

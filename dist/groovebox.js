@@ -6,6 +6,7 @@ import Clip from "./clip.js";
 import PitchHistory from "./pitchhistory.js";
 import ClipSaver from "./clipsaver.js";
 import StorageBox from "./storagebox.js";
+import MidiInputHandler from "./midiinputhandler.js";
 var GrooveBox = /** @class */ (function () {
     function GrooveBox(midiAccess) {
         var _this = this;
@@ -23,6 +24,8 @@ var GrooveBox = /** @class */ (function () {
         this.ui = new UI(this);
         this.midiAccess = midiAccess;
         this.selectedOutput = this.getMidiOutput();
+        this.clockInput = this.getMidiInput();
+        this.midiInputHandler = new MidiInputHandler(this, this.clockInput);
         this.sequencer = new Sequencer(this);
         this.transport = new Transport(this);
         this.pitchHistory = new PitchHistory();
@@ -121,6 +124,10 @@ var GrooveBox = /** @class */ (function () {
     GrooveBox.prototype.setGeneratorParam = function (paramName, value) {
         this.generatorParams[paramName] = value;
         this.storageBox.setGeneratorParams(this.generatorParams);
+    };
+    GrooveBox.prototype.getMidiInput = function () {
+        var inputId = "-1687982579";
+        return this.midiAccess.inputs.get(inputId);
     };
     GrooveBox.prototype.randomColor = function (seed) {
         var random = new SeededRandom(seed);
