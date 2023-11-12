@@ -6,11 +6,11 @@ import PrefsButton from "./ui/prefsbutton.js";
 import PrefsModal from "./ui/prefsmodal.js";
 import GeneratorParamsPanel from "./ui/generatorparamspanel.js";
 import ModeSelector from "./ui/modeselector.js";
+import ClipParamsPanel from "./ui/clipparamspanel.js";
 var UI = /** @class */ (function () {
     function UI(groovebox) {
         var _this = this;
         var sequencerSteps = document.querySelectorAll(".step");
-        console.log("sequencerSteps", sequencerSteps);
         this.sequencerSteps = [];
         sequencerSteps.forEach(function (sequencerStep) {
             console.log("sequencerStep", sequencerStep.textContent);
@@ -37,6 +37,23 @@ var UI = /** @class */ (function () {
         this.renderables.forEach(function (renderable) {
             renderable.update();
         });
+    };
+    UI.prototype.setMode = function (modeIndex) {
+        var modePanes = document.querySelectorAll(".modepane");
+        modePanes.forEach(function (element) {
+            element.classList.add("hidden");
+        });
+        if (modeIndex == 0) {
+            document.querySelector("#genpane").classList.remove("hidden");
+        }
+        if (modeIndex == 1) {
+            document.querySelector("#clippane").classList.remove("hidden");
+            this.clipParamsPanel = new ClipParamsPanel(this, this.grooveBox);
+        }
+        if (modeIndex == 2) {
+            document.querySelector("#clippane").classList.remove("hidden");
+            this.clipParamsPanel = new ClipParamsPanel(this, this.grooveBox);
+        }
     };
     UI.prototype.onWheel = function (event) {
         var direction = event.deltaY > 0 ? 1 : -1;

@@ -9,6 +9,7 @@ import PrefsButton from "./ui/prefsbutton.js";
 import PrefsModal from "./ui/prefsmodal.js";
 import GeneratorParamsPanel from "./ui/generatorparamspanel.js";
 import ModeSelector from "./ui/modeselector.js";
+import ClipParamsPanel from "./ui/clipparamspanel.js";
 
 
 
@@ -22,10 +23,10 @@ export default class UI {
     clipMatrix: ClipMatrix;
     renderables: Array<Renderable>;
     prefsModal?: PrefsModal;
+    clipParamsPanel: ClipParamsPanel;
 
     constructor(groovebox: GrooveBox) {
         var sequencerSteps = document.querySelectorAll(".step");
-        console.log("sequencerSteps", sequencerSteps);
         this.sequencerSteps = [];
         sequencerSteps.forEach((sequencerStep) => {
             console.log("sequencerStep", sequencerStep.textContent);
@@ -56,6 +57,23 @@ export default class UI {
         })
     }
 
+    setMode(modeIndex: number) {
+        const modePanes = document.querySelectorAll(".modepane");
+        modePanes.forEach((element) => {
+            element.classList.add("hidden"); 
+        });        
+        if (modeIndex == 0) {
+            document.querySelector("#genpane")!.classList.remove("hidden");
+        }
+        if (modeIndex == 1) {
+            document.querySelector("#clippane")!.classList.remove("hidden");
+            this.clipParamsPanel = new ClipParamsPanel(this, this.grooveBox);
+        }
+        if (modeIndex == 2) {
+            document.querySelector("#clippane")!.classList.remove("hidden");
+            this.clipParamsPanel = new ClipParamsPanel(this, this.grooveBox);
+        }
+    }
 
     onWheel(event: WheelEvent) {
         let direction = event.deltaY > 0 ? 1 : -1;

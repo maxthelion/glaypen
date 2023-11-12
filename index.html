@@ -37,48 +37,73 @@
         </div>
         <div id="wrapper">
             <div class="leftcol">
+                <div id="genpane" class="modepane">
                 <h3>Generator</h3>
                 <div id="generatorparams">
                     <div>
-                        <input type="range" id="stepsinbar" min="1" max="16" value="16" step="1">
+                        <input class="genparam" type="range" id="stepsinbar" data-paramid="stepsInBar" min="1" max="16" step="1">
                         <label for="stepsinbar">Steps in bar</label>
                     </div>
                     <div>
-                        <input type="range" id="stepprobability" min="0" max="128" value="96" step="1">
+                        <input class="genparam" type="range" id="stepprobability" data-paramid="stepProbability" min="0" max="128" step="1">
                         <label for="stepsinbar">Step probability</label>
                     </div>
                     <div>
-                        <input type="range" id="tonic" min="0" max="128" value="60" step="1">
+                        <input class="genparam" type="range" id="tonic" data-paramid="tonic" min="0" max="128" step="1">
                         <label for="tonic">Root note</label>
                     </div>
                     <div>
-                        <select name="scale" id="scale">
-                            <option value="0">Major</option>
-                            <option value="1">Harmonic Minor</option>
-                            <option value="2">Melodic Minor</option>
-                            <option value="3">Phrygian</option>
-                            <option value="4">Lydian</option>
-                            <option value="5">Mixolydian</option>
-                            <option value="6">Locrian</option>
-                            <option value="7">Dorian</option>
-                            <option value="9">Major Pentatonic</option>
-                            <option value="10">Minor Pentatonic</option>
+                        <select class="genparam" name="scale" id="scale" data-paramid="scaleIndex">
                         </select>
                         <label for="scale">Scale</label>
                     </div>
                     <div>
-                        <input type="range" id="pitchrange" min="0" max="10" value="5" step="1">
+                        <input class="genparam" type="range" id="pitchrange" data-paramid="pitchRange" min="0" max="10" step="1">
                         <label for="octave">Pitch range</label>
                     </div>
                     <div>
-                        <input type="range" id="octaverange" min="1" max="10" value="1" step="1">
+                        <input class="genparam" type="range" id="octaverange" data-paramid="octaveRange" min="1" max="10" step="1">
                         <label for="octave">Octave range</label>
                     </div>
                     <div>
-                        <input type="range" id="octaveprobability" min="0" max="128" value="5" step="1">
+                        <input class="genparam" type="range" id="octaveprobability" data-paramid="octaveProbability" min="0" max="128" step="1">
                         <label for="octave">Octave probability</label>
                     </div>
                 </div>
+                </div>
+                <div id="clippane" class="modepane">
+                    <h3>Clip</h3>
+                    <div>
+                        <div id="clipstartshifter">
+                        <button id="clipstartleftbtn">&lt;&lt;</button>
+                        <input class="clipparam" type="text" id="clipstart" data-paramid="clipStart">
+                        <button id="clipstartrightbtn">&gt;&gt;</button>
+                        </div>
+                        <label for="clipstart">Start</label>
+                    </div>
+                    <div>
+                        <input class="clipparam" type="range" id="clipend" data-paramid="clipEnd" min="0" max="16" step="1">
+                        <label for="clipend">Clip end</label>
+                    </div>
+                    <div>
+                        <input class="clipparam" type="range" id="clippitch" data-paramid="clipPitch" min="0" max="128" step="1">
+                        <label for="clippitch">Clip pitch</label>
+                    </div>
+
+                    <div>
+                        <input class="clipparam" type="range" id="clipdensity" data-paramid="clipDensity" min="0" max="16" step="1">
+                        <label for="clipdensity">Clip density</label>
+                    </div>
+                    <div>
+                        <select class="clipparam" name="clipsteporder" id="clipsteporder" data-paramid="clipStepOrder">
+                            <option value="forward">Forward</option>
+                            <option value="reverse">Reverse</option>
+                            <option value="random">Random</option>
+                        </select>
+                        <label for="clipsteporder">Clip step order</label>
+                    </div>
+                </div>
+                
             </div>
             <div class="midcol">
                 <canvas id="lcd" width="800" height="400"></canvas>

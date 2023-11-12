@@ -5,6 +5,9 @@
     width: 1600px;
     margin: 0 auto;
 }
+.hidden {
+    display: none;
+}
 #app.blurred {
     filter: blur(5px);
 }

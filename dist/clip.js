@@ -14,6 +14,12 @@ var Clip = /** @class */ (function () {
             color: this.color
         };
     };
+    Clip.prototype.shiftLeft = function () {
+        this.steps.push(this.steps.shift());
+    };
+    Clip.prototype.shiftRight = function () {
+        this.steps.unshift(this.steps.pop());
+    };
     return Clip;
 }());
 export default Clip;

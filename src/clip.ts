@@ -23,4 +23,12 @@ export default class Clip {
             color: this.color
         }
     }
+
+    shiftLeft() {
+        this.steps.push(this.steps.shift()!);
+    }
+
+    shiftRight() {
+        this.steps.unshift(this.steps.pop()!);
+    }
 }

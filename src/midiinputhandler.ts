@@ -24,6 +24,13 @@ export default class MidiInputHandler {
             case 252:
                 this.grooveBox.transport.stop();
                 break;
+            case 146:
+                // console.log("note on", event.data);
+                this.grooveBox.noteOn(event.data[1]);
+                break;
+            case 130:
+                // console.log("note off", event.data);
+                break;
             default:
                 console.log("Unhandled clock message", event.data);
         }
