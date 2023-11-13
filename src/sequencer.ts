@@ -21,7 +21,7 @@ export default class Sequencer {
     }
 
     update(absoluteStep: number) {
-        console.log("update", absoluteStep);
+        // console.log("update", absoluteStep);
         let currentStep = absoluteStep % 16;
         let tonic = this.grooveBox.generatorParams.tonic;
         let scaleIndex = this.grooveBox.generatorParams.scaleIndex;
@@ -64,7 +64,7 @@ export default class Sequencer {
                 //     let chordPitch = pitch + chord[i];
                 //     this.grooveBox.playPitch(chordPitch);
                 // }
-                console.log("pitch", pitch);
+                // console.log("pitch", pitch);
                 let step = new Step(currentStep, 120, [pitch]);
                 // this.grooveBox.playPitch(pitch);
                 this.grooveBox.playStep(step);

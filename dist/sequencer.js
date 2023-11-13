@@ -11,7 +11,7 @@ var Sequencer = /** @class */ (function () {
         this.update(step, step);
     };
     Sequencer.prototype.update = function (absoluteStep) {
-        console.log("update", absoluteStep);
+        // console.log("update", absoluteStep);
         var currentStep = absoluteStep % 16;
         var tonic = this.grooveBox.generatorParams.tonic;
         var scaleIndex = this.grooveBox.generatorParams.scaleIndex;
@@ -55,7 +55,7 @@ var Sequencer = /** @class */ (function () {
                 //     let chordPitch = pitch + chord[i];
                 //     this.grooveBox.playPitch(chordPitch);
                 // }
-                console.log("pitch", pitch);
+                // console.log("pitch", pitch);
                 var step = new Step(currentStep, 120, [pitch]);
                 // this.grooveBox.playPitch(pitch);
                 this.grooveBox.playStep(step);

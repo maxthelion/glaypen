@@ -55,6 +55,14 @@
     text-decoration: none;
     font-size: 20px;
 }
+.transport #transportdisplay {
+    text-align: center;
+    line-height: 50px;
+    font-size: 20px;
+    font-family:'Courier New', Courier, monospace;
+    background-color: saddlebrown;
+    color: yellow;
+}
 #wrapper {
     display: grid;
     grid-template-columns: 1fr 800px 1fr;

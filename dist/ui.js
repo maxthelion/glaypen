@@ -8,6 +8,7 @@ import GeneratorParamsPanel from "./ui/generatorparamspanel.js";
 import ModeSelector from "./ui/modeselector.js";
 import ClipParamsPanel from "./ui/clipparamspanel.js";
 import ExtractParamsPanel from "./ui/extractparamspanel.js";
+import TransportDisplay from "./ui/transportdisplay.js";
 var UI = /** @class */ (function () {
     function UI(groovebox) {
         var _this = this;
@@ -24,7 +25,8 @@ var UI = /** @class */ (function () {
         this.clipMatrix = new ClipMatrix(this, groovebox);
         var generaterParamsPanel = new GeneratorParamsPanel(this, groovebox);
         var modeSelector = new ModeSelector(this, groovebox);
-        this.renderables = [this.historyCanvas, this.lcd, this.clipMatrix, generaterParamsPanel, modeSelector];
+        var transportDisplay = new TransportDisplay(this, groovebox);
+        this.renderables = [this.historyCanvas, this.lcd, this.clipMatrix, generaterParamsPanel, modeSelector, transportDisplay];
         this.prefsButton = new PrefsButton(this, groovebox);
     }
     UI.prototype.update = function () {

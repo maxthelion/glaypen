@@ -12,6 +12,8 @@ import ModeSelector from "./ui/modeselector.js";
 import ClipParamsPanel from "./ui/clipparamspanel.js";
 import ExtractParamsPanel from "./ui/extractparamspanel.js";
 import Renderable from "./interfaces/renderable.js";
+import Transport from "./transport.js";
+import TransportDisplay from "./ui/transportdisplay.js";
 
 
 
@@ -42,8 +44,10 @@ export default class UI {
         this.clipMatrix = new ClipMatrix(this, groovebox);
         let generaterParamsPanel = new GeneratorParamsPanel(this, groovebox);
         let modeSelector = new ModeSelector(this, groovebox);
-        this.renderables = [this.historyCanvas, this.lcd, this.clipMatrix, generaterParamsPanel,modeSelector];
+        let transportDisplay = new TransportDisplay(this, groovebox);
+        this.renderables = [this.historyCanvas, this.lcd, this.clipMatrix, generaterParamsPanel,modeSelector,transportDisplay];
         this.prefsButton = new PrefsButton(this, groovebox);
+        
     }
 
     update() {
