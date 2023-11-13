@@ -10,6 +10,7 @@ import MidiInputHandler from "./midiinputhandler.js";
 var GrooveBox = /** @class */ (function () {
     function GrooveBox(midiAccess) {
         var _this = this;
+        this.maxClips = 16;
         this.manualPitchOptions = [];
         this.scales = [
             ["Major", [0, 2, 4, 5, 7, 9, 11]],
@@ -41,25 +42,27 @@ var GrooveBox = /** @class */ (function () {
         }, 50);
     }
     GrooveBox.prototype.moveWindow = function (direction) {
-        if (this.windowStart) {
-            this.windowStart += direction;
-        }
-        else {
-            var clipWindowLength = 16;
-            var minStep = this.pitchHistory.maxStep - clipWindowLength;
-            this.windowStart = minStep;
-        }
-        var selectedSteps = this.pitchHistory.stepsForWindow(this.windowStart);
-        var clip = new Clip(this, selectedSteps);
-        clip.color = this.randomColor(this.windowStart);
+        this.pitchHistory.moveWindow(direction);
+        var clipRawData = this.pitchHistory.currentStepsInWindow();
+        clipRawData.color = this.randomColor(this.pitchHistory.windowStart);
+        var clip = new Clip(this, clipRawData);
         this.sequencer = new ClipSequencer(this, clip);
         this.setMode(1);
     };
-    GrooveBox.prototype.playPitch = function (pitch) {
-        var noteOnMessage = [0x90, pitch, 0x7f]; // Note on, middle C, full velocity
+    GrooveBox.prototype.playPitch = function (pitch, velocity) {
+        if (velocity === void 0) { velocity = 127; }
+        // console.log("playPitch", pitch, velocity);
+        var velocityInHex = velocity.toString(16);
+        var noteOnMessage = [0x90, pitch, Number('0x' + velocityInHex)]; // Note on, middle C, full velocity
         this.selectedOutput.send(noteOnMessage); // Send note on message to first MIDI output device
         var noteOffMessage = [0x80, pitch, 0x40]; // Note off, middle C,
         this.selectedOutput.send(noteOffMessage, window.performance.now() + 1000.0); // In one second
+    };
+    GrooveBox.prototype.playStep = function (step) {
+        var _this = this;
+        step.pitches.forEach(function (pitch) {
+            _this.playPitch(pitch, step.velocity);
+        });
     };
     GrooveBox.prototype.setMode = function (modeIndex) {
         this.modeIndex = modeIndex;
@@ -94,6 +97,11 @@ var GrooveBox = /** @class */ (function () {
         }
         else {
             this.saveClipToIndex(index);
+        }
+    };
+    GrooveBox.prototype.clearAllClips = function () {
+        for (var i = 0; i < this.maxClips; i++) {
+            this.clipSaver.clearClipAtIndex(i);
         }
     };
     GrooveBox.prototype.showPrefsModal = function () {
@@ -133,6 +141,19 @@ var GrooveBox = /** @class */ (function () {
     GrooveBox.prototype.clipStartRight = function () {
         this.sequencer.clip.shiftRight();
     };
+    GrooveBox.prototype.shuffleClipPitches = function () {
+        if (this.currentClip() != undefined) {
+            this.currentClip().shufflePitches();
+        }
+    };
+    GrooveBox.prototype.shuffleClipSteps = function () {
+        if (this.currentClip() != undefined) {
+            this.currentClip().shuffleSteps();
+        }
+    };
+    GrooveBox.prototype.currentClip = function () {
+        return this.sequencer.clip;
+    };
     GrooveBox.prototype.getMidiInput = function () {
         var inputId = "-1687982579";
         return this.midiAccess.inputs.get(inputId);
@@ -145,6 +166,13 @@ var GrooveBox = /** @class */ (function () {
             this.manualPitchOptions = [pitch];
         }
         this.lastPitchReadAt = window.performance.now();
+    };
+    GrooveBox.prototype.setExtractLength = function (length) {
+        this.pitchHistory.setLength(length);
+        var clipRawData = this.pitchHistory.currentStepsInWindow();
+        clipRawData.color = this.randomColor(this.pitchHistory.windowStart);
+        var clip = new Clip(this, clipRawData);
+        this.sequencer = new ClipSequencer(this, clip);
     };
     GrooveBox.prototype.readingPitchOptions = function () {
         return this.lastPitchReadAt != undefined && window.performance.now() - this.lastPitchReadAt < 200;

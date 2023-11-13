@@ -1,5 +1,6 @@
 import GrooveBox from "./groovebox.js";
 import Clip from "./clip.js";
+import Step from "./step.js";
 
 export default class Sequencer {
     minorScalePitches: number[];
@@ -20,6 +21,7 @@ export default class Sequencer {
     }
 
     update(absoluteStep: number) {
+        console.log("update", absoluteStep);
         let currentStep = absoluteStep % 16;
         let tonic = this.grooveBox.generatorParams.tonic;
         let scaleIndex = this.grooveBox.generatorParams.scaleIndex;
@@ -62,10 +64,11 @@ export default class Sequencer {
                 //     let chordPitch = pitch + chord[i];
                 //     this.grooveBox.playPitch(chordPitch);
                 // }
-                this.grooveBox.playPitch(pitch);
-            
-
-                this.grooveBox.pitchHistory.addPitch(absoluteStep, pitch);
+                console.log("pitch", pitch);
+                let step = new Step(currentStep, 120, [pitch]);
+                // this.grooveBox.playPitch(pitch);
+                this.grooveBox.playStep(step);
+                this.grooveBox.pitchHistory.addStep(absoluteStep, step);
             }
         }
         this.grooveBox.pitchHistory.incrementMaxStep();

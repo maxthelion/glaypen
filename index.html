@@ -76,34 +76,46 @@
                     <div>
                         <div id="clipstartshifter">
                         <button id="clipstartleftbtn">&lt;&lt;</button>
-                        <input class="clipparam" type="text" id="clipstart" data-paramid="clipStart">
                         <button id="clipstartrightbtn">&gt;&gt;</button>
                         </div>
                         <label for="clipstart">Start</label>
                     </div>
                     <div>
+                        
+                        <button id="clipshufflepitchesbtn">Shuffle pitches</button>
+                        <button id="clipshufflestepsbtn">Shuffle steps</button>
+                    </div>
+                    <!-- <div>
                         <input class="clipparam" type="range" id="clipend" data-paramid="clipEnd" min="0" max="16" step="1">
-                        <label for="clipend">Clip end</label>
+                        <label for="clipend">Length</label>
                     </div>
                     <div>
                         <input class="clipparam" type="range" id="clippitch" data-paramid="clipPitch" min="0" max="128" step="1">
-                        <label for="clippitch">Clip pitch</label>
-                    </div>
+                        <label for="clippitch">Root</label>
+                    </div> -->
 
                     <div>
                         <input class="clipparam" type="range" id="clipdensity" data-paramid="clipDensity" min="0" max="16" step="1">
-                        <label for="clipdensity">Clip density</label>
+                        <label for="clipdensity">Density</label>
                     </div>
-                    <div>
+                    <!-- <div>
                         <select class="clipparam" name="clipsteporder" id="clipsteporder" data-paramid="clipStepOrder">
                             <option value="forward">Forward</option>
                             <option value="reverse">Reverse</option>
                             <option value="random">Random</option>
                         </select>
                         <label for="clipsteporder">Clip step order</label>
+                    </div> -->
+                </div>
+
+                <div id="extractpane" class="modepane">
+                    <h3>Extract</h3>
+
+                    <div>
+                        <input class="extractparam" type="range" id="extractlength" data-paramid="extractlength" min="1" max="64" step="1">
+                        <label for="extractlength">Length</label>
                     </div>
                 </div>
-                
             </div>
             <div class="midcol">
                 <canvas id="lcd" width="800" height="400"></canvas>
@@ -112,13 +124,16 @@
                 <div id="clipMatrix">
 
                 </div>
+                <div>
+                    <button id="clearclipbtn">Clear clips</button>
+                </div>
             </div>
         </div>
         <div>
             <canvas id="historycanvas" width="1600" height="100"></canvas>
         </div>
 
-        <div id="sequence-steps">
+        <!-- <div id="sequence-steps">
             <div class="step">1</div>
             <div class="step">2</div>
             <div class="step">3</div>
@@ -135,7 +150,7 @@
             <div class="step">14</div>
             <div class="step">15</div>
             <div class="step">16</div>
-        </div>
+        </div> -->
     </div>
 </body>
 </html>

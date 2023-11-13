@@ -54,4 +54,8 @@ export default class StorageBox {
     getAllClips(): (ClipRawData| undefined)[] {
         return Array(16).fill(0).map((_, index) => this.getClipAtIndex(index));
     }
+
+    clearClipAtIndex(index: number) {
+        this.storage.removeItem(`clip${index}`);
+    }
 }

@@ -8,6 +8,7 @@ import PitchHistory from "./pitchhistory.js";
 import ClipSaver from "./clipsaver.js";
 import StorageBox from "./storagebox.js";
 import MidiInputHandler from "./midiinputhandler.js";
+import Step from "./step.js";
 
 export interface GeneratorParams {
     [key: string]: number;
@@ -24,10 +25,10 @@ type ScalePair = [string, number[]];
 export default class GrooveBox {
     pitchHistory: PitchHistory;
     transport: Transport;
+    maxClips: number = 16;
     ui: UI;
     selectedOutput: MIDIOutput;
     sequencer: Sequencer;
-    windowStart?: number;
     clipSaver: ClipSaver;
     generatorParams: GeneratorParams;
     manualPitchOptions: number[] = [];
@@ -71,25 +72,27 @@ export default class GrooveBox {
     }
 
     moveWindow(direction: number) {
-        if (this.windowStart){
-            this.windowStart += direction;
-        } else {
-            let clipWindowLength = 16;
-            let minStep = this.pitchHistory.maxStep - clipWindowLength;
-            this.windowStart = minStep;
-        }
-        let selectedSteps = this.pitchHistory.stepsForWindow(this.windowStart)
-        let clip = new Clip(this, selectedSteps);
-        clip.color = this.randomColor(this.windowStart);
+        this.pitchHistory.moveWindow(direction)
+        let clipRawData = this.pitchHistory.currentStepsInWindow();
+        clipRawData.color = this.randomColor(this.pitchHistory.windowStart!);
+        let clip = new Clip(this, clipRawData);
         this.sequencer = new ClipSequencer(this, clip);
         this.setMode(1);
     }
     
-    playPitch(pitch: number) {
-        var noteOnMessage = [0x90, pitch, 0x7f];    // Note on, middle C, full velocity
+    playPitch(pitch: number, velocity: number = 127) {
+        // console.log("playPitch", pitch, velocity);
+        let velocityInHex = velocity.toString(16);
+        var noteOnMessage = [0x90, pitch, Number('0x' + velocityInHex)];    // Note on, middle C, full velocity
         this.selectedOutput.send(noteOnMessage);  // Send note on message to first MIDI output device
         var noteOffMessage = [0x80, pitch, 0x40];   // Note off, middle C,
         this.selectedOutput.send(noteOffMessage, window.performance.now() + 1000.0); // In one second
+    }
+
+    playStep(step: Step) {
+        step.pitches.forEach((pitch) => {
+            this.playPitch(pitch, step.velocity);
+        })
     }
 
     setMode(modeIndex: number) {
@@ -125,6 +128,12 @@ export default class GrooveBox {
             this.sequencer = new ClipSequencer(this, clip);
         } else {
             this.saveClipToIndex(index);
+        }
+    }
+
+    clearAllClips() {
+        for (let i = 0; i < this.maxClips; i++) {
+            this.clipSaver.clearClipAtIndex(i);
         }
     }
 
@@ -166,12 +175,28 @@ export default class GrooveBox {
     }
 
     clipStartLeft() {
-        this.sequencer.clip.shiftLeft();
+        this.sequencer.clip!.shiftLeft();
     }
 
     clipStartRight() {
-        this.sequencer.clip.shiftRight();
+        this.sequencer.clip!.shiftRight();
     }
+
+    shuffleClipPitches() {
+        if (this.currentClip() != undefined){
+            this.currentClip()!.shufflePitches();
+        }
+    }
+
+    shuffleClipSteps() {
+        if (this.currentClip() != undefined){
+            this.currentClip()!.shuffleSteps();
+        }
+    }
+
+    currentClip(): Clip | undefined {
+        return this.sequencer.clip;
+    }  
 
     getMidiInput(): MIDIInput {
         let inputId = "-1687982579"
@@ -185,6 +210,14 @@ export default class GrooveBox {
             this.manualPitchOptions = [pitch];
         }
         this.lastPitchReadAt = window.performance.now();
+    }
+
+    setExtractLength(length: number) {
+        this.pitchHistory.setLength(length);
+        let clipRawData = this.pitchHistory.currentStepsInWindow();
+        clipRawData.color = this.randomColor(this.pitchHistory.windowStart!);
+        let clip = new Clip(this, clipRawData);
+        this.sequencer = new ClipSequencer(this, clip);
     }
 
     readingPitchOptions(): boolean {

@@ -76,8 +76,8 @@
 }
 .rightcol #clipMatrix{
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-template-rows: 100px 100px 100px 100px;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 40px);
     grid-gap: 10px;
     align-items: center
 }
@@ -94,7 +94,7 @@
     width: 100%;
     color: #000;
     text-decoration: none;
-    line-height: 100px;
+    line-height: 40px;
     font-size: 20px;
     border:2px solid #ccc;
 }

@@ -9,8 +9,8 @@ export default class ClipMatrix  implements Renderable{
     constructor(ui: UI, grooveBox: GrooveBox) {
         this.grooveBox = grooveBox;
         this.clipMatrix = document.querySelector("#clipMatrix");
-        
-        for (var i = 0; i < 16; i++) {
+        let cellNumber = 64;
+        for (var i = 0; i < cellNumber; i++) {
             var div = document.createElement("div");
             var step = document.createElement("a");
             step.href = "#";
@@ -23,10 +23,15 @@ export default class ClipMatrix  implements Renderable{
 
             step.addEventListener("click", (e) => {
                 let element = e.target as HTMLElement;
-                let index = element!.dataset.step;
-                this.grooveBox.saveOrLoadClipAtIndex(index)
+                let index = element!.dataset.step!;
+                this.grooveBox.saveOrLoadClipAtIndex(parseInt(index))
             });
         }
+
+        let clipClearBtn = document.querySelector("#clearclipbtn") as HTMLButtonElement;
+        clipClearBtn.addEventListener("click", (e) => {
+            this.grooveBox.clearAllClips();
+        })
     }
 
     update() {

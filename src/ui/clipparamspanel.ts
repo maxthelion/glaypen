@@ -21,6 +21,29 @@ export default class ClipParamsPanel implements Renderable {
         clipRightBtn.addEventListener("click", (e) => {
             this.grooveBox.clipStartRight();
         })
+        let clipshufflepitchesbtn = this.element.querySelector("#clipshufflepitchesbtn") as HTMLButtonElement;
+        clipshufflepitchesbtn.addEventListener("click", (e) => {
+            this.grooveBox.shuffleClipPitches();
+        })
+        let clipshufflestepsbtn = this.element.querySelector("#clipshufflestepsbtn") as HTMLButtonElement;
+        clipshufflestepsbtn.addEventListener("click", (e) => {
+            this.grooveBox.shuffleClipSteps();
+        })
+        // let clipEndInput = this.element.querySelector("#clipend") as HTMLInputElement;
+        // clipEndInput.addEventListener("input", (e) => {
+        //     let element = e.target as HTMLInputElement;
+        //     let value = element.value;
+        //     // this.grooveBox.setClipEnd(parseInt(value));
+        // })
+        // clipEndInput.value = this.grooveBox.currentClip()!.clipLength().toString();
+
+        let clipdensityinput = this.element.querySelector("#clipdensity") as HTMLInputElement;
+        clipdensityinput.addEventListener("input", (e) => {
+            let element = e.target as HTMLInputElement;
+            let value = element.value;
+            this.grooveBox.currentClip()!.setClipDensity(parseInt(value));
+        })
+
         this.paramElements.forEach((paramElement) => {
             let paramId = paramElement.dataset.paramid;
 

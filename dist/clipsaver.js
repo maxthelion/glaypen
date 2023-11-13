@@ -2,14 +2,13 @@ import Clip from "./clip.js";
 var ClipSaver = /** @class */ (function () {
     function ClipSaver(grooveBox) {
         var _this = this;
-        this.savedClips = new Array(16);
+        this.savedClips = [];
         this.grooveBox = grooveBox;
+        this.savedClips = new Array(grooveBox.maxClips);
         var storedClips = this.grooveBox.storageBox.getAllClips();
-        storedClips.forEach(function (ClipRawData, index) {
-            console.log("clip ".concat(index), ClipRawData);
-            if (ClipRawData !== undefined) {
-                var clip = new Clip(_this.grooveBox, ClipRawData.clipData);
-                clip.color = ClipRawData.color;
+        storedClips.forEach(function (clipRawData, index) {
+            if (clipRawData !== undefined) {
+                var clip = new Clip(_this.grooveBox, clipRawData);
                 _this.savedClips[index] = clip;
             }
         });
@@ -25,6 +24,10 @@ var ClipSaver = /** @class */ (function () {
     };
     ClipSaver.prototype.clipAtIndex = function (index) {
         return this.savedClips[index];
+    };
+    ClipSaver.prototype.clearClipAtIndex = function (index) {
+        this.savedClips[index] = undefined;
+        this.grooveBox.storageBox.clearClipAtIndex(index);
     };
     return ClipSaver;
 }());

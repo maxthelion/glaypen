@@ -9,18 +9,19 @@ var HistoryCanvas = /** @class */ (function () {
         this.htmlCanvas.addEventListener("wheel", this.ui.onWheel.bind(this.ui));
     }
     HistoryCanvas.prototype.update = function () {
-        var _this = this;
         if (this.ctx !== null) {
+            // console.log(this.grooveBox.pitchHistory.steps.length)
             this.ctx.clearRect(0, 0, this.htmlCanvas.width, this.htmlCanvas.height);
             var maxStep = this.grooveBox.pitchHistory.maxStep;
-            var stepWidth_1 = this.canvasWidth / maxStep;
-            var stepHeight_1 = this.canvasHeight / 128;
-            this.grooveBox.pitchHistory.pitches.forEach(function (pitchStepPair) {
-                if (_this.ctx !== null) {
-                    _this.ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
-                    _this.ctx.fillRect((stepWidth_1 * pitchStepPair[0]), pitchStepPair[1] * stepHeight_1, stepWidth_1, stepHeight_1);
+            var stepWidth = this.canvasWidth / maxStep;
+            var stepHeight = this.canvasHeight / 128;
+            for (var i = 0; i < maxStep; i++) {
+                var step = this.grooveBox.pitchHistory.steps[i];
+                if (step !== undefined) {
+                    this.ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
+                    this.ctx.fillRect((stepWidth * i), step.pitches[0] * stepHeight, stepWidth, stepHeight);
                 }
-            });
+            }
             this.drawWindow(maxStep);
         }
     };
@@ -29,13 +30,13 @@ var HistoryCanvas = /** @class */ (function () {
         var stepHeight = this.canvasHeight / 128;
         if (this.ctx !== null) {
             this.ctx.strokeStyle = "rgba(0, 0, 0, 1)";
-            if (this.grooveBox.windowStart) {
-                var x = this.grooveBox.windowStart * stepWidth;
+            if (this.grooveBox.pitchHistory.windowStart) {
+                var x = this.grooveBox.pitchHistory.windowStart * stepWidth;
             }
             else {
-                var x = (maxStep - 16) * stepWidth;
+                var x = (maxStep - this.grooveBox.pitchHistory.windowLength) * stepWidth;
             }
-            this.ctx.strokeRect(x, 0, 16 * stepWidth, this.canvasHeight);
+            this.ctx.strokeRect(x, 0, this.grooveBox.pitchHistory.windowLength * stepWidth, this.canvasHeight);
         }
     };
     return HistoryCanvas;

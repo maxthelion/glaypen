@@ -7,6 +7,7 @@ import PrefsModal from "./ui/prefsmodal.js";
 import GeneratorParamsPanel from "./ui/generatorparamspanel.js";
 import ModeSelector from "./ui/modeselector.js";
 import ClipParamsPanel from "./ui/clipparamspanel.js";
+import ExtractParamsPanel from "./ui/extractparamspanel.js";
 var UI = /** @class */ (function () {
     function UI(groovebox) {
         var _this = this;
@@ -47,8 +48,9 @@ var UI = /** @class */ (function () {
             document.querySelector("#genpane").classList.remove("hidden");
         }
         if (modeIndex == 1) {
-            document.querySelector("#clippane").classList.remove("hidden");
-            this.clipParamsPanel = new ClipParamsPanel(this, this.grooveBox);
+            document.querySelector("#extractpane").classList.remove("hidden");
+            // this.clipParamsPanel = new ClipParamsPanel(this, this.grooveBox);
+            this.extractParamsPanel = new ExtractParamsPanel(this, this.grooveBox);
         }
         if (modeIndex == 2) {
             document.querySelector("#clippane").classList.remove("hidden");

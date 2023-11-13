@@ -3,7 +3,8 @@ var ClipMatrix = /** @class */ (function () {
         var _this = this;
         this.grooveBox = grooveBox;
         this.clipMatrix = document.querySelector("#clipMatrix");
-        for (var i = 0; i < 16; i++) {
+        var cellNumber = 64;
+        for (var i = 0; i < cellNumber; i++) {
             var div = document.createElement("div");
             var step = document.createElement("a");
             step.href = "#";
@@ -16,9 +17,13 @@ var ClipMatrix = /** @class */ (function () {
             step.addEventListener("click", function (e) {
                 var element = e.target;
                 var index = element.dataset.step;
-                _this.grooveBox.saveOrLoadClipAtIndex(index);
+                _this.grooveBox.saveOrLoadClipAtIndex(parseInt(index));
             });
         }
+        var clipClearBtn = document.querySelector("#clearclipbtn");
+        clipClearBtn.addEventListener("click", function (e) {
+            _this.grooveBox.clearAllClips();
+        });
     }
     ClipMatrix.prototype.update = function () {
         var _this = this;
