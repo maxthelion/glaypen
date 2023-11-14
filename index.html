@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TypeScript Project</title>
+  <title>GenZee</title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -31,26 +31,38 @@
                 <div id="transportdisplay"></div>
 
             </div>
+            <div></div>
             <div id="prefs">
                 <div>
-                    <a href="#" id="prefsbtn">MIDI Prefs</a>
+                    <a href="#" id="prefsbtn">&#9881;</a>
                 </div>
             </div>
         </div>
         <div id="wrapper">
             <div class="leftcol">
                 <div id="genpane" class="modepane">
-                <h3>Generator</h3>
                 <div id="generatorparams">
                     <div>
+                        <div class="rotary" data-paramid="stepsInBar">
+                            <div class="rotaryvalue">4</div>
+                            <div class="rotaryknob"></div>
+                        </div>
                         <input class="genparam" type="range" id="stepsinbar" data-paramid="stepsInBar" min="1" max="16" step="1">
                         <label for="stepsinbar">Steps in bar</label>
                     </div>
                     <div>
+                        <div class="rotary" data-paramid="stepProbability">
+                            <div class="rotaryvalue">4</div>
+                            <div class="rotaryknob"></div>
+                        </div>
                         <input class="genparam" type="range" id="stepprobability" data-paramid="stepProbability" min="0" max="128" step="1">
                         <label for="stepsinbar">Step probability</label>
                     </div>
                     <div>
+                        <div class="rotary" data-paramid="tonic">
+                            <div class="rotaryvalue">4</div>
+                            <div class="rotaryknob"></div>
+                        </div>
                         <input class="genparam" type="range" id="tonic" data-paramid="tonic" min="0" max="128" step="1">
                         <label for="tonic">Root note</label>
                     </div>
@@ -60,32 +72,43 @@
                         <label for="scale">Scale</label>
                     </div>
                     <div>
+                        <div class="rotary" data-paramid="pitchRange">
+                            <div class="rotaryvalue">4</div>
+                            <div class="rotaryknob"></div>
+                        </div>
                         <input class="genparam" type="range" id="pitchrange" data-paramid="pitchRange" min="0" max="10" step="1">
                         <label for="octave">Pitch range</label>
                     </div>
                     <div>
+                        <div class="rotary" data-paramid="octaveRange">
+                            <div class="rotaryvalue">4</div>
+                            <div class="rotaryknob"></div>
+                        </div>
                         <input class="genparam" type="range" id="octaverange" data-paramid="octaveRange" min="1" max="10" step="1">
                         <label for="octave">Octave range</label>
                     </div>
                     <div>
+                        <div class="rotary" data-paramid="octaveProbability">
+                            <div class="rotaryvalue">4</div>
+                            <div class="rotaryknob"></div>
+                        </div>
                         <input class="genparam" type="range" id="octaveprobability" data-paramid="octaveProbability" min="0" max="128" step="1">
                         <label for="octave">Octave probability</label>
                     </div>
                 </div>
                 </div>
                 <div id="clippane" class="modepane">
-                    <h3>Clip</h3>
+                    <div>
                     <div>
                         <div id="clipstartshifter">
                         <button id="clipstartleftbtn">&lt;&lt;</button>
                         <button id="clipstartrightbtn">&gt;&gt;</button>
                         </div>
-                        <label for="clipstart">Start</label>
                     </div>
                     <div>
                         
-                        <button id="clipshufflepitchesbtn">Shuffle pitches</button>
-                        <button id="clipshufflestepsbtn">Shuffle steps</button>
+                        <div><button class="shuffleBtn" id="clipshufflepitchesbtn">Shuffle pitches</button></div>
+                        <div><button class="shuffleBtn" id="clipshufflestepsbtn">Shuffle steps</button></div>
                     </div>
                     <!-- <div>
                         <input class="clipparam" type="range" id="clipend" data-paramid="clipEnd" min="0" max="16" step="1">
@@ -108,12 +131,15 @@
                         </select>
                         <label for="clipsteporder">Clip step order</label>
                     </div> -->
+                    </div>
                 </div>
 
                 <div id="extractpane" class="modepane">
-                    <h3>Extract</h3>
-
                     <div>
+                        <div class="rotary" data-paramid="extractlength">
+                            <div class="rotaryvalue">4</div>
+                            <div class="rotaryknob"></div>
+                        </div>
                         <input class="extractparam" type="range" id="extractlength" data-paramid="extractlength" min="1" max="64" step="1">
                         <label for="extractlength">Length</label>
                     </div>

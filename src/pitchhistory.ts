@@ -45,9 +45,12 @@ export default class PitchHistory {
 
     stepsForWindow(windowStart:number): ClipRawData {
         let minStep = windowStart;
-        let clipData: ClipRawData = {};
-        clipData.clipLength = this.windowLength;
-        clipData.rawSteps = new Array(this.windowLength);
+        let clipData: ClipRawData = {
+            clipData: {},
+            color: "#000000",
+            clipLength: this.windowLength,
+            rawSteps: new Array(this.windowLength)
+        };
         for (let i = minStep; i < minStep + this.windowLength; i++) {
             if (this.steps[i] != undefined) {
                 clipData.rawSteps[i - minStep] = this.steps[i];
@@ -62,10 +65,6 @@ export default class PitchHistory {
         } else {
             return this.stepsForWindow(this.windowStart);
         }
-    }
-
-    currentStepsInWindow() {
-        return this.stepsForWindow(this.windowStart);
     }
 
     setLength(length: number) {

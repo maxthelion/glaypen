@@ -1,6 +1,5 @@
 import Transport from "./transport.js";
 import UI from "./ui.js";
-import Loop from "./loop.js";
 import Sequencer from "./sequencer.js";
 import ClipSequencer from "./clipsequencer.js";
 import Clip from "./clip.js";
@@ -33,6 +32,7 @@ export default class GrooveBox {
     generatorParams: GeneratorParams;
     manualPitchOptions: number[] = [];
     lastPitchReadAt?: number;
+    clipIndex?: number;
     scales: ScalePair[] = [
         ["Major", [0, 2, 4, 5, 7, 9, 11]],
         ["Harmonic Minor", [0, 2, 3, 5, 7, 8, 11]],
@@ -73,7 +73,7 @@ export default class GrooveBox {
 
     moveWindow(direction: number) {
         this.pitchHistory.moveWindow(direction)
-        let clipRawData = this.pitchHistory.currentStepsInWindow();
+        let clipRawData = this.pitchHistory.stepsForCurrentWindow();
         clipRawData.color = this.randomColor(this.pitchHistory.windowStart!);
         let clip = new Clip(this, clipRawData);
         this.sequencer = new ClipSequencer(this, clip);
@@ -104,8 +104,10 @@ export default class GrooveBox {
                 this.generativeSequencer = undefined;
                 this.sequencer = new Sequencer(this);
             }
+            this.clipIndex = undefined;
         }
         if (modeIndex == 1) {
+            this.clipIndex = undefined;
             this.generativeSequencer = this.sequencer
         }
         if (modeIndex == 2) {
@@ -124,7 +126,9 @@ export default class GrooveBox {
     saveOrLoadClipAtIndex(index: number) {
         this.setMode(2);
         let clip = this.clipSaver.savedClips[index];
-        if (clip != undefined){
+        this.clipIndex = index;
+        console.log("clip", index);
+        if (clip != undefined){            
             this.sequencer = new ClipSequencer(this, clip);
         } else {
             this.saveClipToIndex(index);
@@ -214,7 +218,7 @@ export default class GrooveBox {
 
     setExtractLength(length: number) {
         this.pitchHistory.setLength(length);
-        let clipRawData = this.pitchHistory.currentStepsInWindow();
+        let clipRawData = this.pitchHistory.stepsForCurrentWindow();
         clipRawData.color = this.randomColor(this.pitchHistory.windowStart!);
         let clip = new Clip(this, clipRawData);
         this.sequencer = new ClipSequencer(this, clip);
@@ -226,9 +230,9 @@ export default class GrooveBox {
 
     randomColor(seed: number): string {
         let random = new SeededRandom(seed);
-        let r = Math.floor(random.next() * 256);
-        let g = Math.floor(random.next() * 256);
-        let b = Math.floor(random.next() * 256);
+        let r = 64 + Math.floor(random.next() * 64);
+        let b = 64 + Math.floor(random.next() * 64);
+        let g = 64 + Math.floor(random.next() * 64);
         return `rgb(${r},${g},${b})`;
     }
 }

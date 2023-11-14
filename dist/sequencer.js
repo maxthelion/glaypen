@@ -8,7 +8,7 @@ var Sequencer = /** @class */ (function () {
     }
     Sequencer.prototype.step = function (step) {
         this.currentStep = step % 16;
-        this.update(step, step);
+        this.update(step);
     };
     Sequencer.prototype.update = function (absoluteStep) {
         // console.log("update", absoluteStep);

@@ -28,16 +28,18 @@ var Clip = /** @class */ (function () {
             console.log("step", pitches);
             if (step != undefined) {
                 var randomPitch = pitches[Math.floor(Math.random() * pitches.length)];
-                step[1] = randomPitch;
+                step.pitches = [randomPitch];
             }
         });
     };
     Clip.prototype.availablePitches = function () {
-        return this.originalSteps.filter(function (step) {
-            return step != undefined;
-        }).map(function (step) {
-            return step[1];
+        var pitches = [];
+        this.originalSteps.forEach(function (step) {
+            if (step != undefined) {
+                pitches.concat(step.pitches);
+            }
         });
+        return pitches;
     };
     Clip.prototype.randomUsedPitch = function () {
         var pitches = this.availablePitches();

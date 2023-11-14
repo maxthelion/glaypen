@@ -1,10 +1,13 @@
+import RotaryDial from "./rotarydial.js";
 var GeneratorParamsPanel = /** @class */ (function () {
     function GeneratorParamsPanel(ui, grooveBox) {
         var _this = this;
+        this.renderables = [];
         this.grooveBox = grooveBox;
         this.ui = ui;
         this.element = document.querySelector("#generatorparams");
         this.paramElements = this.element.querySelectorAll(".genparam");
+        this.renderables = [];
         var scaleSelect = this.element.querySelector("#scale");
         var scales = this.grooveBox.scales;
         for (var i = 0; i < scales.length; i++) {
@@ -29,8 +32,18 @@ var GeneratorParamsPanel = /** @class */ (function () {
                 _this.grooveBox.setGeneratorParam(paramId, parseInt(value));
             });
         });
+        var rotaries = this.element.querySelectorAll(".rotary");
+        var array = Array.from(rotaries);
+        this.rotaryElements = array.map(function (element) {
+            return new RotaryDial(ui, grooveBox, element);
+        });
+        this.renderables = this.renderables.concat(this.rotaryElements);
     }
     GeneratorParamsPanel.prototype.update = function () {
+        // console.log(this.renderables)
+        this.renderables.forEach(function (renderable) {
+            renderable.update();
+        });
     };
     return GeneratorParamsPanel;
 }());

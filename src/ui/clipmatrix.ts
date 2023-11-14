@@ -39,12 +39,14 @@ export default class ClipMatrix  implements Renderable{
             this.clipMatrix.querySelectorAll("a").forEach((step) => {
                 step.classList.remove("active");
             })
-            if (this.grooveBox.clipSaver.clipIndexes() != []) {
+            if (this.grooveBox.clipSaver.clipIndexes().length > 0) {
                 // console.log("this.grooveBox.clipSaver.clipIndexes()", this.grooveBox.clipSaver.clipIndexes())
                 this.grooveBox.clipSaver.clipIndexes().forEach((clipIndex) => {
                     let cell = this.clipMatrix!.querySelector(".step" + clipIndex) as HTMLElement;
                     if (cell !== null){
-                        cell.classList.add("active");
+                        if (this.grooveBox.clipIndex === clipIndex) {
+                            cell.classList.add("active");
+                        }
                         cell.style.backgroundColor = this.grooveBox.clipSaver.clipAtIndex(clipIndex).color; 
                     }
                 })

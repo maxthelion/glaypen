@@ -26,7 +26,7 @@ var ClipSaver = /** @class */ (function () {
         return this.savedClips[index];
     };
     ClipSaver.prototype.clearClipAtIndex = function (index) {
-        this.savedClips[index] = undefined;
+        this.savedClips.splice(index, 1);
         this.grooveBox.storageBox.clearClipAtIndex(index);
     };
     return ClipSaver;

@@ -1,6 +1,4 @@
-import Loop from "./loop.js";
 import PlayButton from "./ui/playbutton.js";
-import EventHandler from "./eventhandler.js";
 import GrooveBox from "./groovebox.js";
 import HistoryCanvas from "./ui/historycanvas.js";
 import LCD from "./ui/lcd.js";
@@ -45,9 +43,16 @@ export default class UI {
         let generaterParamsPanel = new GeneratorParamsPanel(this, groovebox);
         let modeSelector = new ModeSelector(this, groovebox);
         let transportDisplay = new TransportDisplay(this, groovebox);
-        this.renderables = [this.historyCanvas, this.lcd, this.clipMatrix, generaterParamsPanel,modeSelector,transportDisplay];
+        this.renderables = [
+            this.playButton,
+            this.historyCanvas, 
+            this.lcd, 
+            this.clipMatrix, 
+            generaterParamsPanel,
+            modeSelector,
+            transportDisplay
+        ];
         this.prefsButton = new PrefsButton(this, groovebox);
-        
     }
 
     update() {

@@ -31,12 +31,14 @@ var ClipMatrix = /** @class */ (function () {
             this.clipMatrix.querySelectorAll("a").forEach(function (step) {
                 step.classList.remove("active");
             });
-            if (this.grooveBox.clipSaver.clipIndexes() != []) {
+            if (this.grooveBox.clipSaver.clipIndexes().length > 0) {
                 // console.log("this.grooveBox.clipSaver.clipIndexes()", this.grooveBox.clipSaver.clipIndexes())
                 this.grooveBox.clipSaver.clipIndexes().forEach(function (clipIndex) {
                     var cell = _this.clipMatrix.querySelector(".step" + clipIndex);
                     if (cell !== null) {
-                        cell.classList.add("active");
+                        if (_this.grooveBox.clipIndex === clipIndex) {
+                            cell.classList.add("active");
+                        }
                         cell.style.backgroundColor = _this.grooveBox.clipSaver.clipAtIndex(clipIndex).color;
                     }
                 });

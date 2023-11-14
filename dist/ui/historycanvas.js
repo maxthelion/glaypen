@@ -18,7 +18,7 @@ var HistoryCanvas = /** @class */ (function () {
             for (var i = 0; i < maxStep; i++) {
                 var step = this.grooveBox.pitchHistory.steps[i];
                 if (step !== undefined) {
-                    this.ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
+                    this.ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
                     this.ctx.fillRect((stepWidth * i), step.pitches[0] * stepHeight, stepWidth, stepHeight);
                 }
             }
@@ -29,7 +29,7 @@ var HistoryCanvas = /** @class */ (function () {
         var stepWidth = this.canvasWidth / maxStep;
         var stepHeight = this.canvasHeight / 128;
         if (this.ctx !== null) {
-            this.ctx.strokeStyle = "rgba(0, 0, 0, 1)";
+            this.ctx.strokeStyle = "rgba(255, 255, 255, 1)";
             if (this.grooveBox.pitchHistory.windowStart) {
                 var x = this.grooveBox.pitchHistory.windowStart * stepWidth;
             }

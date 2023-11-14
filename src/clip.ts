@@ -8,10 +8,10 @@ export type ClipRawData = {
     rawSteps: Step[];
 }
 export default class Clip {
-    steps: number[] = [];
+    steps: Step[] = [];
     color: string = "#000000";
     clipData: any;
-    originalSteps: number[] = [];
+    originalSteps: Step[] = [];
     clipLength: number;
     
     constructor(groooveBox: GrooveBox, clipData: ClipRawData) {
@@ -44,17 +44,19 @@ export default class Clip {
             console.log("step", pitches)
             if (step != undefined) {
                 let randomPitch = pitches[Math.floor(Math.random() * pitches.length)];
-                step[1] = randomPitch;
+                step.pitches = [randomPitch];
             }
         });
     }
 
     availablePitches(): number[] {
-        return this.originalSteps.filter((step) => {
-            return step != undefined
-        }).map((step) => {
-            return step[1];
+        let pitches : number[]= []
+        this.originalSteps.forEach((step) => {
+            if (step != undefined) {
+                pitches.concat(step.pitches);
+            }
         })
+        return pitches;
     }
 
     randomUsedPitch(): number {

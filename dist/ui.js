@@ -26,7 +26,15 @@ var UI = /** @class */ (function () {
         var generaterParamsPanel = new GeneratorParamsPanel(this, groovebox);
         var modeSelector = new ModeSelector(this, groovebox);
         var transportDisplay = new TransportDisplay(this, groovebox);
-        this.renderables = [this.historyCanvas, this.lcd, this.clipMatrix, generaterParamsPanel, modeSelector, transportDisplay];
+        this.renderables = [
+            this.playButton,
+            this.historyCanvas,
+            this.lcd,
+            this.clipMatrix,
+            generaterParamsPanel,
+            modeSelector,
+            transportDisplay
+        ];
         this.prefsButton = new PrefsButton(this, groovebox);
     }
     UI.prototype.update = function () {

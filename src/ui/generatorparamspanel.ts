@@ -1,18 +1,22 @@
 import GrooveBox from "../groovebox";
 import UI from "../ui";
+import RotaryDial from "./rotarydial.js";
+import Renderable from "../interfaces/renderable";
 
 export default class GeneratorParamsPanel {
     grooveBox: GrooveBox;
     ui: UI;
     element: HTMLElement | null;
     paramElements: NodeListOf<HTMLElement>;
+    rotaryElements: RotaryDial[];
+    renderables: Renderable[] = [];
 
     constructor(ui: UI, grooveBox: GrooveBox) {
         this.grooveBox = grooveBox;
         this.ui = ui;
         this.element = document.querySelector("#generatorparams")!;
         this.paramElements = this.element.querySelectorAll(".genparam");
-
+        this.renderables = [];
         let scaleSelect = this.element.querySelector("#scale") as HTMLSelectElement;
         let scales = this.grooveBox.scales;
         for(var i = 0; i < scales.length; i++){
@@ -37,9 +41,18 @@ export default class GeneratorParamsPanel {
                 this.grooveBox.setGeneratorParam(paramId!, parseInt(value));
             })
         })
+        let rotaries = this.element.querySelectorAll(".rotary");
+        const array = Array.from(rotaries);
+        this.rotaryElements = array.map((element) => {
+            return new RotaryDial(ui, grooveBox, element as HTMLElement);
+        })
+        this.renderables = this.renderables.concat(this.rotaryElements);
     }
 
     update() {
-
+        // console.log(this.renderables)
+        this.renderables.forEach((renderable) => {
+            renderable.update();
+        })
     }
 }

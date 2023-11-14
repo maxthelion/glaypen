@@ -35,9 +35,12 @@ var PitchHistory = /** @class */ (function () {
     };
     PitchHistory.prototype.stepsForWindow = function (windowStart) {
         var minStep = windowStart;
-        var clipData = {};
-        clipData.clipLength = this.windowLength;
-        clipData.rawSteps = new Array(this.windowLength);
+        var clipData = {
+            clipData: {},
+            color: "#000000",
+            clipLength: this.windowLength,
+            rawSteps: new Array(this.windowLength)
+        };
         for (var i = minStep; i < minStep + this.windowLength; i++) {
             if (this.steps[i] != undefined) {
                 clipData.rawSteps[i - minStep] = this.steps[i];
@@ -52,9 +55,6 @@ var PitchHistory = /** @class */ (function () {
         else {
             return this.stepsForWindow(this.windowStart);
         }
-    };
-    PitchHistory.prototype.currentStepsInWindow = function () {
-        return this.stepsForWindow(this.windowStart);
     };
     PitchHistory.prototype.setLength = function (length) {
         this.windowLength = length;

@@ -17,7 +17,7 @@ export default class Sequencer {
 
     step(step: number) {
         this.currentStep = step % 16;
-        this.update(step, step);
+        this.update(step);
     }
 
     update(absoluteStep: number) {

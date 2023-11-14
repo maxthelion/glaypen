@@ -43,7 +43,7 @@ var GrooveBox = /** @class */ (function () {
     }
     GrooveBox.prototype.moveWindow = function (direction) {
         this.pitchHistory.moveWindow(direction);
-        var clipRawData = this.pitchHistory.currentStepsInWindow();
+        var clipRawData = this.pitchHistory.stepsForCurrentWindow();
         clipRawData.color = this.randomColor(this.pitchHistory.windowStart);
         var clip = new Clip(this, clipRawData);
         this.sequencer = new ClipSequencer(this, clip);
@@ -74,8 +74,10 @@ var GrooveBox = /** @class */ (function () {
                 this.generativeSequencer = undefined;
                 this.sequencer = new Sequencer(this);
             }
+            this.clipIndex = undefined;
         }
         if (modeIndex == 1) {
+            this.clipIndex = undefined;
             this.generativeSequencer = this.sequencer;
         }
         if (modeIndex == 2) {
@@ -92,6 +94,8 @@ var GrooveBox = /** @class */ (function () {
     GrooveBox.prototype.saveOrLoadClipAtIndex = function (index) {
         this.setMode(2);
         var clip = this.clipSaver.savedClips[index];
+        this.clipIndex = index;
+        console.log("clip", index);
         if (clip != undefined) {
             this.sequencer = new ClipSequencer(this, clip);
         }
@@ -169,7 +173,7 @@ var GrooveBox = /** @class */ (function () {
     };
     GrooveBox.prototype.setExtractLength = function (length) {
         this.pitchHistory.setLength(length);
-        var clipRawData = this.pitchHistory.currentStepsInWindow();
+        var clipRawData = this.pitchHistory.stepsForCurrentWindow();
         clipRawData.color = this.randomColor(this.pitchHistory.windowStart);
         var clip = new Clip(this, clipRawData);
         this.sequencer = new ClipSequencer(this, clip);
@@ -179,9 +183,9 @@ var GrooveBox = /** @class */ (function () {
     };
     GrooveBox.prototype.randomColor = function (seed) {
         var random = new SeededRandom(seed);
-        var r = Math.floor(random.next() * 256);
-        var g = Math.floor(random.next() * 256);
-        var b = Math.floor(random.next() * 256);
+        var r = 64 + Math.floor(random.next() * 64);
+        var b = 64 + Math.floor(random.next() * 64);
+        var g = 64 + Math.floor(random.next() * 64);
         return "rgb(".concat(r, ",").concat(g, ",").concat(b, ")");
     };
     return GrooveBox;

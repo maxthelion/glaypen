@@ -33,7 +33,7 @@ export default class ClipSaver {
     }
 
     clearClipAtIndex(index: number) {
-        this.savedClips[index] = undefined;
+        this.savedClips.splice(index, 1);
         this.grooveBox.storageBox.clearClipAtIndex(index);
     }
 }
