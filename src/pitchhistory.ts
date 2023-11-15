@@ -19,7 +19,7 @@ export default class PitchHistory {
     }
 
     addStep(stepNumber: number,step: Step) {
-        console.log("addStep", stepNumber, step);
+        // console.log("addStep", stepNumber, step);
         this.steps[stepNumber] = step;
     }
 

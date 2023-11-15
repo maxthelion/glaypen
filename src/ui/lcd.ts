@@ -30,7 +30,7 @@ export default class LCD implements Renderable {
                 this.htmlCanvas.style.backgroundColor = clip.color;
                 var stepWidth = this.canvasWidth / clip.clipLength;
                 clip.steps.forEach((step, index) => {
-                    if (step !== undefined) {
+                    if (step !== undefined && step !== null) {
                         if (index === this.grooveBox.sequencer.currentStep) {
                             this.ctx!.fillStyle = "rgba(255, 255, 255, 1)";
                         } else {
@@ -54,12 +54,14 @@ export default class LCD implements Renderable {
     }
     renderStepPitches(step: Step, index: number, stepWidth: number, stepHeight: number) {
         step.pitches.forEach((pitch) => {
-            this.ctx!.fillRect(
-                index * stepWidth, 
-                step.pitches[0] * stepHeight, 
-                stepWidth, 
-                stepHeight
-            );
+            if (pitch !== null) {
+                this.ctx!.fillRect(
+                    index * stepWidth, 
+                    (128 - step.pitches[0]) * stepHeight, 
+                    stepWidth, 
+                    stepHeight
+                );
+            }
         });
     }
 

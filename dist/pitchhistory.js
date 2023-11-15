@@ -11,7 +11,7 @@ var PitchHistory = /** @class */ (function () {
         this.pitches.push([step, pitch]);
     };
     PitchHistory.prototype.addStep = function (stepNumber, step) {
-        console.log("addStep", stepNumber, step);
+        // console.log("addStep", stepNumber, step);
         this.steps[stepNumber] = step;
     };
     PitchHistory.prototype.moveWindow = function (direction) {

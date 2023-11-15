@@ -1,5 +1,5 @@
 import GrooveBox from "./groovebox";
-import Step from "./step";
+import Step from "./step.js";
 
 export type ClipRawData = {
     clipData: any;
@@ -8,10 +8,10 @@ export type ClipRawData = {
     rawSteps: Step[];
 }
 export default class Clip {
-    steps: Step[] = [];
+    steps: (Step | null | undefined)[] = [];
     color: string = "#000000";
     clipData: any;
-    originalSteps: Step[] = [];
+    originalSteps: (Step | null | undefined)[] = [];
     clipLength: number;
     
     constructor(groooveBox: GrooveBox, clipData: ClipRawData) {
@@ -52,8 +52,10 @@ export default class Clip {
     availablePitches(): number[] {
         let pitches : number[]= []
         this.originalSteps.forEach((step) => {
-            if (step != undefined) {
-                pitches.concat(step.pitches);
+            if (step !== undefined && step !== null) {
+                step.pitches.forEach((pitch) => {
+                    pitches.push(pitch);
+                })
             }
         })
         return pitches;
@@ -66,29 +68,48 @@ export default class Clip {
 
     shuffleSteps() {
         console.log("shuffleSteps", this.steps)
-        let steps = this.steps.filter((step) => {
-            return step != undefined
-        })
-        let availableStepsNumbers = new Array(16);
+        let occupiedSteps = this.getOccupiedSteps();
+        let availableStepsNumbers : number[] = new Array(this.getClipLength());
         for(let i = 0; i < availableStepsNumbers.length; i++) {
             availableStepsNumbers[i] = i;
         }
-        this.steps = new Array(16);
-        steps.forEach((step) => {
+        // make a new steps array
+        this.steps = new Array(this.getClipLength());
+        occupiedSteps.forEach((step) => {
             let randomStepIndex = Math.floor(Math.random() * availableStepsNumbers.length);
-            let randomStep = availableStepsNumbers.splice(randomStepIndex, 1);
-            this.steps[randomStep] = step;
+            let newStepIndex: number = availableStepsNumbers.splice(randomStepIndex, 1)[0];
+            this.steps[newStepIndex] = step;
         });
     }
 
-    density(): number {
+    getOccupiedSteps(): Step[] {
+        return this.steps.filter((step) => {
+            return step != undefined && step != null;
+        })
+    }
+
+    getOccupiedStepIndexes(): number[] {
+        let occupiedStepIndexes: number[] = [];
+        this.steps.forEach((step, index) => {
+            if (step != undefined && step != null) {
+                occupiedStepIndexes.push(index);
+            }
+        })
+        return occupiedStepIndexes;
+    }
+
+    getDensity(): number {
         let density = 0;
         this.steps.forEach((step) => {
-            if (step != undefined) {
+            if (step != undefined && step != null) {
                 density++;
             }
         });
         return density;
+    }
+
+    densityPercentage(): number {
+        return this.getDensity() / this.getClipLength();
     }
 
     getClipLength(): number {
@@ -98,14 +119,19 @@ export default class Clip {
     // this.grooveBox.setClipEnd(parseInt(value));
 
     setClipDensity(density: number) {
-        let currentDensity = this.density();
-        let densityDifference = density - currentDensity;
-        if (densityDifference > 0) {
-            this.addSteps(densityDifference);
-        } else if (densityDifference < 0) {
-            for (let i = 0; i < Math.abs(densityDifference); i++) {
-                let randomStep = Math.floor(Math.random() * this.steps.length);
-                this.steps[randomStep] = undefined;
+        console.log("setClipDensity", density)
+        let currentDensity = this.getDensity();
+        let requiredDensity = Math.round(density * this.getClipLength());
+        let densityDifferenceInSteps = requiredDensity - currentDensity;
+        console.log("densityDifferenceInSteps", densityDifferenceInSteps)
+        if (densityDifferenceInSteps > 0) {
+            this.addSteps(densityDifferenceInSteps);
+        } else if (densityDifferenceInSteps < 0) {
+            let occupiedStepIndexes = this.getOccupiedStepIndexes()
+            for (let i = 0; i < Math.abs(densityDifferenceInSteps); i++) {
+                let randomStep = Math.floor(Math.random() * occupiedStepIndexes.length);
+                let indexForDeletion = occupiedStepIndexes.splice(randomStep, 1)[0];
+                this.steps[indexForDeletion] = undefined;
             }
         }
     }
@@ -113,20 +139,24 @@ export default class Clip {
     addSteps(stepsToAdd: number) {
         let unnocupiedSteps = [];
         for (let i = 0; i < this.steps.length; i++) {
-            if (this.steps[i] == undefined) {
+            if (this.steps[i] == undefined || this.steps[i] == null) {
                 unnocupiedSteps.push(i);
             }
         }
         for (let i = 0; i < stepsToAdd; i++) {
-            let unnocupiedStepIndex = unnocupiedSteps.splice(Math.floor(Math.random() * unnocupiedSteps.length), 1);
+            let unnocupiedStepIndex = unnocupiedSteps.splice(Math.floor(Math.random() * unnocupiedSteps.length), 1)[0];
             console.log("unnocupiedStepIndex", unnocupiedStepIndex)
-            this.steps[unnocupiedStepIndex] = [unnocupiedStepIndex, this.randomUsedPitch()];
+            this.steps[unnocupiedStepIndex] = new Step(unnocupiedStepIndex, 100, [this.randomUsedPitch()]);
         }
     }
 
     setLength(length: number){
 
 
+    }
+
+    getParam(param: string): number {
+        return this.clipData[param];
     }
 
 }

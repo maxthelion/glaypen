@@ -9,15 +9,18 @@ export default class ClipSequencer extends Sequencer {
     }
 
     step(step: number) {
-        this.currentStep = step % 16;
+        this.currentStep = step % this.clip!.getClipLength();
         this.update();
     }
 
     update() {
         // console.log("ClipSequencer update", this.clip)
-        if (this.clip.steps[this.currentStep] != undefined) {
-            var pitch = this.clip.steps[this.currentStep][1];
-            this.grooveBox.playPitch(pitch);
+        if (this.clip!.steps[this.currentStep] != undefined) {
+
+            var pitches = this.clip!.steps[this.currentStep].pitches;
+            for(let i = 0; i < pitches.length; i++) {
+                this.grooveBox.playPitch(pitches[i]);
+            }
         }
     }
 }

@@ -25,8 +25,10 @@ export default class RotaryDial implements Renderable {
     }
 
     update(): void {
-        // console.log("RotaryDial update");
-        let paramValue = this.grooveBox.generatorParams[this.paramId];
-        this.valueLabel.textContent = paramValue.toString();
+        this.valueLabel.textContent = this.getParamValue().toString();
+    }
+
+    getParamValue(): number {
+        return this.grooveBox.generatorParams[this.paramId];
     }
 }

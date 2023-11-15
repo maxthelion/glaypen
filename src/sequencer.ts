@@ -7,17 +7,20 @@ export default class Sequencer {
     grooveBox: GrooveBox;
     currentStep: number;
     clip?: Clip;
+    absoluteStep: number;
     
     constructor(grooveBox: GrooveBox) {
         this.grooveBox = grooveBox;
         this.minorScalePitches = [0, 2, 3, 5, 7, 8, 10];
         this.currentStep = 0;
         this.clip = undefined;
+        this.absoluteStep = 0;
     }
 
-    step(step: number) {
-        this.currentStep = step % 16;
-        this.update(step);
+    step(loopStep: number) {
+        this.absoluteStep += 1;
+        this.currentStep = this.absoluteStep % 16;
+        this.update(this.absoluteStep);
     }
 
     update(absoluteStep: number) {

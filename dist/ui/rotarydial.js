@@ -13,9 +13,10 @@ var RotaryDial = /** @class */ (function () {
         this.ui = ui;
     }
     RotaryDial.prototype.update = function () {
-        // console.log("RotaryDial update");
-        var paramValue = this.grooveBox.generatorParams[this.paramId];
-        this.valueLabel.textContent = paramValue.toString();
+        this.valueLabel.textContent = this.getParamValue().toString();
+    };
+    RotaryDial.prototype.getParamValue = function () {
+        return this.grooveBox.generatorParams[this.paramId];
     };
     return RotaryDial;
 }());

@@ -18,7 +18,7 @@ var LCD = /** @class */ (function () {
                 this.htmlCanvas.style.backgroundColor = clip.color;
                 var stepWidth = this.canvasWidth / clip.clipLength;
                 clip.steps.forEach(function (step, index) {
-                    if (step !== undefined) {
+                    if (step !== undefined && step !== null) {
                         if (index === _this.grooveBox.sequencer.currentStep) {
                             _this.ctx.fillStyle = "rgba(255, 255, 255, 1)";
                         }
@@ -44,7 +44,9 @@ var LCD = /** @class */ (function () {
     LCD.prototype.renderStepPitches = function (step, index, stepWidth, stepHeight) {
         var _this = this;
         step.pitches.forEach(function (pitch) {
-            _this.ctx.fillRect(index * stepWidth, step.pitches[0] * stepHeight, stepWidth, stepHeight);
+            if (pitch !== null) {
+                _this.ctx.fillRect(index * stepWidth, (128 - step.pitches[0]) * stepHeight, stepWidth, stepHeight);
+            }
         });
     };
     return LCD;

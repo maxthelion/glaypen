@@ -25,8 +25,7 @@ export default class UI {
     clipMatrix: ClipMatrix;
     renderables: Array<Renderable>;
     prefsModal?: PrefsModal;
-    clipParamsPanel?: ClipParamsPanel;
-    extractParamsPanel?: ExtractParamsPanel;
+    currentPane: Renderable
 
     constructor(groovebox: GrooveBox) {
         var sequencerSteps = document.querySelectorAll(".step");
@@ -40,15 +39,14 @@ export default class UI {
         this.lcd = new LCD(this, groovebox);
         this.grooveBox = groovebox;
         this.clipMatrix = new ClipMatrix(this, groovebox);
-        let generaterParamsPanel = new GeneratorParamsPanel(this, groovebox);
         let modeSelector = new ModeSelector(this, groovebox);
         let transportDisplay = new TransportDisplay(this, groovebox);
+        this.currentPane = new GeneratorParamsPanel(this, groovebox);
         this.renderables = [
             this.playButton,
             this.historyCanvas, 
             this.lcd, 
             this.clipMatrix, 
-            generaterParamsPanel,
             modeSelector,
             transportDisplay
         ];
@@ -67,6 +65,7 @@ export default class UI {
         this.renderables.forEach((renderable) => {
             renderable.update();
         })
+        this.currentPane.update()
     }
 
     setMode(modeIndex: number) {
@@ -75,16 +74,17 @@ export default class UI {
             element.classList.add("hidden"); 
         });        
         if (modeIndex == 0) {
+            this.currentPane = new GeneratorParamsPanel(this, this.grooveBox);
             document.querySelector("#genpane")!.classList.remove("hidden");
         }
         if (modeIndex == 1) {
             document.querySelector("#extractpane")!.classList.remove("hidden");
             // this.clipParamsPanel = new ClipParamsPanel(this, this.grooveBox);
-            this.extractParamsPanel = new ExtractParamsPanel(this, this.grooveBox);
+            this.currentPane = new ExtractParamsPanel(this, this.grooveBox);
         }
         if (modeIndex == 2) {
             document.querySelector("#clippane")!.classList.remove("hidden");
-            this.clipParamsPanel = new ClipParamsPanel(this, this.grooveBox);
+            this.currentPane = new ClipParamsPanel(this, this.grooveBox);
         }
     }
 

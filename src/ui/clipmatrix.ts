@@ -27,11 +27,6 @@ export default class ClipMatrix  implements Renderable{
                 this.grooveBox.saveOrLoadClipAtIndex(parseInt(index))
             });
         }
-
-        let clipClearBtn = document.querySelector("#clearclipbtn") as HTMLButtonElement;
-        clipClearBtn.addEventListener("click", (e) => {
-            this.grooveBox.clearAllClips();
-        })
     }
 
     update() {

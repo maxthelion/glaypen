@@ -1,6 +1,8 @@
+import RotaryDial from "./rotarydial.js";
 var ClipParamsPanel = /** @class */ (function () {
     function ClipParamsPanel(ui, grooveBox) {
         var _this = this;
+        this.renderables = [];
         this.grooveBox = grooveBox;
         this.ui = ui;
         this.element = document.querySelector("#clippane");
@@ -28,23 +30,37 @@ var ClipParamsPanel = /** @class */ (function () {
         //     // this.grooveBox.setClipEnd(parseInt(value));
         // })
         // clipEndInput.value = this.grooveBox.currentClip()!.clipLength().toString();
-        var clipdensityinput = this.element.querySelector("#clipdensity");
-        clipdensityinput.addEventListener("input", function (e) {
+        this.clipdensityinput = this.element.querySelector("#clipdensity");
+        this.clipdensityinput.addEventListener("input", function (e) {
             var element = e.target;
             var value = element.value;
-            _this.grooveBox.currentClip().setClipDensity(parseInt(value));
+            _this.grooveBox.currentClip().setClipDensity(parseFloat(value));
         });
-        this.paramElements.forEach(function (paramElement) {
-            var paramId = paramElement.dataset.paramid;
-            var clip = _this.grooveBox.sequencer.clip;
-            paramElement.addEventListener("input", function (e) {
-                var element = e.target;
-                var value = element.value;
-                _this.grooveBox.setClipParam(paramId, parseInt(value));
-            });
+        // this.paramElements.forEach((paramElement) => {
+        //     let paramId = paramElement.dataset.paramid;
+        //     let clip = this.grooveBox.sequencer.clip;
+        //     paramElement.addEventListener("input", (e) => {
+        //         let element = e.target as HTMLInputElement;
+        //         let value = element.value;
+        //         this.grooveBox.setClipParam(paramId!, parseInt(value));
+        //     })
+        // });
+        var rotaries = this.element.querySelectorAll(".rotary");
+        var array = Array.from(rotaries);
+        var rotaryElements = array.map(function (element) {
+            var r = new RotaryDial(ui, grooveBox, element);
+            r.getParamValue = function () {
+                return this.grooveBox.sequencer.clip.densityPercentage();
+            };
+            return r;
         });
+        this.renderables = this.renderables.concat(rotaryElements);
     }
     ClipParamsPanel.prototype.update = function () {
+        this.clipdensityinput.value = this.grooveBox.currentClip().densityPercentage().toString();
+        this.renderables.forEach(function (renderable) {
+            renderable.update();
+        });
     };
     return ClipParamsPanel;
 }());

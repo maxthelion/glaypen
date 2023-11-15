@@ -22,14 +22,16 @@ var ClipSequencer = /** @class */ (function (_super) {
         return _this;
     }
     ClipSequencer.prototype.step = function (step) {
-        this.currentStep = step % 16;
+        this.currentStep = step % this.clip.getClipLength();
         this.update();
     };
     ClipSequencer.prototype.update = function () {
         // console.log("ClipSequencer update", this.clip)
         if (this.clip.steps[this.currentStep] != undefined) {
-            var pitch = this.clip.steps[this.currentStep][1];
-            this.grooveBox.playPitch(pitch);
+            var pitches = this.clip.steps[this.currentStep].pitches;
+            for (var i = 0; i < pitches.length; i++) {
+                this.grooveBox.playPitch(pitches[i]);
+            }
         }
     };
     return ClipSequencer;

@@ -110,17 +110,22 @@
                         <div><button class="shuffleBtn" id="clipshufflepitchesbtn">Shuffle pitches</button></div>
                         <div><button class="shuffleBtn" id="clipshufflestepsbtn">Shuffle steps</button></div>
                     </div>
-                    <!-- <div>
+                    <div>
                         <input class="clipparam" type="range" id="clipend" data-paramid="clipEnd" min="0" max="16" step="1">
                         <label for="clipend">Length</label>
                     </div>
+                    <!-- 
                     <div>
                         <input class="clipparam" type="range" id="clippitch" data-paramid="clipPitch" min="0" max="128" step="1">
                         <label for="clippitch">Root</label>
                     </div> -->
 
                     <div>
-                        <input class="clipparam" type="range" id="clipdensity" data-paramid="clipDensity" min="0" max="16" step="1">
+                        <div class="rotary" data-paramid="clipDensity">
+                            <div class="rotaryvalue">4</div>
+                            <div class="rotaryknob"></div>
+                        </div>
+                        <input class="clipparam" type="range" id="clipdensity" data-paramid="clipDensity" min="0" max="1" step=".05">
                         <label for="clipdensity">Density</label>
                     </div>
                     <!-- <div>
@@ -152,9 +157,7 @@
                 <div id="clipMatrix">
 
                 </div>
-                <div>
-                    <button id="clearclipbtn">Clear clips</button>
-                </div>
+
             </div>
         </div>
         <div>

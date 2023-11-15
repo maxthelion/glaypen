@@ -5,10 +5,12 @@ var Sequencer = /** @class */ (function () {
         this.minorScalePitches = [0, 2, 3, 5, 7, 8, 10];
         this.currentStep = 0;
         this.clip = undefined;
+        this.absoluteStep = 0;
     }
-    Sequencer.prototype.step = function (step) {
-        this.currentStep = step % 16;
-        this.update(step);
+    Sequencer.prototype.step = function (loopStep) {
+        this.absoluteStep += 1;
+        this.currentStep = this.absoluteStep % 16;
+        this.update(this.absoluteStep);
     };
     Sequencer.prototype.update = function (absoluteStep) {
         // console.log("update", absoluteStep);

@@ -24,7 +24,7 @@ type ScalePair = [string, number[]];
 export default class GrooveBox {
     pitchHistory: PitchHistory;
     transport: Transport;
-    maxClips: number = 16;
+    maxClips: number = 64;
     ui: UI;
     selectedOutput: MIDIOutput;
     sequencer: Sequencer;
@@ -177,7 +177,7 @@ export default class GrooveBox {
     setClipParam(paramName: string, value: number) {
         console.log("setClipParams", paramName, value);
     }
-
+ 
     clipStartLeft() {
         this.sequencer.clip!.shiftLeft();
     }
@@ -200,7 +200,21 @@ export default class GrooveBox {
 
     currentClip(): Clip | undefined {
         return this.sequencer.clip;
-    }  
+    }
+
+    rotaryTarget(){
+        switch(this.modeIndex) {
+            case 0:
+                return this.generatorParams;
+                break;
+            case 1:
+                return this.sequencer.clip;
+                break;
+            case 2:
+                return this.sequencer.clip;
+                break;
+        }
+    }
 
     getMidiInput(): MIDIInput {
         let inputId = "-1687982579"
@@ -222,6 +236,7 @@ export default class GrooveBox {
         clipRawData.color = this.randomColor(this.pitchHistory.windowStart!);
         let clip = new Clip(this, clipRawData);
         this.sequencer = new ClipSequencer(this, clip);
+        console.log(clip);
     }
 
     readingPitchOptions(): boolean {

@@ -18,6 +18,10 @@ export default class PrefsModal {
                 <label for="midiOutput">MIDI Output</label>
                 <select id="midiOutput">
                 </select>
+
+                <div>
+                <button id="clearclipbtn">Clear clips</button>
+                </div>
             </div>
         `;
         let currentMidiOutputId : string | undefined;
@@ -37,6 +41,11 @@ export default class PrefsModal {
             }
             select!.appendChild(option);
         });
+
+        let clipClearBtn = this.element.querySelector("#clearclipbtn") as HTMLButtonElement;
+        clipClearBtn.addEventListener("click", (e) => {
+            this.grooveBox.clearAllClips();
+        })
 
         select!.addEventListener("blur", (e) => {
             let select = e.target as HTMLSelectElement;

@@ -1,7 +1,6 @@
 var ModeSelector = /** @class */ (function () {
     function ModeSelector(ui, grooveBox) {
         this.modeTabs = [];
-        console.log("ModeSelector constructor");
         this.modeTabs[0] = document.getElementById("generatormodebtn");
         this.modeTabs[1] = document.getElementById("extractmodebtn");
         this.modeTabs[2] = document.getElementById("clipmodebtn");

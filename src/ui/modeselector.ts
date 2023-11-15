@@ -8,7 +8,6 @@ export default class ModeSelector implements Renderable {
     grooveBox: GrooveBox;
 
     constructor(ui:UI, grooveBox: GrooveBox) {
-        console.log("ModeSelector constructor");
         this.modeTabs[0] = document.getElementById("generatormodebtn")!;
         this.modeTabs[1] = document.getElementById("extractmodebtn")!;   
         this.modeTabs[2] = document.getElementById("clipmodebtn")!;

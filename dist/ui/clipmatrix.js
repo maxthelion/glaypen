@@ -20,10 +20,6 @@ var ClipMatrix = /** @class */ (function () {
                 _this.grooveBox.saveOrLoadClipAtIndex(parseInt(index));
             });
         }
-        var clipClearBtn = document.querySelector("#clearclipbtn");
-        clipClearBtn.addEventListener("click", function (e) {
-            _this.grooveBox.clearAllClips();
-        });
     }
     ClipMatrix.prototype.update = function () {
         var _this = this;

@@ -23,15 +23,14 @@ var UI = /** @class */ (function () {
         this.lcd = new LCD(this, groovebox);
         this.grooveBox = groovebox;
         this.clipMatrix = new ClipMatrix(this, groovebox);
-        var generaterParamsPanel = new GeneratorParamsPanel(this, groovebox);
         var modeSelector = new ModeSelector(this, groovebox);
         var transportDisplay = new TransportDisplay(this, groovebox);
+        this.currentPane = new GeneratorParamsPanel(this, groovebox);
         this.renderables = [
             this.playButton,
             this.historyCanvas,
             this.lcd,
             this.clipMatrix,
-            generaterParamsPanel,
             modeSelector,
             transportDisplay
         ];
@@ -48,6 +47,7 @@ var UI = /** @class */ (function () {
         this.renderables.forEach(function (renderable) {
             renderable.update();
         });
+        this.currentPane.update();
     };
     UI.prototype.setMode = function (modeIndex) {
         var modePanes = document.querySelectorAll(".modepane");
@@ -55,16 +55,17 @@ var UI = /** @class */ (function () {
             element.classList.add("hidden");
         });
         if (modeIndex == 0) {
+            this.currentPane = new GeneratorParamsPanel(this, this.grooveBox);
             document.querySelector("#genpane").classList.remove("hidden");
         }
         if (modeIndex == 1) {
             document.querySelector("#extractpane").classList.remove("hidden");
             // this.clipParamsPanel = new ClipParamsPanel(this, this.grooveBox);
-            this.extractParamsPanel = new ExtractParamsPanel(this, this.grooveBox);
+            this.currentPane = new ExtractParamsPanel(this, this.grooveBox);
         }
         if (modeIndex == 2) {
             document.querySelector("#clippane").classList.remove("hidden");
-            this.clipParamsPanel = new ClipParamsPanel(this, this.grooveBox);
+            this.currentPane = new ClipParamsPanel(this, this.grooveBox);
         }
     };
     UI.prototype.onWheel = function (event) {

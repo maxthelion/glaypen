@@ -1,3 +1,4 @@
+import Step from "./step.js";
 var Clip = /** @class */ (function () {
     function Clip(groooveBox, clipData) {
         this.steps = [];
@@ -35,8 +36,10 @@ var Clip = /** @class */ (function () {
     Clip.prototype.availablePitches = function () {
         var pitches = [];
         this.originalSteps.forEach(function (step) {
-            if (step != undefined) {
-                pitches.concat(step.pitches);
+            if (step !== undefined && step !== null) {
+                step.pitches.forEach(function (pitch) {
+                    pitches.push(pitch);
+                });
             }
         });
         return pitches;
@@ -48,60 +51,84 @@ var Clip = /** @class */ (function () {
     Clip.prototype.shuffleSteps = function () {
         var _this = this;
         console.log("shuffleSteps", this.steps);
-        var steps = this.steps.filter(function (step) {
-            return step != undefined;
-        });
-        var availableStepsNumbers = new Array(16);
+        var occupiedSteps = this.getOccupiedSteps();
+        var availableStepsNumbers = new Array(this.getClipLength());
         for (var i = 0; i < availableStepsNumbers.length; i++) {
             availableStepsNumbers[i] = i;
         }
-        this.steps = new Array(16);
-        steps.forEach(function (step) {
+        // make a new steps array
+        this.steps = new Array(this.getClipLength());
+        occupiedSteps.forEach(function (step) {
             var randomStepIndex = Math.floor(Math.random() * availableStepsNumbers.length);
-            var randomStep = availableStepsNumbers.splice(randomStepIndex, 1);
-            _this.steps[randomStep] = step;
+            var newStepIndex = availableStepsNumbers.splice(randomStepIndex, 1)[0];
+            _this.steps[newStepIndex] = step;
         });
     };
-    Clip.prototype.density = function () {
+    Clip.prototype.getOccupiedSteps = function () {
+        return this.steps.filter(function (step) {
+            return step != undefined && step != null;
+        });
+    };
+    Clip.prototype.getOccupiedStepIndexes = function () {
+        var occupiedStepIndexes = [];
+        this.steps.forEach(function (step, index) {
+            if (step != undefined && step != null) {
+                occupiedStepIndexes.push(index);
+            }
+        });
+        return occupiedStepIndexes;
+    };
+    Clip.prototype.getDensity = function () {
         var density = 0;
         this.steps.forEach(function (step) {
-            if (step != undefined) {
+            if (step != undefined && step != null) {
                 density++;
             }
         });
         return density;
+    };
+    Clip.prototype.densityPercentage = function () {
+        return this.getDensity() / this.getClipLength();
     };
     Clip.prototype.getClipLength = function () {
         return this.steps.length;
     };
     // this.grooveBox.setClipEnd(parseInt(value));
     Clip.prototype.setClipDensity = function (density) {
-        var currentDensity = this.density();
-        var densityDifference = density - currentDensity;
-        if (densityDifference > 0) {
-            this.addSteps(densityDifference);
+        console.log("setClipDensity", density);
+        var currentDensity = this.getDensity();
+        var requiredDensity = Math.round(density * this.getClipLength());
+        var densityDifferenceInSteps = requiredDensity - currentDensity;
+        console.log("densityDifferenceInSteps", densityDifferenceInSteps);
+        if (densityDifferenceInSteps > 0) {
+            this.addSteps(densityDifferenceInSteps);
         }
-        else if (densityDifference < 0) {
-            for (var i = 0; i < Math.abs(densityDifference); i++) {
-                var randomStep = Math.floor(Math.random() * this.steps.length);
-                this.steps[randomStep] = undefined;
+        else if (densityDifferenceInSteps < 0) {
+            var occupiedStepIndexes = this.getOccupiedStepIndexes();
+            for (var i = 0; i < Math.abs(densityDifferenceInSteps); i++) {
+                var randomStep = Math.floor(Math.random() * occupiedStepIndexes.length);
+                var indexForDeletion = occupiedStepIndexes.splice(randomStep, 1)[0];
+                this.steps[indexForDeletion] = undefined;
             }
         }
     };
     Clip.prototype.addSteps = function (stepsToAdd) {
         var unnocupiedSteps = [];
         for (var i = 0; i < this.steps.length; i++) {
-            if (this.steps[i] == undefined) {
+            if (this.steps[i] == undefined || this.steps[i] == null) {
                 unnocupiedSteps.push(i);
             }
         }
         for (var i = 0; i < stepsToAdd; i++) {
-            var unnocupiedStepIndex = unnocupiedSteps.splice(Math.floor(Math.random() * unnocupiedSteps.length), 1);
+            var unnocupiedStepIndex = unnocupiedSteps.splice(Math.floor(Math.random() * unnocupiedSteps.length), 1)[0];
             console.log("unnocupiedStepIndex", unnocupiedStepIndex);
-            this.steps[unnocupiedStepIndex] = [unnocupiedStepIndex, this.randomUsedPitch()];
+            this.steps[unnocupiedStepIndex] = new Step(unnocupiedStepIndex, 100, [this.randomUsedPitch()]);
         }
     };
     Clip.prototype.setLength = function (length) {
+    };
+    Clip.prototype.getParam = function (param) {
+        return this.clipData[param];
     };
     return Clip;
 }());

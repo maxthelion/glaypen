@@ -10,7 +10,7 @@ import MidiInputHandler from "./midiinputhandler.js";
 var GrooveBox = /** @class */ (function () {
     function GrooveBox(midiAccess) {
         var _this = this;
-        this.maxClips = 16;
+        this.maxClips = 64;
         this.manualPitchOptions = [];
         this.scales = [
             ["Major", [0, 2, 4, 5, 7, 9, 11]],
@@ -158,6 +158,19 @@ var GrooveBox = /** @class */ (function () {
     GrooveBox.prototype.currentClip = function () {
         return this.sequencer.clip;
     };
+    GrooveBox.prototype.rotaryTarget = function () {
+        switch (this.modeIndex) {
+            case 0:
+                return this.generatorParams;
+                break;
+            case 1:
+                return this.sequencer.clip;
+                break;
+            case 2:
+                return this.sequencer.clip;
+                break;
+        }
+    };
     GrooveBox.prototype.getMidiInput = function () {
         var inputId = "-1687982579";
         return this.midiAccess.inputs.get(inputId);
@@ -177,6 +190,7 @@ var GrooveBox = /** @class */ (function () {
         clipRawData.color = this.randomColor(this.pitchHistory.windowStart);
         var clip = new Clip(this, clipRawData);
         this.sequencer = new ClipSequencer(this, clip);
+        console.log(clip);
     };
     GrooveBox.prototype.readingPitchOptions = function () {
         return this.lastPitchReadAt != undefined && window.performance.now() - this.lastPitchReadAt < 200;
