@@ -34,7 +34,7 @@ export default class HistoryCanvas  implements Renderable{
                     this.ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
                     this.ctx.fillRect((
                         stepWidth * i), 
-                        step.pitches[0] * stepHeight, 
+                        (128 - step.pitches[0]) * stepHeight, 
                         stepWidth, 
                         stepHeight
                     );

@@ -19,7 +19,7 @@ var HistoryCanvas = /** @class */ (function () {
                 var step = this.grooveBox.pitchHistory.steps[i];
                 if (step !== undefined) {
                     this.ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-                    this.ctx.fillRect((stepWidth * i), step.pitches[0] * stepHeight, stepWidth, stepHeight);
+                    this.ctx.fillRect((stepWidth * i), (128 - step.pitches[0]) * stepHeight, stepWidth, stepHeight);
                 }
             }
             this.drawWindow(maxStep);
