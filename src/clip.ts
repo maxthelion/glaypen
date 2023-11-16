@@ -136,6 +136,19 @@ export default class Clip {
         }
     }
 
+    setClipLength(length: number) {
+        console.log("setClipLength", length)
+        this.clipLength = length;
+        if (this.steps.length < length) {
+            let newSteps = new Array(length);
+            newSteps.splice(0, this.originalSteps.length, ...this.originalSteps);
+            this.steps = newSteps;
+            console.log("this.steps", this.steps)
+        } else if (this.steps.length > length) {
+            this.steps = this.steps.slice(0, length);
+        }
+    }
+
     addSteps(stepsToAdd: number) {
         let unnocupiedSteps = [];
         for (let i = 0; i < this.steps.length; i++) {

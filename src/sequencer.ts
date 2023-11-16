@@ -8,7 +8,8 @@ export default class Sequencer {
     currentStep: number;
     clip?: Clip;
     absoluteStep: number;
-    
+    lastPitch?: number;
+
     constructor(grooveBox: GrooveBox) {
         this.grooveBox = grooveBox;
         this.minorScalePitches = [0, 2, 3, 5, 7, 8, 10];
@@ -24,6 +25,7 @@ export default class Sequencer {
     }
 
     update(absoluteStep: number) {
+
         // console.log("update", absoluteStep);
         let currentStep = absoluteStep % 16;
         let tonic = this.grooveBox.generatorParams.tonic;
@@ -43,7 +45,9 @@ export default class Sequencer {
                     var pitchInterval = Math.floor( Math.random() * scalePitches.length);
                     var pitch = scalePitches[pitchInterval];
                 }else {
+                    
                     var pitchInterval = Math.floor( Math.random() * pitchRange);
+                    pitchInterval = pitchInterval % scalePitches.length;
                     var pitch = tonic + scalePitches[pitchInterval];
                     if (Math.random() > (octaveProbability) ) {
                         let octaveChange = Math.floor( Math.random() * octaveRange) - Math.floor(octaveRange / 2);
@@ -68,6 +72,59 @@ export default class Sequencer {
                 //     this.grooveBox.playPitch(chordPitch);
                 // }
                 // console.log("pitch", pitch);
+                let step = new Step(currentStep, 120, [pitch]);
+                // this.grooveBox.playPitch(pitch);
+                if (isNaN(pitch)) {
+                    // pitch is NaN
+                    console.log("pitch is NaN", pitch, scalePitches[pitchInterval]);
+                    
+
+                }
+                this.grooveBox.playStep(step);
+                this.grooveBox.pitchHistory.addStep(absoluteStep, step);
+            }
+        }
+        this.grooveBox.pitchHistory.incrementMaxStep();
+    }
+
+
+    updatenew(absoluteStep: number) {
+
+        // console.log("update", absoluteStep);
+        let currentStep = absoluteStep % 16;
+        let tonic = this.grooveBox.generatorParams.tonic;
+        let scaleIndex = this.grooveBox.generatorParams.scaleIndex;
+        let scalePitches = this.grooveBox.scales[scaleIndex][1];
+        if (this.grooveBox.manualPitchOptions.length > 0) {
+            scalePitches = this.grooveBox.manualPitchOptions;
+        }
+        let stepsInBar = this.grooveBox.generatorParams.stepsInBar;
+        let stepProbability = this.grooveBox.generatorParams.stepProbability / 128;
+        let pitchRange = this.grooveBox.generatorParams.pitchRange;
+        let octaveRange = this.grooveBox.generatorParams.octaveRange;
+        let octaveProbability = this.grooveBox.generatorParams.octaveProbability / 128;
+         if (currentStep % (16 / stepsInBar) == 0) {
+            if (Math.random() <= (stepProbability) ) {
+                if (this.grooveBox.manualPitchOptions.length > 0) {
+                    var pitchInterval = Math.floor( Math.random() * scalePitches.length);
+                    var pitch = scalePitches[pitchInterval];
+                }else {
+                    var pitchInterval = Math.floor( Math.random() * pitchRange);
+                    if (this.lastPitch != undefined) {
+                        var pitch = this.lastPitch + scalePitches[pitchInterval];
+                        if (Math.random() > (octaveProbability) ) {
+                            let octaveChange = Math.floor( Math.random() * octaveRange) - Math.floor(octaveRange / 2);
+                            pitch += (octaveChange * 12);
+                        }
+                    } else {
+                        var pitch = tonic + scalePitches[pitchInterval];
+                        if (Math.random() > (octaveProbability) ) {
+                            let octaveChange = Math.floor( Math.random() * octaveRange) - Math.floor(octaveRange / 2);
+                            pitch += (octaveChange * 12);
+                        }  
+                    }
+                    this.lastPitch = pitch;
+                }
                 let step = new Step(currentStep, 120, [pitch]);
                 // this.grooveBox.playPitch(pitch);
                 this.grooveBox.playStep(step);

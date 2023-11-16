@@ -33,6 +33,8 @@ export default class GrooveBox {
     manualPitchOptions: number[] = [];
     lastPitchReadAt?: number;
     clipIndex?: number;
+    playingPitches: any = {};
+
     scales: ScalePair[] = [
         ["Major", [0, 2, 4, 5, 7, 9, 11]],
         ["Harmonic Minor", [0, 2, 3, 5, 7, 8, 11]],
@@ -68,6 +70,7 @@ export default class GrooveBox {
         // draw loop
         setInterval(() => {
             this.ui.update();
+            this.clearExpiredNotes();
         }, 50);
     }
 
@@ -81,12 +84,32 @@ export default class GrooveBox {
     }
     
     playPitch(pitch: number, velocity: number = 127) {
+        let maxLength = 1000;
+        if (this.playingPitches[pitch] != undefined) {
+            var noteOffMessage = [0x80, pitch, 0x40];   
+            this.selectedOutput.send(noteOffMessage); 
+            this.playingPitches[pitch] = undefined;
+        }
         // console.log("playPitch", pitch, velocity);
         let velocityInHex = velocity.toString(16);
         var noteOnMessage = [0x90, pitch, Number('0x' + velocityInHex)];    // Note on, middle C, full velocity
         this.selectedOutput.send(noteOnMessage);  // Send note on message to first MIDI output device
-        var noteOffMessage = [0x80, pitch, 0x40];   // Note off, middle C,
-        this.selectedOutput.send(noteOffMessage, window.performance.now() + 1000.0); // In one second
+        this.playingPitches[pitch] = window.performance.now();
+    }
+
+    clearExpiredNotes() {
+        for (const key in this.playingPitches) {
+            if (Object.prototype.hasOwnProperty.call(this.playingPitches, key)) {
+                const time = this.playingPitches[key];
+                const pitch = parseInt(key);
+                // console.log("time", key, time, pitch, this.playingPitches);
+                if (time != undefined && window.performance.now() - time > 500) {
+                    var noteOffMessage = [0x80, pitch, 0x40];   
+                    this.selectedOutput.send(noteOffMessage); 
+                    this.playingPitches[pitch] = undefined;
+                }
+            }
+        }
     }
 
     playStep(step: Step) {

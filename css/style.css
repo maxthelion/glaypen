@@ -164,13 +164,13 @@ div.active {
     background-color: #333;
 }
 
-#generatorparams {
+#generatorparams, .halfcells {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: repeat(4, 80px);
+    grid-template-rows: 80px;
     grid-gap: 20px;
 }
-#generatorparams div {
+#generatorparams div, .halfcells div {
     text-align: center;
     vertical-align: middle;
 }

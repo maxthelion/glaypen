@@ -12,6 +12,7 @@ var GrooveBox = /** @class */ (function () {
         var _this = this;
         this.maxClips = 64;
         this.manualPitchOptions = [];
+        this.playingPitches = {};
         this.scales = [
             ["Major", [0, 2, 4, 5, 7, 9, 11]],
             ["Harmonic Minor", [0, 2, 3, 5, 7, 8, 11]],
@@ -39,6 +40,7 @@ var GrooveBox = /** @class */ (function () {
         // draw loop
         setInterval(function () {
             _this.ui.update();
+            _this.clearExpiredNotes();
         }, 50);
     }
     GrooveBox.prototype.moveWindow = function (direction) {
@@ -51,12 +53,31 @@ var GrooveBox = /** @class */ (function () {
     };
     GrooveBox.prototype.playPitch = function (pitch, velocity) {
         if (velocity === void 0) { velocity = 127; }
+        var maxLength = 1000;
+        if (this.playingPitches[pitch] != undefined) {
+            var noteOffMessage = [0x80, pitch, 0x40];
+            this.selectedOutput.send(noteOffMessage);
+            this.playingPitches[pitch] = undefined;
+        }
         // console.log("playPitch", pitch, velocity);
         var velocityInHex = velocity.toString(16);
         var noteOnMessage = [0x90, pitch, Number('0x' + velocityInHex)]; // Note on, middle C, full velocity
         this.selectedOutput.send(noteOnMessage); // Send note on message to first MIDI output device
-        var noteOffMessage = [0x80, pitch, 0x40]; // Note off, middle C,
-        this.selectedOutput.send(noteOffMessage, window.performance.now() + 1000.0); // In one second
+        this.playingPitches[pitch] = window.performance.now();
+    };
+    GrooveBox.prototype.clearExpiredNotes = function () {
+        for (var key in this.playingPitches) {
+            if (Object.prototype.hasOwnProperty.call(this.playingPitches, key)) {
+                var time = this.playingPitches[key];
+                var pitch = parseInt(key);
+                // console.log("time", key, time, pitch, this.playingPitches);
+                if (time != undefined && window.performance.now() - time > 500) {
+                    var noteOffMessage = [0x80, pitch, 0x40];
+                    this.selectedOutput.send(noteOffMessage);
+                    this.playingPitches[pitch] = undefined;
+                }
+            }
+        }
     };
     GrooveBox.prototype.playStep = function (step) {
         var _this = this;

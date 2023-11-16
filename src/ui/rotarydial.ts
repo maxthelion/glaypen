@@ -25,7 +25,7 @@ export default class RotaryDial implements Renderable {
     }
 
     update(): void {
-        this.valueLabel.textContent = this.getParamValue().toString();
+        this.valueLabel.textContent = this.getParamValue().toPrecision(3).toString();
     }
 
     getParamValue(): number {

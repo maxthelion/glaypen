@@ -1,3 +1,12 @@
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 import Step from "./step.js";
 var Clip = /** @class */ (function () {
     function Clip(groooveBox, clipData) {
@@ -110,6 +119,19 @@ var Clip = /** @class */ (function () {
                 var indexForDeletion = occupiedStepIndexes.splice(randomStep, 1)[0];
                 this.steps[indexForDeletion] = undefined;
             }
+        }
+    };
+    Clip.prototype.setClipLength = function (length) {
+        console.log("setClipLength", length);
+        this.clipLength = length;
+        if (this.steps.length < length) {
+            var newSteps = new Array(length);
+            newSteps.splice.apply(newSteps, __spreadArray([0, this.originalSteps.length], this.originalSteps, false));
+            this.steps = newSteps;
+            console.log("this.steps", this.steps);
+        }
+        else if (this.steps.length > length) {
+            this.steps = this.steps.slice(0, length);
         }
     };
     Clip.prototype.addSteps = function (stepsToAdd) {

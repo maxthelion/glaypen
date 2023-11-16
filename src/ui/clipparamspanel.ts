@@ -10,6 +10,7 @@ export default class ClipParamsPanel implements Renderable {
     paramElements
     clipdensityinput: HTMLInputElement;
     renderables: Renderable[] = [];
+    cliplengthinput: HTMLInputElement;
 
     constructor(ui:UI, grooveBox: GrooveBox) {
         this.grooveBox = grooveBox;
@@ -44,7 +45,14 @@ export default class ClipParamsPanel implements Renderable {
         this.clipdensityinput.addEventListener("input", (e) => {
             let element = e.target as HTMLInputElement;
             let value = element.value;
-            this.grooveBox.currentClip()!.setClipDensity(parseFloat(value));
+            // this.grooveBox.currentClip()!.setClipDensity(parseFloat(value));
+        })
+
+        this.cliplengthinput = this.element.querySelector("#cliplength") as HTMLInputElement;
+        this.cliplengthinput.addEventListener("input", (e) => {
+            let element = e.target as HTMLInputElement;
+            let value = element.value;
+            this.grooveBox.currentClip()!.setClipLength(parseInt(value));
         })
 
         // this.paramElements.forEach((paramElement) => {
@@ -59,15 +67,22 @@ export default class ClipParamsPanel implements Renderable {
         //     })
         // });
 
-        let rotaries = this.element.querySelectorAll(".rotary");
-        const array = Array.from(rotaries);
-        let rotaryElements = array.map((element) => {
-            let r = new RotaryDial(ui, grooveBox, element as HTMLElement);
-            r.getParamValue = function () {
-                return this.grooveBox.sequencer.clip!.densityPercentage();
-            }
-            return r;
-        })
+
+        let rotaryElements = [];
+
+        let densityRotary = new RotaryDial(ui, grooveBox, document.getElementById("clipDensityRotary") as HTMLElement);
+        densityRotary.getParamValue = function () {
+            return this.grooveBox.sequencer.clip!.densityPercentage();
+        }
+        rotaryElements.push(densityRotary);
+
+
+        let clipLengthRotary = new RotaryDial(ui, grooveBox, document.getElementById("clipLengthRotary") as HTMLElement);
+        clipLengthRotary.getParamValue = function () {
+            return this.grooveBox.sequencer.clip!.clipLength;
+        }
+        rotaryElements.push(clipLengthRotary);
+
         this.renderables = this.renderables.concat(rotaryElements);
     }
 

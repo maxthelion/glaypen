@@ -34,7 +34,13 @@ var ClipParamsPanel = /** @class */ (function () {
         this.clipdensityinput.addEventListener("input", function (e) {
             var element = e.target;
             var value = element.value;
-            _this.grooveBox.currentClip().setClipDensity(parseFloat(value));
+            // this.grooveBox.currentClip()!.setClipDensity(parseFloat(value));
+        });
+        this.cliplengthinput = this.element.querySelector("#cliplength");
+        this.cliplengthinput.addEventListener("input", function (e) {
+            var element = e.target;
+            var value = element.value;
+            _this.grooveBox.currentClip().setClipLength(parseInt(value));
         });
         // this.paramElements.forEach((paramElement) => {
         //     let paramId = paramElement.dataset.paramid;
@@ -45,15 +51,17 @@ var ClipParamsPanel = /** @class */ (function () {
         //         this.grooveBox.setClipParam(paramId!, parseInt(value));
         //     })
         // });
-        var rotaries = this.element.querySelectorAll(".rotary");
-        var array = Array.from(rotaries);
-        var rotaryElements = array.map(function (element) {
-            var r = new RotaryDial(ui, grooveBox, element);
-            r.getParamValue = function () {
-                return this.grooveBox.sequencer.clip.densityPercentage();
-            };
-            return r;
-        });
+        var rotaryElements = [];
+        var densityRotary = new RotaryDial(ui, grooveBox, document.getElementById("clipDensityRotary"));
+        densityRotary.getParamValue = function () {
+            return this.grooveBox.sequencer.clip.densityPercentage();
+        };
+        rotaryElements.push(densityRotary);
+        var clipLengthRotary = new RotaryDial(ui, grooveBox, document.getElementById("clipLengthRotary"));
+        clipLengthRotary.getParamValue = function () {
+            return this.grooveBox.sequencer.clip.clipLength;
+        };
+        rotaryElements.push(clipLengthRotary);
         this.renderables = this.renderables.concat(rotaryElements);
     }
     ClipParamsPanel.prototype.update = function () {
