@@ -1,12 +1,11 @@
 import Sequencer from "./sequencer.js";
-import EventHandler from "./eventhandler.js";
 import GrooveBox from "./groovebox.js";
 
 
 export default class Loop {
     step: number;
     grooveBox: GrooveBox;
-    intervalNumber?: number;
+    intervalNumber?: TimeOut;
 
     constructor(grooveBox: GrooveBox) {
         this.grooveBox = grooveBox;
@@ -20,13 +19,14 @@ export default class Loop {
     }
 
     stop() {
-        if (this.intervalNumber) {
+        if (this.intervalNumber != undefined) {
             clearInterval(this.intervalNumber);
         }
     }
 
     update() {
         this.step += 1;
+        // console.log("update", this.grooveBox.sequencer);
         this.grooveBox.sequencer.step(this.step)
     }
 }

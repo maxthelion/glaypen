@@ -12,6 +12,7 @@ import ExtractParamsPanel from "./ui/extractparamspanel.js";
 import Renderable from "./interfaces/renderable.js";
 import Transport from "./transport.js";
 import TransportDisplay from "./ui/transportdisplay.js";
+import GeneratorToggleControl from "./ui/generatortogglecontrol.js";
 
 
 
@@ -40,9 +41,20 @@ export default class UI {
         this.grooveBox = groovebox;
         this.clipMatrix = new ClipMatrix(this, groovebox);
         let modeSelector = new ModeSelector(this, groovebox);
+        document.querySelectorAll(".windowlengthbtn").forEach(element => {
+            if (element !== undefined){
+            element.addEventListener("click", (e) => {
+                let element = e.target as HTMLElement;
+                let windowlength = parseInt(element.dataset.windowlength?.toString()!);
+                groovebox.changeWindowLength(windowlength);
+            })
+            }
+        });
+        let generatorToggleControl = new GeneratorToggleControl(this, groovebox);
         let transportDisplay = new TransportDisplay(this, groovebox);
         this.currentPane = new GeneratorParamsPanel(this, groovebox);
         this.renderables = [
+            generatorToggleControl,
             this.playButton,
             this.historyCanvas, 
             this.lcd, 
@@ -73,14 +85,9 @@ export default class UI {
         modePanes.forEach((element) => {
             element.classList.add("hidden"); 
         });        
-        if (modeIndex == 0) {
+        if (modeIndex == 0 || modeIndex == 1) {
             this.currentPane = new GeneratorParamsPanel(this, this.grooveBox);
             document.querySelector("#genpane")!.classList.remove("hidden");
-        }
-        if (modeIndex == 1) {
-            document.querySelector("#extractpane")!.classList.remove("hidden");
-            // this.clipParamsPanel = new ClipParamsPanel(this, this.grooveBox);
-            this.currentPane = new ExtractParamsPanel(this, this.grooveBox);
         }
         if (modeIndex == 2) {
             document.querySelector("#clippane")!.classList.remove("hidden");

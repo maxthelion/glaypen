@@ -10,12 +10,13 @@ var Loop = /** @class */ (function () {
         }, 120);
     };
     Loop.prototype.stop = function () {
-        if (this.intervalNumber) {
+        if (this.intervalNumber != undefined) {
             clearInterval(this.intervalNumber);
         }
     };
     Loop.prototype.update = function () {
         this.step += 1;
+        // console.log("update", this.grooveBox.sequencer);
         this.grooveBox.sequencer.step(this.step);
     };
     return Loop;

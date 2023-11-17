@@ -7,8 +7,8 @@ import PrefsModal from "./ui/prefsmodal.js";
 import GeneratorParamsPanel from "./ui/generatorparamspanel.js";
 import ModeSelector from "./ui/modeselector.js";
 import ClipParamsPanel from "./ui/clipparamspanel.js";
-import ExtractParamsPanel from "./ui/extractparamspanel.js";
 import TransportDisplay from "./ui/transportdisplay.js";
+import GeneratorToggleControl from "./ui/generatortogglecontrol.js";
 var UI = /** @class */ (function () {
     function UI(groovebox) {
         var _this = this;
@@ -24,9 +24,21 @@ var UI = /** @class */ (function () {
         this.grooveBox = groovebox;
         this.clipMatrix = new ClipMatrix(this, groovebox);
         var modeSelector = new ModeSelector(this, groovebox);
+        document.querySelectorAll(".windowlengthbtn").forEach(function (element) {
+            if (element !== undefined) {
+                element.addEventListener("click", function (e) {
+                    var _a;
+                    var element = e.target;
+                    var windowlength = parseInt((_a = element.dataset.windowlength) === null || _a === void 0 ? void 0 : _a.toString());
+                    groovebox.changeWindowLength(windowlength);
+                });
+            }
+        });
+        var generatorToggleControl = new GeneratorToggleControl(this, groovebox);
         var transportDisplay = new TransportDisplay(this, groovebox);
         this.currentPane = new GeneratorParamsPanel(this, groovebox);
         this.renderables = [
+            generatorToggleControl,
             this.playButton,
             this.historyCanvas,
             this.lcd,
@@ -54,14 +66,9 @@ var UI = /** @class */ (function () {
         modePanes.forEach(function (element) {
             element.classList.add("hidden");
         });
-        if (modeIndex == 0) {
+        if (modeIndex == 0 || modeIndex == 1) {
             this.currentPane = new GeneratorParamsPanel(this, this.grooveBox);
             document.querySelector("#genpane").classList.remove("hidden");
-        }
-        if (modeIndex == 1) {
-            document.querySelector("#extractpane").classList.remove("hidden");
-            // this.clipParamsPanel = new ClipParamsPanel(this, this.grooveBox);
-            this.currentPane = new ExtractParamsPanel(this, this.grooveBox);
         }
         if (modeIndex == 2) {
             document.querySelector("#clippane").classList.remove("hidden");

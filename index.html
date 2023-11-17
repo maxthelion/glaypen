@@ -96,6 +96,10 @@
                         <label for="octave">Octave probability</label>
                     </div>
                 </div>
+                <div id="generatorStateToggle">
+                    <div><button id="toggleGenerateBtn">Generate</button></div>
+                    <div><button id="toggleExtractBtn">Extract</button></div>
+                </div>
                 </div>
                 <div id="clippane" class="modepane">
                     <div>
@@ -157,7 +161,7 @@
                 </div>
             </div>
             <div class="midcol">
-                <canvas id="lcd" width="800" height="400"></canvas>
+                <canvas id="lcd" width="800" height="500"></canvas>
             </div>
             <div class="rightcol">
                 <div id="clipMatrix"></div>
@@ -165,6 +169,15 @@
         </div>
         <div>
             <canvas id="historycanvas" width="1600" height="100"></canvas>
+        </div>
+        <div id="extractControls">
+            <div id="windowlengthoptions">
+                <div><button class="windowlengthbtn" data-windowlength="4" id="windowlength4btn">4</button></div>
+                <div><button class="windowlengthbtn" data-windowlength="8" id="windowlength8btn">8</button></div>
+                <div><button class="windowlengthbtn" data-windowlength="16" id="windowlength16btn">16</button></div>
+                <div><button class="windowlengthbtn" data-windowlength="32" id="windowlength32btn">32</button></div>
+                <div><button class="windowlengthbtn" data-windowlength="64" id="windowlength64btn">64</button></div>
+            </div>
         </div>
 
         <!-- <div id="sequence-steps">

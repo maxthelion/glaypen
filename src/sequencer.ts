@@ -2,7 +2,11 @@ import GrooveBox from "./groovebox.js";
 import Clip from "./clip.js";
 import Step from "./step.js";
 
-export default class Sequencer {
+export type SequencerInterface = {
+    
+}
+
+export default class Sequencer implements SequencerInterface{
     minorScalePitches: number[];
     grooveBox: GrooveBox;
     currentStep: number;

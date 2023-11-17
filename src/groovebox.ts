@@ -63,6 +63,7 @@ export default class GrooveBox {
         this.clockInput = this.getMidiInput();
         this.midiInputHandler = new MidiInputHandler(this, this.clockInput);
         this.sequencer = new Sequencer(this);
+
         this.transport = new Transport(this);
         this.pitchHistory = new PitchHistory();
 
@@ -83,8 +84,15 @@ export default class GrooveBox {
         let clipRawData = this.pitchHistory.stepsForCurrentWindow();
         clipRawData.color = this.randomColor(this.pitchHistory.windowStart!);
         let clip = new Clip(this, clipRawData);
+        if(this.modeIndex != 1){
+            this.setMode(1);
+        }
         this.sequencer = new ClipSequencer(this, clip);
-        this.setMode(1);
+    }
+
+    changeWindowLength(length: number) {
+        this.pitchHistory.setLength(length)
+        this.adjustWindow();
     }
 
     setHistoryIndex(index: number) {
@@ -131,11 +139,14 @@ export default class GrooveBox {
         this.modeIndex = modeIndex;
         if (modeIndex == 0) {
             if (this.generativeSequencer != undefined) {
+                console.log("start the generator", this.generativeSequencer)
                 this.sequencer = this.generativeSequencer
+                this.generativeSequencer = undefined;
             } else {
                 this.generativeSequencer = undefined;
                 this.sequencer = new Sequencer(this);
             }
+            this.pitchHistory.clearWindow();
             this.clipIndex = undefined;
         }
         if (modeIndex == 1) {
@@ -148,6 +159,20 @@ export default class GrooveBox {
         this.ui.setMode(modeIndex);
     }
 
+    currentSequencer(): SequencerInterface  {
+        switch(this.modeIndex) {
+            case 0:
+                return this.generativeSequencer!;
+                break;
+            case 1:
+                return this.sequencer;
+                break;
+            case 2:
+                return this.sequencer;
+                break;
+        }
+    }
+
     saveClipToIndex(index: number) {
         let clip = this.sequencer.clip;
         if (clip != undefined){
@@ -156,7 +181,10 @@ export default class GrooveBox {
     }
 
     saveOrLoadClipAtIndex(index: number) {
-        
+        if (this.modeIndex == 0) {
+            // store the current generator sequencer
+            this.setMode(2);
+        }
         let clip = this.clipSaver.savedClips[index];
         this.clipIndex = index;
         if (clip != undefined){            
@@ -167,7 +195,6 @@ export default class GrooveBox {
             // can't switch to clip mode because there is no clip
             return undefined
         }
-        this.setMode(2);
     }
 
     clearAllClips() {

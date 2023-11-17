@@ -51,8 +51,14 @@ var GrooveBox = /** @class */ (function () {
         var clipRawData = this.pitchHistory.stepsForCurrentWindow();
         clipRawData.color = this.randomColor(this.pitchHistory.windowStart);
         var clip = new Clip(this, clipRawData);
+        if (this.modeIndex != 1) {
+            this.setMode(1);
+        }
         this.sequencer = new ClipSequencer(this, clip);
-        this.setMode(1);
+    };
+    GrooveBox.prototype.changeWindowLength = function (length) {
+        this.pitchHistory.setLength(length);
+        this.adjustWindow();
     };
     GrooveBox.prototype.setHistoryIndex = function (index) {
         this.pitchHistory.moveWindowToPosition(index);
@@ -96,12 +102,15 @@ var GrooveBox = /** @class */ (function () {
         this.modeIndex = modeIndex;
         if (modeIndex == 0) {
             if (this.generativeSequencer != undefined) {
+                console.log("start the generator", this.generativeSequencer);
                 this.sequencer = this.generativeSequencer;
+                this.generativeSequencer = undefined;
             }
             else {
                 this.generativeSequencer = undefined;
                 this.sequencer = new Sequencer(this);
             }
+            this.pitchHistory.clearWindow();
             this.clipIndex = undefined;
         }
         if (modeIndex == 1) {
@@ -113,6 +122,19 @@ var GrooveBox = /** @class */ (function () {
         }
         this.ui.setMode(modeIndex);
     };
+    GrooveBox.prototype.currentSequencer = function () {
+        switch (this.modeIndex) {
+            case 0:
+                return this.generativeSequencer;
+                break;
+            case 1:
+                return this.sequencer;
+                break;
+            case 2:
+                return this.sequencer;
+                break;
+        }
+    };
     GrooveBox.prototype.saveClipToIndex = function (index) {
         var clip = this.sequencer.clip;
         if (clip != undefined) {
@@ -120,6 +142,10 @@ var GrooveBox = /** @class */ (function () {
         }
     };
     GrooveBox.prototype.saveOrLoadClipAtIndex = function (index) {
+        if (this.modeIndex == 0) {
+            // store the current generator sequencer
+            this.setMode(2);
+        }
         var clip = this.clipSaver.savedClips[index];
         this.clipIndex = index;
         if (clip != undefined) {
@@ -132,7 +158,6 @@ var GrooveBox = /** @class */ (function () {
             // can't switch to clip mode because there is no clip
             return undefined;
         }
-        this.setMode(2);
     };
     GrooveBox.prototype.clearAllClips = function () {
         for (var i = 0; i < this.maxClips; i++) {

@@ -43,6 +43,9 @@ var PitchHistory = /** @class */ (function () {
         console.log(startIndex);
         this.windowStart = startIndex;
     };
+    PitchHistory.prototype.clearWindow = function () {
+        this.windowStart = undefined;
+    };
     PitchHistory.prototype.incrementMaxStep = function () {
         this.maxStep += 1;
     };

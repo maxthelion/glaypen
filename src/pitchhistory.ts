@@ -52,6 +52,9 @@ export default class PitchHistory {
         this.windowStart = startIndex;
     }
 
+    clearWindow() {
+        this.windowStart = undefined;
+    }
 
     incrementMaxStep() {
         this.maxStep += 1;
