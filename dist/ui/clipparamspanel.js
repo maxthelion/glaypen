@@ -54,12 +54,12 @@ var ClipParamsPanel = /** @class */ (function () {
         var rotaryElements = [];
         var densityRotary = new RotaryDial(ui, grooveBox, document.getElementById("clipDensityRotary"));
         densityRotary.getParamValue = function () {
-            return this.grooveBox.sequencer.clip.densityPercentage();
+            return this.grooveBox.currentClip().densityPercentage();
         };
         rotaryElements.push(densityRotary);
         var clipLengthRotary = new RotaryDial(ui, grooveBox, document.getElementById("clipLengthRotary"));
         clipLengthRotary.getParamValue = function () {
-            return this.grooveBox.sequencer.clip.clipLength;
+            return this.grooveBox.currentClip().clipLength;
         };
         rotaryElements.push(clipLengthRotary);
         this.renderables = this.renderables.concat(rotaryElements);

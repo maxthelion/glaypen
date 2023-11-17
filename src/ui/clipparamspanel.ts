@@ -72,14 +72,14 @@ export default class ClipParamsPanel implements Renderable {
 
         let densityRotary = new RotaryDial(ui, grooveBox, document.getElementById("clipDensityRotary") as HTMLElement);
         densityRotary.getParamValue = function () {
-            return this.grooveBox.sequencer.clip!.densityPercentage();
+            return this.grooveBox.currentClip()!.densityPercentage();
         }
         rotaryElements.push(densityRotary);
 
 
         let clipLengthRotary = new RotaryDial(ui, grooveBox, document.getElementById("clipLengthRotary") as HTMLElement);
         clipLengthRotary.getParamValue = function () {
-            return this.grooveBox.sequencer.clip!.clipLength;
+            return this.grooveBox.currentClip()!.clipLength;
         }
         rotaryElements.push(clipLengthRotary);
 

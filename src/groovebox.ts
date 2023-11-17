@@ -1,6 +1,6 @@
 import Transport from "./transport.js";
 import UI from "./ui.js";
-import Sequencer from "./sequencer.js";
+import Sequencer, { SequencerInterface } from "./sequencer.js";
 import ClipSequencer from "./clipsequencer.js";
 import Clip from "./clip.js";
 import PitchHistory from "./pitchhistory.js";
@@ -27,7 +27,6 @@ export default class GrooveBox {
     maxClips: number = 64;
     ui: UI;
     selectedOutput: MIDIOutput;
-    sequencer: Sequencer;
     clipSaver: ClipSaver;
     generatorParams: GeneratorParams;
     manualPitchOptions: number[] = [];
@@ -51,6 +50,7 @@ export default class GrooveBox {
     storageBox: StorageBox = new StorageBox();
     midiAccess: MIDIAccess;
     generativeSequencer?: Sequencer;
+    clipSequencer?: ClipSequencer;
     clockInput: MIDIInput;
     midiInputHandler: MidiInputHandler;
 
@@ -62,8 +62,8 @@ export default class GrooveBox {
         this.selectedOutput = this.getMidiOutput();
         this.clockInput = this.getMidiInput();
         this.midiInputHandler = new MidiInputHandler(this, this.clockInput);
-        this.sequencer = new Sequencer(this);
-
+        this.clipSequencer = undefined
+        this.generativeSequencer = new Sequencer(this);
         this.transport = new Transport(this);
         this.pitchHistory = new PitchHistory();
 
@@ -78,16 +78,16 @@ export default class GrooveBox {
     moveWindow(direction: number) {
         this.pitchHistory.moveWindow(direction)
         this.adjustWindow();
+        if(this.modeIndex != 1){
+            this.setMode(1);
+        }
     }
 
     adjustWindow() {
         let clipRawData = this.pitchHistory.stepsForCurrentWindow();
         clipRawData.color = this.randomColor(this.pitchHistory.windowStart!);
         let clip = new Clip(this, clipRawData);
-        if(this.modeIndex != 1){
-            this.setMode(1);
-        }
-        this.sequencer = new ClipSequencer(this, clip);
+        this.clipSequencer = new ClipSequencer(this, clip);
     }
 
     changeWindowLength(length: number) {
@@ -98,6 +98,9 @@ export default class GrooveBox {
     setHistoryIndex(index: number) {
         this.pitchHistory.moveWindowToPosition(index)
         this.adjustWindow();
+        if(this.modeIndex != 1){
+            this.setMode(1);
+        }
     }
     
     playPitch(pitch: number, velocity: number = 127) {
@@ -138,43 +141,35 @@ export default class GrooveBox {
     setMode(modeIndex: number) {
         this.modeIndex = modeIndex;
         if (modeIndex == 0) {
-            if (this.generativeSequencer != undefined) {
-                console.log("start the generator", this.generativeSequencer)
-                this.sequencer = this.generativeSequencer
-                this.generativeSequencer = undefined;
-            } else {
-                this.generativeSequencer = undefined;
-                this.sequencer = new Sequencer(this);
-            }
             this.pitchHistory.clearWindow();
             this.clipIndex = undefined;
         }
         if (modeIndex == 1) {
             this.clipIndex = undefined;
-            this.generativeSequencer = this.sequencer
+            this.adjustWindow()
         }
         if (modeIndex == 2) {
-            this.generativeSequencer = this.sequencer
+
         }
         this.ui.setMode(modeIndex);
     }
 
-    currentSequencer(): SequencerInterface  {
+    currentSequencer(): Sequencer | undefined {
         switch(this.modeIndex) {
             case 0:
                 return this.generativeSequencer!;
                 break;
             case 1:
-                return this.sequencer;
+                return this.clipSequencer;
                 break;
             case 2:
-                return this.sequencer;
+                return this.clipSequencer;
                 break;
         }
     }
 
     saveClipToIndex(index: number) {
-        let clip = this.sequencer.clip;
+        let clip = this.clipSequencer!.clip;
         if (clip != undefined){
             this.clipSaver.saveClipToIndex(clip, index);
         }
@@ -188,8 +183,8 @@ export default class GrooveBox {
         let clip = this.clipSaver.savedClips[index];
         this.clipIndex = index;
         if (clip != undefined){            
-            this.sequencer = new ClipSequencer(this, clip);
-        } else if (this.sequencer.clip != undefined){
+            this.clipSequencer = new ClipSequencer(this, clip);
+        } else if (this.clipSequencer!.clip != undefined){
             this.saveClipToIndex(index);
         } else {
             // can't switch to clip mode because there is no clip
@@ -241,11 +236,11 @@ export default class GrooveBox {
     }
  
     clipStartLeft() {
-        this.sequencer.clip!.shiftLeft();
+        this.clipSequencer?.clip!.shiftLeft();
     }
 
     clipStartRight() {
-        this.sequencer.clip!.shiftRight();
+        this.clipSequencer?.clip!.shiftRight();
     }
 
     shuffleClipPitches() {
@@ -261,7 +256,7 @@ export default class GrooveBox {
     }
 
     currentClip(): Clip | undefined {
-        return this.sequencer.clip;
+        return this.clipSequencer!.clip;
     }
 
     rotaryTarget(){
@@ -270,10 +265,10 @@ export default class GrooveBox {
                 return this.generatorParams;
                 break;
             case 1:
-                return this.sequencer.clip;
+                return this.clipSequencer?.clip;
                 break;
             case 2:
-                return this.sequencer.clip;
+                return this.clipSequencer?.clip;
                 break;
         }
     }
@@ -297,8 +292,7 @@ export default class GrooveBox {
         let clipRawData = this.pitchHistory.stepsForCurrentWindow();
         clipRawData.color = this.randomColor(this.pitchHistory.windowStart!);
         let clip = new Clip(this, clipRawData);
-        this.sequencer = new ClipSequencer(this, clip);
-        console.log(clip);
+        this.clipSequencer = new ClipSequencer(this, clip);
     }
 
     readingPitchOptions(): boolean {

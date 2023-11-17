@@ -27,6 +27,6 @@ export default class Loop {
     update() {
         this.step += 1;
         // console.log("update", this.grooveBox.sequencer);
-        this.grooveBox.sequencer.step(this.step)
+        this.grooveBox.currentSequencer()?.step(this.step)
     }
 }

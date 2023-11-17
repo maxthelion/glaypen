@@ -33,7 +33,8 @@ var GrooveBox = /** @class */ (function () {
         this.selectedOutput = this.getMidiOutput();
         this.clockInput = this.getMidiInput();
         this.midiInputHandler = new MidiInputHandler(this, this.clockInput);
-        this.sequencer = new Sequencer(this);
+        this.clipSequencer = undefined;
+        this.generativeSequencer = new Sequencer(this);
         this.transport = new Transport(this);
         this.pitchHistory = new PitchHistory();
         this.setMode(0);
@@ -46,15 +47,15 @@ var GrooveBox = /** @class */ (function () {
     GrooveBox.prototype.moveWindow = function (direction) {
         this.pitchHistory.moveWindow(direction);
         this.adjustWindow();
+        if (this.modeIndex != 1) {
+            this.setMode(1);
+        }
     };
     GrooveBox.prototype.adjustWindow = function () {
         var clipRawData = this.pitchHistory.stepsForCurrentWindow();
         clipRawData.color = this.randomColor(this.pitchHistory.windowStart);
         var clip = new Clip(this, clipRawData);
-        if (this.modeIndex != 1) {
-            this.setMode(1);
-        }
-        this.sequencer = new ClipSequencer(this, clip);
+        this.clipSequencer = new ClipSequencer(this, clip);
     };
     GrooveBox.prototype.changeWindowLength = function (length) {
         this.pitchHistory.setLength(length);
@@ -63,6 +64,9 @@ var GrooveBox = /** @class */ (function () {
     GrooveBox.prototype.setHistoryIndex = function (index) {
         this.pitchHistory.moveWindowToPosition(index);
         this.adjustWindow();
+        if (this.modeIndex != 1) {
+            this.setMode(1);
+        }
     };
     GrooveBox.prototype.playPitch = function (pitch, velocity) {
         if (velocity === void 0) { velocity = 127; }
@@ -101,24 +105,14 @@ var GrooveBox = /** @class */ (function () {
     GrooveBox.prototype.setMode = function (modeIndex) {
         this.modeIndex = modeIndex;
         if (modeIndex == 0) {
-            if (this.generativeSequencer != undefined) {
-                console.log("start the generator", this.generativeSequencer);
-                this.sequencer = this.generativeSequencer;
-                this.generativeSequencer = undefined;
-            }
-            else {
-                this.generativeSequencer = undefined;
-                this.sequencer = new Sequencer(this);
-            }
             this.pitchHistory.clearWindow();
             this.clipIndex = undefined;
         }
         if (modeIndex == 1) {
             this.clipIndex = undefined;
-            this.generativeSequencer = this.sequencer;
+            this.adjustWindow();
         }
         if (modeIndex == 2) {
-            this.generativeSequencer = this.sequencer;
         }
         this.ui.setMode(modeIndex);
     };
@@ -128,15 +122,15 @@ var GrooveBox = /** @class */ (function () {
                 return this.generativeSequencer;
                 break;
             case 1:
-                return this.sequencer;
+                return this.clipSequencer;
                 break;
             case 2:
-                return this.sequencer;
+                return this.clipSequencer;
                 break;
         }
     };
     GrooveBox.prototype.saveClipToIndex = function (index) {
-        var clip = this.sequencer.clip;
+        var clip = this.clipSequencer.clip;
         if (clip != undefined) {
             this.clipSaver.saveClipToIndex(clip, index);
         }
@@ -149,9 +143,9 @@ var GrooveBox = /** @class */ (function () {
         var clip = this.clipSaver.savedClips[index];
         this.clipIndex = index;
         if (clip != undefined) {
-            this.sequencer = new ClipSequencer(this, clip);
+            this.clipSequencer = new ClipSequencer(this, clip);
         }
-        else if (this.sequencer.clip != undefined) {
+        else if (this.clipSequencer.clip != undefined) {
             this.saveClipToIndex(index);
         }
         else {
@@ -196,10 +190,12 @@ var GrooveBox = /** @class */ (function () {
         console.log("setClipParams", paramName, value);
     };
     GrooveBox.prototype.clipStartLeft = function () {
-        this.sequencer.clip.shiftLeft();
+        var _a;
+        (_a = this.clipSequencer) === null || _a === void 0 ? void 0 : _a.clip.shiftLeft();
     };
     GrooveBox.prototype.clipStartRight = function () {
-        this.sequencer.clip.shiftRight();
+        var _a;
+        (_a = this.clipSequencer) === null || _a === void 0 ? void 0 : _a.clip.shiftRight();
     };
     GrooveBox.prototype.shuffleClipPitches = function () {
         if (this.currentClip() != undefined) {
@@ -212,18 +208,19 @@ var GrooveBox = /** @class */ (function () {
         }
     };
     GrooveBox.prototype.currentClip = function () {
-        return this.sequencer.clip;
+        return this.clipSequencer.clip;
     };
     GrooveBox.prototype.rotaryTarget = function () {
+        var _a, _b;
         switch (this.modeIndex) {
             case 0:
                 return this.generatorParams;
                 break;
             case 1:
-                return this.sequencer.clip;
+                return (_a = this.clipSequencer) === null || _a === void 0 ? void 0 : _a.clip;
                 break;
             case 2:
-                return this.sequencer.clip;
+                return (_b = this.clipSequencer) === null || _b === void 0 ? void 0 : _b.clip;
                 break;
         }
     };
@@ -245,8 +242,7 @@ var GrooveBox = /** @class */ (function () {
         var clipRawData = this.pitchHistory.stepsForCurrentWindow();
         clipRawData.color = this.randomColor(this.pitchHistory.windowStart);
         var clip = new Clip(this, clipRawData);
-        this.sequencer = new ClipSequencer(this, clip);
-        console.log(clip);
+        this.clipSequencer = new ClipSequencer(this, clip);
     };
     GrooveBox.prototype.readingPitchOptions = function () {
         return this.lastPitchReadAt != undefined && window.performance.now() - this.lastPitchReadAt < 200;

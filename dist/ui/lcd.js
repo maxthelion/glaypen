@@ -10,16 +10,18 @@ var LCD = /** @class */ (function () {
     }
     LCD.prototype.update = function () {
         var _this = this;
+        var _a;
         if (this.ctx !== null) {
             this.ctx.clearRect(0, 0, this.htmlCanvas.width, this.htmlCanvas.height);
             var stepHeight = this.canvasHeight / 128;
             if (this.grooveBox.modeIndex !== 0) {
-                var clip = this.grooveBox.sequencer.clip;
+                var clip = (_a = this.grooveBox.clipSequencer) === null || _a === void 0 ? void 0 : _a.clip;
                 this.htmlCanvas.style.backgroundColor = clip.color;
                 var stepWidth = this.canvasWidth / clip.clipLength;
                 clip.steps.forEach(function (step, index) {
+                    var _a;
                     if (step !== undefined && step !== null) {
-                        if (index === _this.grooveBox.sequencer.currentStep) {
+                        if (index === ((_a = _this.grooveBox.clipSequencer) === null || _a === void 0 ? void 0 : _a.currentStep)) {
                             _this.ctx.fillStyle = "rgba(255, 255, 255, 1)";
                         }
                         else {

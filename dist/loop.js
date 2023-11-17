@@ -15,9 +15,10 @@ var Loop = /** @class */ (function () {
         }
     };
     Loop.prototype.update = function () {
+        var _a;
         this.step += 1;
         // console.log("update", this.grooveBox.sequencer);
-        this.grooveBox.sequencer.step(this.step);
+        (_a = this.grooveBox.currentSequencer()) === null || _a === void 0 ? void 0 : _a.step(this.step);
     };
     return Loop;
 }());
