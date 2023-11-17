@@ -120,16 +120,19 @@ var GrooveBox = /** @class */ (function () {
         }
     };
     GrooveBox.prototype.saveOrLoadClipAtIndex = function (index) {
-        this.setMode(2);
         var clip = this.clipSaver.savedClips[index];
         this.clipIndex = index;
-        console.log("clip", index);
         if (clip != undefined) {
             this.sequencer = new ClipSequencer(this, clip);
         }
-        else {
+        else if (this.sequencer.clip != undefined) {
             this.saveClipToIndex(index);
         }
+        else {
+            // can't switch to clip mode because there is no clip
+            return undefined;
+        }
+        this.setMode(2);
     };
     GrooveBox.prototype.clearAllClips = function () {
         for (var i = 0; i < this.maxClips; i++) {
