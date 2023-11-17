@@ -4,7 +4,7 @@ var StorageBox = /** @class */ (function () {
             tonic: 48,
             scaleIndex: 4,
             stepsInBar: 16,
-            stepProbability: 0.8,
+            stepProbability: 128,
             pitchRange: 4,
             octaveRange: 2,
             octaveProbability: 0.1
@@ -16,6 +16,9 @@ var StorageBox = /** @class */ (function () {
     };
     StorageBox.prototype.setOutputId = function (outputId) {
         this.storage.setItem("outputPortId", outputId);
+    };
+    StorageBox.prototype.setInputId = function (inputId) {
+        this.storage.setItem("inputPortId", inputId);
     };
     StorageBox.prototype.setGeneratorParams = function (generatorParams) {
         this.storage.setItem("generatorParams", JSON.stringify(generatorParams));

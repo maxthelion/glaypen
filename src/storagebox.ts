@@ -7,7 +7,7 @@ export default class StorageBox {
         tonic: 48,
         scaleIndex: 4,
         stepsInBar: 16,
-        stepProbability: 0.8,
+        stepProbability: 128,
         pitchRange: 4,
         octaveRange: 2,
         octaveProbability: 0.1
@@ -23,6 +23,10 @@ export default class StorageBox {
 
     setOutputId(outputId: string) {
         this.storage.setItem("outputPortId", outputId);
+    }
+
+    setInputId(inputId: string) {
+        this.storage.setItem("inputPortId", inputId);
     }
 
     setGeneratorParams(generatorParams: GeneratorParams) {

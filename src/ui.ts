@@ -122,8 +122,8 @@ export default class UI {
         event.preventDefault();
     }
 
-    showPrefsModal() {
-        this.prefsModal = new PrefsModal(this, this.grooveBox);
+    showPrefsModal(message: string = "") {
+        this.prefsModal = new PrefsModal(this, this.grooveBox, message);
         
         document.getElementById("app")!.classList.add("blurred");
     }

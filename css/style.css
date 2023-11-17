@@ -157,6 +157,25 @@ div.active {
 .modepane {
     color: #fff;
 }
+#prefsmodal .close {
+    display: block;
+    float: right;
+    font-size: 40px;
+    color: #666;
+    text-decoration: none;
+}
+#prefsmodal .close:hover {
+    color: #000;
+}
+#prefsmodal #message {
+    font-size: 20px;
+    text-align: center;
+    line-height: 40px;
+    background-color: pink;
+}
+#prefsmodal .prefinputgroup {
+    padding: 10px;
+}
 .rotaryvalue {
     font-size: 20px;
     text-align: center;

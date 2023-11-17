@@ -102,8 +102,9 @@ var UI = /** @class */ (function () {
         this.grooveBox.setHistoryIndex(historyIndex);
         event.preventDefault();
     };
-    UI.prototype.showPrefsModal = function () {
-        this.prefsModal = new PrefsModal(this, this.grooveBox);
+    UI.prototype.showPrefsModal = function (message) {
+        if (message === void 0) { message = ""; }
+        this.prefsModal = new PrefsModal(this, this.grooveBox, message);
         document.getElementById("app").classList.add("blurred");
     };
     UI.prototype.closePrefsModal = function () {
