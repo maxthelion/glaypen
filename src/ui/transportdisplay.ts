@@ -14,6 +14,12 @@ export default class TransportDisplay implements Renderable {
     }
 
     update(): void {
-        this.element.innerHTML = this.grooveBox.transport.loop.step.toString();
+        let displayOutput = "";
+        displayOutput += Math.floor(this.grooveBox.transport.loop.step / 16);
+        displayOutput += ":";
+        let stepOutput = ("0" + this.grooveBox.transport.loop.step % 16).slice(-2);
+        displayOutput += stepOutput;
+
+        this.element.innerHTML = displayOutput;
     }
 }

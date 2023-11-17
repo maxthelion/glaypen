@@ -28,9 +28,12 @@ var ClipSequencer = /** @class */ (function (_super) {
     ClipSequencer.prototype.update = function () {
         // console.log("ClipSequencer update", this.clip)
         if (this.clip.steps[this.currentStep] != undefined) {
-            var pitches = this.clip.steps[this.currentStep].pitches;
-            for (var i = 0; i < pitches.length; i++) {
-                this.grooveBox.playPitch(pitches[i]);
+            var step = this.clip.steps[this.currentStep];
+            if (step != undefined && step != null) {
+                var pitches = step.pitches;
+                for (var i = 0; i < pitches.length; i++) {
+                    this.grooveBox.playPitch(pitches[i]);
+                }
             }
         }
     };
