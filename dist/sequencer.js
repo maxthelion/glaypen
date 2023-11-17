@@ -61,10 +61,6 @@ var Sequencer = /** @class */ (function () {
                 // console.log("pitch", pitch);
                 var step = new Step(currentStep, 120, [pitch]);
                 // this.grooveBox.playPitch(pitch);
-                if (isNaN(pitch)) {
-                    // pitch is NaN
-                    console.log("pitch is NaN", pitch, scalePitches[pitchInterval]);
-                }
                 this.grooveBox.playStep(step);
                 this.grooveBox.pitchHistory.addStep(absoluteStep, step);
             }

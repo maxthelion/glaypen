@@ -7,6 +7,7 @@ var HistoryCanvas = /** @class */ (function () {
         this.canvasWidth = this.htmlCanvas.width;
         this.canvasHeight = this.htmlCanvas.height;
         this.htmlCanvas.addEventListener("wheel", this.ui.onWheel.bind(this.ui));
+        this.htmlCanvas.addEventListener("click", this.ui.onHistoryClick.bind(this.ui));
     }
     HistoryCanvas.prototype.update = function () {
         if (this.ctx !== null) {
@@ -30,7 +31,7 @@ var HistoryCanvas = /** @class */ (function () {
         var stepHeight = this.canvasHeight / 128;
         if (this.ctx !== null) {
             this.ctx.strokeStyle = "rgba(255, 255, 255, 1)";
-            if (this.grooveBox.pitchHistory.windowStart) {
+            if (this.grooveBox.pitchHistory.windowStart !== undefined) {
                 var x = this.grooveBox.pitchHistory.windowStart * stepWidth;
             }
             else {

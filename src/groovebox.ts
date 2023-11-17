@@ -76,11 +76,20 @@ export default class GrooveBox {
 
     moveWindow(direction: number) {
         this.pitchHistory.moveWindow(direction)
+        this.adjustWindow();
+    }
+
+    adjustWindow() {
         let clipRawData = this.pitchHistory.stepsForCurrentWindow();
         clipRawData.color = this.randomColor(this.pitchHistory.windowStart!);
         let clip = new Clip(this, clipRawData);
         this.sequencer = new ClipSequencer(this, clip);
         this.setMode(1);
+    }
+
+    setHistoryIndex(index: number) {
+        this.pitchHistory.moveWindowToPosition(index)
+        this.adjustWindow();
     }
     
     playPitch(pitch: number, velocity: number = 127) {

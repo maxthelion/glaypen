@@ -8,7 +8,7 @@ var ClipSaver = /** @class */ (function () {
         this.savedClips = new Array(grooveBox.maxClips);
         var storedClips = this.getAllClipsFromStorage();
         storedClips.forEach(function (clipRawData, index) {
-            console.log(index);
+            // console.log(index)
             if (clipRawData !== undefined) {
                 var clip = new Clip(_this.grooveBox, clipRawData);
                 _this.savedClips[index] = clip;

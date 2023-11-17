@@ -39,7 +39,7 @@ export default class Sequencer {
         let pitchRange = this.grooveBox.generatorParams.pitchRange;
         let octaveRange = this.grooveBox.generatorParams.octaveRange;
         let octaveProbability = this.grooveBox.generatorParams.octaveProbability / 128;
-         if (currentStep % (16 / stepsInBar) == 0) {
+        if (currentStep % (16 / stepsInBar) == 0) {
             if (Math.random() <= (stepProbability) ) {
                 if (this.grooveBox.manualPitchOptions.length > 0) {
                     var pitchInterval = Math.floor( Math.random() * scalePitches.length);
@@ -74,12 +74,7 @@ export default class Sequencer {
                 // console.log("pitch", pitch);
                 let step = new Step(currentStep, 120, [pitch]);
                 // this.grooveBox.playPitch(pitch);
-                if (isNaN(pitch)) {
-                    // pitch is NaN
-                    console.log("pitch is NaN", pitch, scalePitches[pitchInterval]);
-                    
-
-                }
+                
                 this.grooveBox.playStep(step);
                 this.grooveBox.pitchHistory.addStep(absoluteStep, step);
             }

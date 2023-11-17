@@ -12,7 +12,7 @@ export default class ClipSaver {
         this.savedClips = new Array(grooveBox.maxClips);
         let storedClips = this.getAllClipsFromStorage();
         storedClips.forEach((clipRawData, index) => {
-            console.log(index)
+            // console.log(index)
             if (clipRawData !== undefined) {
 
                 let clip = new Clip(this.grooveBox, clipRawData);

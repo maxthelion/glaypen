@@ -73,6 +73,14 @@ var UI = /** @class */ (function () {
         this.grooveBox.moveWindow(direction);
         event.preventDefault();
     };
+    UI.prototype.onHistoryClick = function (event) {
+        var element = event.target;
+        var width = element.clientWidth;
+        var x = event.offsetX;
+        var historyIndex = x / width;
+        this.grooveBox.setHistoryIndex(historyIndex);
+        event.preventDefault();
+    };
     UI.prototype.showPrefsModal = function () {
         this.prefsModal = new PrefsModal(this, this.grooveBox);
         document.getElementById("app").classList.add("blurred");

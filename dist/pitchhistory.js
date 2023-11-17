@@ -17,7 +17,7 @@ var PitchHistory = /** @class */ (function () {
     PitchHistory.prototype.moveWindow = function (direction) {
         if (this.windowStart != undefined) {
             var newWindowStart = this.windowStart + direction;
-            if (newWindowStart > 0 && newWindowStart <= this.maxStep - this.windowLength) {
+            if (newWindowStart >= 0 && newWindowStart <= this.maxStep - this.windowLength) {
                 this.windowStart = newWindowStart;
             }
         }
@@ -29,6 +29,19 @@ var PitchHistory = /** @class */ (function () {
             }
             this.windowStart = minStep;
         }
+    };
+    PitchHistory.prototype.moveWindowToPosition = function (position) {
+        var midIndex = Math.floor(position * this.maxStep);
+        var startIndex = midIndex - Math.floor(this.windowLength / 2);
+        var endIndex = startIndex + this.windowLength;
+        if (startIndex < 0) {
+            startIndex = 0;
+        }
+        else if (endIndex > this.maxStep) {
+            startIndex = this.maxStep - this.windowLength;
+        }
+        console.log(startIndex);
+        this.windowStart = startIndex;
     };
     PitchHistory.prototype.incrementMaxStep = function () {
         this.maxStep += 1;
@@ -49,7 +62,7 @@ var PitchHistory = /** @class */ (function () {
         return clipData;
     };
     PitchHistory.prototype.stepsForCurrentWindow = function () {
-        if (this.windowStart == undefined) {
+        if (this.windowStart === undefined) {
             return this.stepsForWindow(this.maxStep - this.windowLength);
         }
         else {

@@ -94,6 +94,15 @@ export default class UI {
         event.preventDefault(); 
     }
 
+    onHistoryClick(event: MouseEvent) {
+        let element = event.target as HTMLElement;
+        let width = element.clientWidth;
+        let x = event.offsetX;
+        let historyIndex = x / width;
+        this.grooveBox.setHistoryIndex(historyIndex);
+        event.preventDefault();
+    }
+
     showPrefsModal() {
         this.prefsModal = new PrefsModal(this, this.grooveBox);
         

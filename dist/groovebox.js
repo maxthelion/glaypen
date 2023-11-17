@@ -45,11 +45,18 @@ var GrooveBox = /** @class */ (function () {
     }
     GrooveBox.prototype.moveWindow = function (direction) {
         this.pitchHistory.moveWindow(direction);
+        this.adjustWindow();
+    };
+    GrooveBox.prototype.adjustWindow = function () {
         var clipRawData = this.pitchHistory.stepsForCurrentWindow();
         clipRawData.color = this.randomColor(this.pitchHistory.windowStart);
         var clip = new Clip(this, clipRawData);
         this.sequencer = new ClipSequencer(this, clip);
         this.setMode(1);
+    };
+    GrooveBox.prototype.setHistoryIndex = function (index) {
+        this.pitchHistory.moveWindowToPosition(index);
+        this.adjustWindow();
     };
     GrooveBox.prototype.playPitch = function (pitch, velocity) {
         if (velocity === void 0) { velocity = 127; }

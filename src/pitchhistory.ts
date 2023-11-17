@@ -26,7 +26,7 @@ export default class PitchHistory {
     moveWindow(direction: number) {
         if (this.windowStart != undefined){
             let newWindowStart = this.windowStart + direction;
-            if (newWindowStart > 0 && newWindowStart <= this.maxStep - this.windowLength){
+            if (newWindowStart >= 0 && newWindowStart <= this.maxStep - this.windowLength){
                 this.windowStart = newWindowStart;
             }
         } else {
@@ -38,6 +38,20 @@ export default class PitchHistory {
             this.windowStart = minStep;
         }
     }
+
+    moveWindowToPosition(position: number) {
+        let midIndex = Math.floor(position * this.maxStep)
+        let startIndex = midIndex - Math.floor(this.windowLength / 2);
+        let endIndex = startIndex + this.windowLength;
+        if (startIndex < 0) {
+            startIndex = 0;
+        } else if (endIndex > this.maxStep) {
+            startIndex = this.maxStep - this.windowLength;
+        }
+        console.log(startIndex)
+        this.windowStart = startIndex;
+    }
+
 
     incrementMaxStep() {
         this.maxStep += 1;
@@ -60,7 +74,7 @@ export default class PitchHistory {
     }
 
     stepsForCurrentWindow(): ClipRawData {
-        if (this.windowStart == undefined) {
+        if (this.windowStart === undefined) {
             return this.stepsForWindow(this.maxStep - this.windowLength)
         } else {
             return this.stepsForWindow(this.windowStart);
