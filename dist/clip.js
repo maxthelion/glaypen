@@ -26,6 +26,7 @@ var Clip = /** @class */ (function () {
         return this.clipData;
     };
     Clip.prototype.shiftLeft = function () {
+        console.log("shiftLeft", this.steps);
         this.steps.push(this.steps.shift());
     };
     Clip.prototype.shiftRight = function () {

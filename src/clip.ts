@@ -30,6 +30,7 @@ export default class Clip {
     }
 
     shiftLeft() {
+        console.log("shiftLeft", this.steps)
         this.steps.push(this.steps.shift()!);
     }
 

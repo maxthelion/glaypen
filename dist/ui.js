@@ -37,7 +37,9 @@ var UI = /** @class */ (function () {
         });
         var generatorToggleControl = new GeneratorToggleControl(this, groovebox);
         var transportDisplay = new TransportDisplay(this, groovebox);
-        this.currentPane = new GeneratorParamsPanel(this, groovebox);
+        this.generatorParamsPanel = new GeneratorParamsPanel(this, groovebox);
+        this.clipParamsPanel = new ClipParamsPanel(this, groovebox);
+        this.currentPane = this.generatorParamsPanel;
         this.renderables = [
             generatorToggleControl,
             this.playButton,
@@ -81,13 +83,13 @@ var UI = /** @class */ (function () {
             element.classList.add("hidden");
         });
         if (modeIndex == 0 || modeIndex == 1) {
-            this.currentPane = new GeneratorParamsPanel(this, this.grooveBox);
+            this.currentPane = this.generatorParamsPanel;
             document.querySelector("#genpane").classList.remove("hidden");
         }
         console.log("modeIndex", modeIndex);
         if (modeIndex == 2) {
             document.querySelector("#clippane").classList.remove("hidden");
-            this.currentPane = new ClipParamsPanel(this, this.grooveBox);
+            this.currentPane = this.clipParamsPanel;
         }
     };
     UI.prototype.onWheel = function (event) {

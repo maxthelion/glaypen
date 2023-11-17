@@ -41,6 +41,7 @@ export default class LCD implements Renderable {
                 })
 
             } else {
+                this.htmlCanvas.style.backgroundColor = "#000000";
                 let maxStep = this.grooveBox.pitchHistory.maxStep;
                 let windowLength = this.grooveBox.pitchHistory.windowLength;
                 var stepWidth = this.canvasWidth / windowLength;
@@ -52,6 +53,7 @@ export default class LCD implements Renderable {
             }  
         }
     }
+
     renderStepPitches(step: Step, index: number, stepWidth: number, stepHeight: number) {
         step.pitches.forEach((pitch) => {
             if (pitch !== null) {

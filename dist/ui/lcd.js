@@ -32,6 +32,7 @@ var LCD = /** @class */ (function () {
                 });
             }
             else {
+                this.htmlCanvas.style.backgroundColor = "#000000";
                 var maxStep = this.grooveBox.pitchHistory.maxStep;
                 var windowLength = this.grooveBox.pitchHistory.windowLength;
                 var stepWidth = this.canvasWidth / windowLength;

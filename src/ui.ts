@@ -26,7 +26,9 @@ export default class UI {
     clipMatrix: ClipMatrix;
     renderables: Array<Renderable>;
     prefsModal?: PrefsModal;
-    currentPane: Renderable
+    currentPane: Renderable;
+    clipParamsPanel: ClipParamsPanel;
+    generatorParamsPanel: GeneratorParamsPanel;
     lastClipLength: number = -1;
 
     constructor(groovebox: GrooveBox) {
@@ -53,7 +55,10 @@ export default class UI {
         });
         let generatorToggleControl = new GeneratorToggleControl(this, groovebox);
         let transportDisplay = new TransportDisplay(this, groovebox);
-        this.currentPane = new GeneratorParamsPanel(this, groovebox);
+
+        this.generatorParamsPanel = new GeneratorParamsPanel(this, groovebox);
+        this.clipParamsPanel = new ClipParamsPanel(this, groovebox);
+        this.currentPane = this.generatorParamsPanel;
         this.renderables = [
             generatorToggleControl,
             this.playButton,
@@ -98,14 +103,14 @@ export default class UI {
             element.classList.add("hidden"); 
         });        
         if (modeIndex == 0 || modeIndex == 1) {
-            this.currentPane = new GeneratorParamsPanel(this, this.grooveBox);
+            this.currentPane = this.generatorParamsPanel;
             document.querySelector("#genpane")!.classList.remove("hidden");
         }
         console.log("modeIndex", modeIndex)
         if (modeIndex == 2) {
             
             document.querySelector("#clippane")!.classList.remove("hidden");
-            this.currentPane = new ClipParamsPanel(this, this.grooveBox);
+            this.currentPane = this.clipParamsPanel;
         }
     }
 
