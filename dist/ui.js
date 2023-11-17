@@ -12,6 +12,7 @@ import GeneratorToggleControl from "./ui/generatortogglecontrol.js";
 var UI = /** @class */ (function () {
     function UI(groovebox) {
         var _this = this;
+        this.lastClipLength = -1;
         var sequencerSteps = document.querySelectorAll(".step");
         this.sequencerSteps = [];
         sequencerSteps.forEach(function (sequencerStep) {
@@ -49,6 +50,7 @@ var UI = /** @class */ (function () {
         this.prefsButton = new PrefsButton(this, groovebox);
     }
     UI.prototype.update = function () {
+        var _this = this;
         this.sequencerSteps.forEach(function (sequencerStep) {
             sequencerStep.classList.remove("active");
         });
@@ -56,6 +58,18 @@ var UI = /** @class */ (function () {
         //     let step = this.grooveBox.transport.loop.currentStep;
         //     this.sequencerSteps[step - 1].classList.add("active");
         // }
+        if (this.lastClipLength !== this.grooveBox.pitchHistory.windowLength) {
+            this.lastClipLength = this.grooveBox.pitchHistory.windowLength;
+            document.querySelectorAll(".windowlengthbtn").forEach(function (element) {
+                var _a;
+                if (element !== undefined) {
+                    element.classList.remove("active");
+                    if (parseInt((_a = element.dataset.windowlength) === null || _a === void 0 ? void 0 : _a.toString()) === _this.lastClipLength) {
+                        element.classList.add("active");
+                    }
+                }
+            });
+        }
         this.renderables.forEach(function (renderable) {
             renderable.update();
         });

@@ -27,6 +27,7 @@ export default class UI {
     renderables: Array<Renderable>;
     prefsModal?: PrefsModal;
     currentPane: Renderable
+    lastClipLength: number = -1;
 
     constructor(groovebox: GrooveBox) {
         var sequencerSteps = document.querySelectorAll(".step");
@@ -73,7 +74,18 @@ export default class UI {
         //     let step = this.grooveBox.transport.loop.currentStep;
         //     this.sequencerSteps[step - 1].classList.add("active");
         // }
-
+        if (this.lastClipLength !== this.grooveBox.pitchHistory.windowLength) {
+            this.lastClipLength = this.grooveBox.pitchHistory.windowLength;
+            document.querySelectorAll(".windowlengthbtn").forEach(element => {
+                if (element !== undefined){
+                    element.classList.remove("active");
+                    if (parseInt(element.dataset.windowlength?.toString()!) === this.lastClipLength) {
+                        element.classList.add("active");
+                    }
+                }
+            });
+        }
+        
         this.renderables.forEach((renderable) => {
             renderable.update();
         })
