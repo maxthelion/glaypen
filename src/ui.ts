@@ -101,7 +101,9 @@ export default class UI {
             this.currentPane = new GeneratorParamsPanel(this, this.grooveBox);
             document.querySelector("#genpane")!.classList.remove("hidden");
         }
+        console.log("modeIndex", modeIndex)
         if (modeIndex == 2) {
+            
             document.querySelector("#clippane")!.classList.remove("hidden");
             this.currentPane = new ClipParamsPanel(this, this.grooveBox);
         }

@@ -143,10 +143,7 @@ var GrooveBox = /** @class */ (function () {
         }
     };
     GrooveBox.prototype.saveOrLoadClipAtIndex = function (index) {
-        if (this.modeIndex == 0) {
-            // store the current generator sequencer
-            this.setMode(2);
-        }
+        this.setMode(2);
         var clip = this.clipSaver.savedClips[index];
         this.clipIndex = index;
         if (clip != undefined) {

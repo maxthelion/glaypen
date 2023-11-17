@@ -182,10 +182,8 @@ export default class GrooveBox {
     }
 
     saveOrLoadClipAtIndex(index: number) {
-        if (this.modeIndex == 0) {
-            // store the current generator sequencer
-            this.setMode(2);
-        }
+        
+        this.setMode(2);
         let clip = this.clipSaver.savedClips[index];
         this.clipIndex = index;
         if (clip != undefined){            
