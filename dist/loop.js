@@ -20,6 +20,9 @@ var Loop = /** @class */ (function () {
         // console.log("update", this.grooveBox.sequencer);
         (_a = this.grooveBox.currentSequencer()) === null || _a === void 0 ? void 0 : _a.step(this.step);
     };
+    Loop.prototype.reset = function () {
+        this.step = 0;
+    };
     return Loop;
 }());
 export default Loop;

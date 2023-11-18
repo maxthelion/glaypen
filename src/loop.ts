@@ -29,4 +29,8 @@ export default class Loop {
         // console.log("update", this.grooveBox.sequencer);
         this.grooveBox.currentSequencer()?.step(this.step)
     }
+    
+    reset() {
+        this.step = 0;
+    }
 }

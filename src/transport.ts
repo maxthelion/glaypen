@@ -34,6 +34,9 @@ export default class Transport {
 
     start() {
         this.playing = true;
+        if(this.grooveBox.modeIndex === 2){
+            this.loop.reset();    
+        }
         this.loop.start();
     }
 }
