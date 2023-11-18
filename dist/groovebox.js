@@ -7,6 +7,7 @@ import PitchHistory from "./pitchhistory.js";
 import ClipSaver from "./clipsaver.js";
 import StorageBox from "./storagebox.js";
 import MidiInputHandler from "./midiinputhandler.js";
+import SongSequencer from "./songsequencer.js";
 var GrooveBox = /** @class */ (function () {
     function GrooveBox(midiAccess) {
         var _this = this;
@@ -41,6 +42,7 @@ var GrooveBox = /** @class */ (function () {
             this.midiInputHandler = new MidiInputHandler(this, this.clockInput);
         }
         this.clipSequencer = undefined;
+        this.songSequencer = new SongSequencer(this);
         this.generativeSequencer = new Sequencer(this);
         this.transport = new Transport(this);
         this.pitchHistory = new PitchHistory();
@@ -121,6 +123,14 @@ var GrooveBox = /** @class */ (function () {
         }
         if (modeIndex == 2) {
         }
+        if (modeIndex == 3) {
+            if (this.phraseIndex !== undefined) {
+                this.songSequencer.rowIndex = this.phraseIndex;
+            }
+            else if (this.clipIndex !== undefined) {
+                this.songSequencer.rowIndex = Math.floor(this.clipIndex / 8);
+            }
+        }
         this.ui.setMode(modeIndex);
     };
     GrooveBox.prototype.currentSequencer = function () {
@@ -133,6 +143,9 @@ var GrooveBox = /** @class */ (function () {
                 break;
             case 2:
                 return this.clipSequencer;
+                break;
+            case 3:
+                return this.songSequencer;
                 break;
         }
     };
@@ -232,7 +245,12 @@ var GrooveBox = /** @class */ (function () {
         }
     };
     GrooveBox.prototype.currentClip = function () {
-        return this.clipSequencer.clip;
+        if (this.modeIndex == 1 || this.modeIndex == 2) {
+            return this.clipSequencer.clip;
+        }
+        else if (this.modeIndex == 3) {
+            return this.songSequencer.clip;
+        }
     };
     GrooveBox.prototype.rotaryTarget = function () {
         var _a, _b;

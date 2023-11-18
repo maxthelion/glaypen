@@ -150,6 +150,10 @@ export default class Clip {
         }
     }
 
+    getStepAtPosition(position: number): Step | null | undefined {
+        return this.steps[position % this.steps.length];
+    }
+
     addSteps(stepsToAdd: number) {
         let unnocupiedSteps = [];
         for (let i = 0; i < this.steps.length; i++) {

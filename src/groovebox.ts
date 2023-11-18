@@ -8,6 +8,7 @@ import ClipSaver from "./clipsaver.js";
 import StorageBox from "./storagebox.js";
 import MidiInputHandler from "./midiinputhandler.js";
 import Step from "./step.js";
+import SongSequencer from "./songsequencer.js";
 
 export interface GeneratorParams {
     [key: string]: number;
@@ -33,6 +34,7 @@ export default class GrooveBox {
     lastPitchReadAt?: number;
     clipIndex?: number;
     playingPitches: any = {};
+    phraseIndex?: number;
 
     scales: ScalePair[] = [
         ["Major", [0, 2, 4, 5, 7, 9, 11]],
@@ -51,6 +53,7 @@ export default class GrooveBox {
     midiAccess: MIDIAccess;
     generativeSequencer?: Sequencer;
     clipSequencer?: ClipSequencer;
+    songSequencer?: SongSequencer;
     clockInput?: MIDIInput;
     midiInputHandler?: MidiInputHandler;
 
@@ -69,6 +72,7 @@ export default class GrooveBox {
             this.midiInputHandler = new MidiInputHandler(this, this.clockInput);
         }
         this.clipSequencer = undefined
+        this.songSequencer = new SongSequencer(this);
         this.generativeSequencer = new Sequencer(this);
         this.transport = new Transport(this);
         this.pitchHistory = new PitchHistory();
@@ -157,6 +161,13 @@ export default class GrooveBox {
         if (modeIndex == 2) {
 
         }
+        if (modeIndex == 3) {
+            if (this.phraseIndex !== undefined) {
+                this.songSequencer!.rowIndex = this.phraseIndex;
+            } else if ( this.clipIndex !== undefined) {
+                this.songSequencer!.rowIndex = Math.floor(this.clipIndex / 8);
+            }
+        }
         this.ui.setMode(modeIndex);
     }
 
@@ -171,6 +182,9 @@ export default class GrooveBox {
             case 2:
                 return this.clipSequencer;
                 break;
+            case 3:
+                return this.songSequencer;
+                break
         }
     }
 
@@ -283,7 +297,11 @@ export default class GrooveBox {
     }
 
     currentClip(): Clip | undefined {
-        return this.clipSequencer!.clip;
+        if (this.modeIndex == 1 || this.modeIndex == 2){
+            return this.clipSequencer!.clip;    
+        } else if (this.modeIndex == 3){
+            return this.songSequencer!.clip;
+        }
     }
 
     rotaryTarget(){

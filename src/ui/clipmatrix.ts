@@ -39,6 +39,7 @@ export default class ClipMatrix  implements Renderable{
                 this.grooveBox.clipSaver.clipIndexes().forEach((clipIndex) => {
                     let cell = this.clipMatrix!.querySelector(".step" + clipIndex) as HTMLElement;
                     if (cell !== null){
+                        // console.log(this.grooveBox.clipIndex)
                         if (this.grooveBox.clipIndex === clipIndex) {
                             cell.classList.add("active");
                         }

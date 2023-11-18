@@ -10,11 +10,11 @@ var LCD = /** @class */ (function () {
     }
     LCD.prototype.update = function () {
         var _this = this;
-        var _a;
+        var _a, _b;
         if (this.ctx !== null) {
             this.ctx.clearRect(0, 0, this.htmlCanvas.width, this.htmlCanvas.height);
             var stepHeight = this.canvasHeight / 128;
-            if (this.grooveBox.modeIndex !== 0) {
+            if (this.grooveBox.modeIndex === 1 || this.grooveBox.modeIndex === 2) {
                 var clip = (_a = this.grooveBox.clipSequencer) === null || _a === void 0 ? void 0 : _a.clip;
                 this.htmlCanvas.style.backgroundColor = clip.color;
                 var stepWidth = this.canvasWidth / clip.clipLength;
@@ -25,13 +25,13 @@ var LCD = /** @class */ (function () {
                             _this.ctx.fillStyle = "rgba(255, 255, 255, 1)";
                         }
                         else {
-                            _this.ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+                            _this.ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
                         }
                         _this.renderStepPitches(step, index, stepWidth, stepHeight);
                     }
                 });
             }
-            else {
+            else if (this.grooveBox.modeIndex === 0) {
                 this.htmlCanvas.style.backgroundColor = "#000000";
                 var maxStep = this.grooveBox.pitchHistory.maxStep;
                 var windowLength = this.grooveBox.pitchHistory.windowLength;
@@ -41,6 +41,24 @@ var LCD = /** @class */ (function () {
                     _this.ctx.fillStyle = "rgba(255, 255, 255, 1)";
                     _this.renderStepPitches(step, index, stepWidth, stepHeight);
                 });
+            }
+            else if (this.grooveBox.modeIndex === 3) {
+                var clip = (_b = this.grooveBox.songSequencer) === null || _b === void 0 ? void 0 : _b.clip;
+                if (clip !== undefined) {
+                    this.htmlCanvas.style.backgroundColor = clip.color;
+                    var stepWidth = this.canvasWidth / clip.clipLength;
+                    clip.steps.forEach(function (step, index) {
+                        if (step !== undefined && step !== null) {
+                            if (index === _this.grooveBox.currentSequencer().currentStep) {
+                                _this.ctx.fillStyle = "rgba(255, 255, 255, 1)";
+                            }
+                            else {
+                                _this.ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
+                            }
+                            _this.renderStepPitches(step, index, stepWidth, stepHeight);
+                        }
+                    });
+                }
             }
         }
     };

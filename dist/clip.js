@@ -135,6 +135,9 @@ var Clip = /** @class */ (function () {
             this.steps = this.steps.slice(0, length);
         }
     };
+    Clip.prototype.getStepAtPosition = function (position) {
+        return this.steps[position % this.steps.length];
+    };
     Clip.prototype.addSteps = function (stepsToAdd) {
         var unnocupiedSteps = [];
         for (var i = 0; i < this.steps.length; i++) {

@@ -32,6 +32,7 @@ var ClipMatrix = /** @class */ (function () {
                 this.grooveBox.clipSaver.clipIndexes().forEach(function (clipIndex) {
                     var cell = _this.clipMatrix.querySelector(".step" + clipIndex);
                     if (cell !== null) {
+                        // console.log(this.grooveBox.clipIndex)
                         if (_this.grooveBox.clipIndex === clipIndex) {
                             cell.classList.add("active");
                         }

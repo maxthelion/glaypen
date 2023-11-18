@@ -13,6 +13,7 @@ import Renderable from "./interfaces/renderable.js";
 import Transport from "./transport.js";
 import TransportDisplay from "./ui/transportdisplay.js";
 import GeneratorToggleControl from "./ui/generatortogglecontrol.js";
+import PhraseSelector from "./ui/phraseselector.js";
 
 
 
@@ -59,7 +60,9 @@ export default class UI {
         this.generatorParamsPanel = new GeneratorParamsPanel(this, groovebox);
         this.clipParamsPanel = new ClipParamsPanel(this, groovebox);
         this.currentPane = this.generatorParamsPanel;
+        let phraseSelector = new PhraseSelector(this, groovebox);
         this.renderables = [
+            phraseSelector,
             generatorToggleControl,
             this.playButton,
             this.historyCanvas, 
@@ -69,6 +72,7 @@ export default class UI {
             transportDisplay
         ];
         this.prefsButton = new PrefsButton(this, groovebox);
+
     }
 
     update() {

@@ -25,7 +25,7 @@ export default class LCD implements Renderable {
         if (this.ctx !== null) {
             this.ctx.clearRect(0, 0, this.htmlCanvas.width, this.htmlCanvas.height);
             var stepHeight = this.canvasHeight / 128;
-            if (this.grooveBox.modeIndex !== 0) {
+            if (this.grooveBox.modeIndex === 1 || this.grooveBox.modeIndex === 2) {
                 let clip = this.grooveBox.clipSequencer?.clip!;
                 this.htmlCanvas.style.backgroundColor = clip.color;
                 var stepWidth = this.canvasWidth / clip.clipLength;
@@ -34,13 +34,13 @@ export default class LCD implements Renderable {
                         if (index === this.grooveBox.clipSequencer?.currentStep) {
                             this.ctx!.fillStyle = "rgba(255, 255, 255, 1)";
                         } else {
-                            this.ctx!.fillStyle = "rgba(255, 255, 255, 0.5)";
+                            this.ctx!.fillStyle = "rgba(255, 255, 255, 0.2)";
                         }
                         this.renderStepPitches(step, index, stepWidth, stepHeight);
                     }
                 })
 
-            } else {
+            } else if (this.grooveBox.modeIndex === 0){
                 this.htmlCanvas.style.backgroundColor = "#000000";
                 let maxStep = this.grooveBox.pitchHistory.maxStep;
                 let windowLength = this.grooveBox.pitchHistory.windowLength;
@@ -50,7 +50,23 @@ export default class LCD implements Renderable {
                     this.ctx!.fillStyle = "rgba(255, 255, 255, 1)";
                     this.renderStepPitches(step, index, stepWidth, stepHeight);
                 })
-            }  
+            } else if (this.grooveBox.modeIndex === 3){
+                let clip = this.grooveBox.songSequencer?.clip!;
+                if (clip !== undefined){
+                    this.htmlCanvas.style.backgroundColor = clip.color;
+                    var stepWidth = this.canvasWidth / clip.clipLength;
+                    clip.steps.forEach((step, index) => {
+                        if (step !== undefined && step !== null) {
+                            if (index === this.grooveBox.currentSequencer()!.currentStep) {
+                                this.ctx!.fillStyle = "rgba(255, 255, 255, 1)";
+                            } else {
+                                this.ctx!.fillStyle = "rgba(255, 255, 255, 0.2)";
+                            }
+                            this.renderStepPitches(step, index, stepWidth, stepHeight);
+                        }
+                    })
+                }
+            }
         }
     }
 

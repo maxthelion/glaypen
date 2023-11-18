@@ -10,8 +10,15 @@ export default class ModeSelector implements Renderable {
     constructor(ui:UI, grooveBox: GrooveBox) {
         this.modeTabs[0] = document.getElementById("generatormodebtn")!;
         this.modeTabs[2] = document.getElementById("clipmodebtn")!;
+        this.modeTabs[3] = document.getElementById("songmodebtn")!;
         this.modeTabs[0].dataset.modeid = "0";
         this.modeTabs[0].addEventListener("click", (e) => {
+            let clickedElement = e.target as HTMLElement;
+            let modeId = clickedElement.dataset.modeid;
+            grooveBox.setMode(parseInt(modeId!));
+        })
+
+        this.modeTabs[3].addEventListener("click", (e) => {
             let clickedElement = e.target as HTMLElement;
             let modeId = clickedElement.dataset.modeid;
             grooveBox.setMode(parseInt(modeId!));

@@ -9,6 +9,7 @@ import ModeSelector from "./ui/modeselector.js";
 import ClipParamsPanel from "./ui/clipparamspanel.js";
 import TransportDisplay from "./ui/transportdisplay.js";
 import GeneratorToggleControl from "./ui/generatortogglecontrol.js";
+import PhraseSelector from "./ui/phraseselector.js";
 var UI = /** @class */ (function () {
     function UI(groovebox) {
         var _this = this;
@@ -40,7 +41,9 @@ var UI = /** @class */ (function () {
         this.generatorParamsPanel = new GeneratorParamsPanel(this, groovebox);
         this.clipParamsPanel = new ClipParamsPanel(this, groovebox);
         this.currentPane = this.generatorParamsPanel;
+        var phraseSelector = new PhraseSelector(this, groovebox);
         this.renderables = [
+            phraseSelector,
             generatorToggleControl,
             this.playButton,
             this.historyCanvas,

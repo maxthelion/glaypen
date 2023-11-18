@@ -4,8 +4,14 @@ var ModeSelector = /** @class */ (function () {
         this.lastModeIndex = -1;
         this.modeTabs[0] = document.getElementById("generatormodebtn");
         this.modeTabs[2] = document.getElementById("clipmodebtn");
+        this.modeTabs[3] = document.getElementById("songmodebtn");
         this.modeTabs[0].dataset.modeid = "0";
         this.modeTabs[0].addEventListener("click", function (e) {
+            var clickedElement = e.target;
+            var modeId = clickedElement.dataset.modeid;
+            grooveBox.setMode(parseInt(modeId));
+        });
+        this.modeTabs[3].addEventListener("click", function (e) {
             var clickedElement = e.target;
             var modeId = clickedElement.dataset.modeid;
             grooveBox.setMode(parseInt(modeId));
