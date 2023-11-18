@@ -150,6 +150,9 @@ export default class GrooveBox {
 
     setMode(modeIndex: number) {
         this.modeIndex = modeIndex;
+        if (modeIndex !== 3){
+            this.phraseIndex = undefined;
+        }
         if (modeIndex == 0) {
             this.pitchHistory.clearWindow();
             this.clipIndex = undefined;

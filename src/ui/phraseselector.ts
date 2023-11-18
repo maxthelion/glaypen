@@ -29,14 +29,14 @@ export default class PhraseSelector implements Renderable{
     
     update(): void {
         if (this.lastPhraseIndex !== this.grooveBox.phraseIndex) {
+            this.elements.forEach((element) => {
+                element.classList.remove("active");
+            })
             if (this.grooveBox.phraseIndex !== null && this.grooveBox.phraseIndex !== undefined) {
-                this.elements.forEach((element) => {
-                    element.classList.remove("active");
-                })
                 let element = this.elements[this.grooveBox.phraseIndex];
                 element.classList.add("active");
-                this.lastPhraseIndex = this.grooveBox.phraseIndex;
             }
+            this.lastPhraseIndex = this.grooveBox.phraseIndex;
         }
     }
 }

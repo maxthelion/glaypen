@@ -20,14 +20,14 @@ var PhraseSelector = /** @class */ (function () {
     }
     PhraseSelector.prototype.update = function () {
         if (this.lastPhraseIndex !== this.grooveBox.phraseIndex) {
+            this.elements.forEach(function (element) {
+                element.classList.remove("active");
+            });
             if (this.grooveBox.phraseIndex !== null && this.grooveBox.phraseIndex !== undefined) {
-                this.elements.forEach(function (element) {
-                    element.classList.remove("active");
-                });
                 var element = this.elements[this.grooveBox.phraseIndex];
                 element.classList.add("active");
-                this.lastPhraseIndex = this.grooveBox.phraseIndex;
             }
+            this.lastPhraseIndex = this.grooveBox.phraseIndex;
         }
     };
     return PhraseSelector;

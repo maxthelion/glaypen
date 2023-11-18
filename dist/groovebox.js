@@ -113,6 +113,9 @@ var GrooveBox = /** @class */ (function () {
     };
     GrooveBox.prototype.setMode = function (modeIndex) {
         this.modeIndex = modeIndex;
+        if (modeIndex !== 3) {
+            this.phraseIndex = undefined;
+        }
         if (modeIndex == 0) {
             this.pitchHistory.clearWindow();
             this.clipIndex = undefined;

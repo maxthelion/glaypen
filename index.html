@@ -1,11 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GenZee</title>
-  <link rel="stylesheet" href="/css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GenZee</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Orbitron">
+
 </head>
+
 <body>
     <script type="module" src="./dist/index.js"></script>
 
@@ -15,11 +20,12 @@
                 <div class="modebtn">
                     <a href="#" id="generatormodebtn" class="modebtn active">Generator</a>
                 </div>
-                <!-- <div class="modebtn">
-                    <a href="#" id="extractmodebtn" class="modebtn">Extract</a>
-                </div> -->
+
                 <div class="modebtn">
                     <a href="#" id="clipmodebtn" class="modebtn">Clip</a>
+                </div>
+                <div class="modebtn">
+                    <a href="#" id="songmodebtn" data-modeid="3" class="modebtn">Song</a>
                 </div>
             </div>
             <div class="transport">
@@ -41,103 +47,111 @@
         <div id="wrapper">
             <div class="leftcol">
                 <div id="genpane" class="modepane">
-                <div id="generatorparams">
-                    <div>
-                        <div class="rotary" data-paramid="stepsInBar">
-                            <div class="rotaryvalue">4</div>
-                            <div class="rotaryknob"></div>
+                    <div id="generatorparams">
+                        <div>
+                            <div class="rotary" data-paramid="stepsInBar">
+                                <div class="rotaryvalue">4</div>
+                                <div class="rotaryknob"></div>
+                            </div>
+                            <input class="genparam" type="range" id="stepsinbar" data-paramid="stepsInBar" min="1"
+                                max="16" step="1">
+                            <label for="stepsinbar">Steps in bar</label>
                         </div>
-                        <input class="genparam" type="range" id="stepsinbar" data-paramid="stepsInBar" min="1" max="16" step="1">
-                        <label for="stepsinbar">Steps in bar</label>
-                    </div>
-                    <div>
-                        <div class="rotary" data-paramid="stepProbability">
-                            <div class="rotaryvalue">4</div>
-                            <div class="rotaryknob"></div>
+                        <div>
+                            <div class="rotary" data-paramid="stepProbability">
+                                <div class="rotaryvalue">4</div>
+                                <div class="rotaryknob"></div>
+                            </div>
+                            <input class="genparam" type="range" id="stepprobability" data-paramid="stepProbability"
+                                min="0" max="128" step="1">
+                            <label for="stepsinbar">Step probability</label>
                         </div>
-                        <input class="genparam" type="range" id="stepprobability" data-paramid="stepProbability" min="0" max="128" step="1">
-                        <label for="stepsinbar">Step probability</label>
-                    </div>
-                    <div>
-                        <div class="rotary" data-paramid="tonic">
-                            <div class="rotaryvalue">4</div>
-                            <div class="rotaryknob"></div>
+                        <div>
+                            <div class="rotary" data-paramid="tonic">
+                                <div class="rotaryvalue">4</div>
+                                <div class="rotaryknob"></div>
+                            </div>
+                            <input class="genparam" type="range" id="tonic" data-paramid="tonic" min="0" max="128"
+                                step="1">
+                            <label for="tonic">Root note</label>
                         </div>
-                        <input class="genparam" type="range" id="tonic" data-paramid="tonic" min="0" max="128" step="1">
-                        <label for="tonic">Root note</label>
-                    </div>
-                    <div>
-                        <select class="genparam" name="scale" id="scale" data-paramid="scaleIndex">
-                        </select>
-                        <label for="scale">Scale</label>
-                    </div>
-                    <div>
-                        <div class="rotary" data-paramid="pitchRange">
-                            <div class="rotaryvalue">4</div>
-                            <div class="rotaryknob"></div>
+                        <div>
+                            <select class="genparam" name="scale" id="scale" data-paramid="scaleIndex">
+                            </select>
+                            <label for="scale">Scale</label>
                         </div>
-                        <input class="genparam" type="range" id="pitchrange" data-paramid="pitchRange" min="0" max="10" step="1">
-                        <label for="octave">Pitch range</label>
-                    </div>
-                    <div>
-                        <div class="rotary" data-paramid="octaveRange">
-                            <div class="rotaryvalue">4</div>
-                            <div class="rotaryknob"></div>
+                        <div>
+                            <div class="rotary" data-paramid="pitchRange">
+                                <div class="rotaryvalue">4</div>
+                                <div class="rotaryknob"></div>
+                            </div>
+                            <input class="genparam" type="range" id="pitchrange" data-paramid="pitchRange" min="0"
+                                max="10" step="1">
+                            <label for="octave">Pitch range</label>
                         </div>
-                        <input class="genparam" type="range" id="octaverange" data-paramid="octaveRange" min="1" max="10" step="1">
-                        <label for="octave">Octave range</label>
-                    </div>
-                    <div>
-                        <div class="rotary" data-paramid="octaveProbability">
-                            <div class="rotaryvalue">4</div>
-                            <div class="rotaryknob"></div>
+                        <div>
+                            <div class="rotary" data-paramid="octaveRange">
+                                <div class="rotaryvalue">4</div>
+                                <div class="rotaryknob"></div>
+                            </div>
+                            <input class="genparam" type="range" id="octaverange" data-paramid="octaveRange" min="1"
+                                max="10" step="1">
+                            <label for="octave">Octave range</label>
                         </div>
-                        <input class="genparam" type="range" id="octaveprobability" data-paramid="octaveProbability" min="0" max="128" step="1">
-                        <label for="octave">Octave probability</label>
+                        <div>
+                            <div class="rotary" data-paramid="octaveProbability">
+                                <div class="rotaryvalue">4</div>
+                                <div class="rotaryknob"></div>
+                            </div>
+                            <input class="genparam" type="range" id="octaveprobability" data-paramid="octaveProbability"
+                                min="0" max="128" step="1">
+                            <label for="octave">Octave probability</label>
+                        </div>
                     </div>
-                </div>
-                <div id="generatorStateToggle">
-                    <div><button id="toggleGenerateBtn">Generate</button></div>
-                    <div><button id="toggleExtractBtn">Extract</button></div>
-                </div>
+                    <div id="generatorStateToggle">
+                        <div><button id="toggleGenerateBtn">Generate</button></div>
+                        <div><button id="toggleExtractBtn">Extract</button></div>
+                    </div>
                 </div>
                 <div id="clippane" class="modepane">
                     <div>
                         <div>
                             <div id="clipstartshifter">
-                            <button id="clipstartleftbtn">&lt;&lt;</button>
-                            <button id="clipstartrightbtn">&gt;&gt;</button>
+                                <button id="clipstartleftbtn">&lt;&lt;</button>
+                                <button id="clipstartrightbtn">&gt;&gt;</button>
                             </div>
                         </div>
-                    <div>
-                        
-                        <div><button class="shuffleBtn" id="clipshufflepitchesbtn">Shuffle pitches</button></div>
-                        <div><button class="shuffleBtn" id="clipshufflestepsbtn">Shuffle steps</button></div>
-                    </div>
-                    <div class="halfcells">
                         <div>
-                            <div class="rotary" data-paramid="clipLength" id="clipLengthRotary">
-                                <div class="rotaryvalue">4</div>
-                                <div class="rotaryknob"></div>
-                            </div>
-                            <input class="clipparam" type="range" id="cliplength" data-paramid="clipLength" min="0" max="16" step="1">
-                            <label for="cliplength">Length</label>
+
+                            <div><button class="shuffleBtn" id="clipshufflepitchesbtn">Shuffle pitches</button></div>
+                            <div><button class="shuffleBtn" id="clipshufflestepsbtn">Shuffle steps</button></div>
                         </div>
-                        <!-- 
+                        <div class="halfcells">
+                            <div>
+                                <div class="rotary" data-paramid="clipLength" id="clipLengthRotary">
+                                    <div class="rotaryvalue">4</div>
+                                    <div class="rotaryknob"></div>
+                                </div>
+                                <input class="clipparam" type="range" id="cliplength" data-paramid="clipLength" min="0"
+                                    max="16" step="1">
+                                <label for="cliplength">Length</label>
+                            </div>
+                            <!-- 
                         <div>
                             <input class="clipparam" type="range" id="clippitch" data-paramid="clipPitch" min="0" max="128" step="1">
                             <label for="clippitch">Root</label>
                         </div> -->
 
-                        <div>
-                            <div class="rotary" data-paramid="clipDensity" id="clipDensityRotary">
-                                <div class="rotaryvalue">4</div>
-                                <div class="rotaryknob"></div>
+                            <div>
+                                <div class="rotary" data-paramid="clipDensity" id="clipDensityRotary">
+                                    <div class="rotaryvalue">4</div>
+                                    <div class="rotaryknob"></div>
+                                </div>
+                                <input class="clipparam" type="range" id="clipdensity" data-paramid="clipDensity"
+                                    min="0" max="1" step=".05">
+                                <label for="clipdensity">Density</label>
                             </div>
-                            <input class="clipparam" type="range" id="clipdensity" data-paramid="clipDensity" min="0" max="1" step=".05">
-                            <label for="clipdensity">Density</label>
-                        </div>
-                        <!-- <div>
+                            <!-- <div>
                             <select class="clipparam" name="clipsteporder" id="clipsteporder" data-paramid="clipStepOrder">
                                 <option value="forward">Forward</option>
                                 <option value="reverse">Reverse</option>
@@ -145,7 +159,7 @@
                             </select>
                             <label for="clipsteporder">Clip step order</label>
                         </div> -->
-                    </div>
+                        </div>
                     </div>
                 </div>
 
@@ -155,8 +169,21 @@
                             <div class="rotaryvalue">4</div>
                             <div class="rotaryknob"></div>
                         </div>
-                        <input class="extractparam" type="range" id="extractlength" data-paramid="extractlength" min="1" max="64" step="1">
+                        <input class="extractparam" type="range" id="extractlength" data-paramid="extractlength" min="1"
+                            max="64" step="1">
                         <label for="extractlength">Length</label>
+                    </div>
+                </div>
+
+                <div id="phrasepane" class="modepane">
+                    <div>
+                        <div class="rotary" data-paramid="phraselength">
+                            <div class="rotaryvalue">4</div>
+                            <div class="rotaryknob"></div>
+                        </div>
+                        <input class="phraseparam" type="range" id="phraselength" data-paramid="phraselength" min="1"
+                            max="64" step="1">
+                        <label for="phraselength">Phrase Length</label>
                     </div>
                 </div>
             </div>
@@ -164,6 +191,18 @@
                 <canvas id="lcd" width="800" height="500"></canvas>
             </div>
             <div class="rightcol">
+                <div id="phraseLaunch">
+
+                    <div class="phraseLaunchBtn clipButtonCell" ><a href="#" data-phraseid="0">1</a></div>
+                    <div class="phraseLaunchBtn clipButtonCell" ><a href="#" data-phraseid="1">2</a></div>
+                    <div class="phraseLaunchBtn clipButtonCell" ><a href="#" data-phraseid="2">3</a></div>
+                    <div class="phraseLaunchBtn clipButtonCell" ><a href="#" data-phraseid="3">4</a></div>
+                    <div class="phraseLaunchBtn clipButtonCell" ><a href="#" data-phraseid="4">5</a></div>
+                    <div class="phraseLaunchBtn clipButtonCell" ><a href="#" data-phraseid="5">6</a></div>
+                    <div class="phraseLaunchBtn clipButtonCell" ><a href="#" data-phraseid="6">7</a></div>
+                    <div class="phraseLaunchBtn clipButtonCell" ><a href="#" data-phraseid="7">8</a></div>
+                </div>
+
                 <div id="clipMatrix"></div>
             </div>
         </div>
@@ -200,4 +239,5 @@
         </div> -->
     </div>
 </body>
+
 </html>
