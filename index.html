@@ -47,7 +47,11 @@
         <div id="wrapper">
             <div class="leftcol">
                 <div id="genpane" class="modepane">
+                    <div id="gentop">
+                        <a href="#" id="randomiseBtn">&#128163;</a>
+                    </div>
                     <div id="generatorparams">
+                        
                         <div>
                             <div class="rotary" data-paramid="stepsInBar">
                                 <div class="rotaryvalue">4</div>
@@ -107,6 +111,9 @@
                                 min="0" max="128" step="1">
                             <label for="octave">Octave probability</label>
                         </div>
+                    </div>
+                    <div id="generatorSavedStates">
+
                     </div>
                     <div id="generatorStateToggle">
                         <div><button id="toggleGenerateBtn">Generate</button></div>
@@ -207,6 +214,7 @@
             </div>
         </div>
         <div>
+            <canvas id="genchangecanvas" width="1600" height="20"></canvas>
             <canvas id="historycanvas" width="1600" height="100"></canvas>
         </div>
         <div id="extractControls">

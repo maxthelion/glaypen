@@ -76,6 +76,11 @@ export default class Sequencer implements SequencerInterface{
                 //     this.grooveBox.playPitch(chordPitch);
                 // }
                 // console.log("pitch", pitch);
+                if (pitch < 0) {
+                    pitch = 0;
+                } else if (pitch > 127) {
+                    pitch = 127;
+                }
                 let step = new Step(currentStep, 120, [pitch]);
                 // this.grooveBox.playPitch(pitch);
                 

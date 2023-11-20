@@ -40,7 +40,8 @@ var GeneratorParamsPanel = /** @class */ (function () {
         this.renderables = this.renderables.concat(this.rotaryElements);
     }
     GeneratorParamsPanel.prototype.update = function () {
-        // console.log(this.renderables)
+        var _a;
+        (_a = this.element) === null || _a === void 0 ? void 0 : _a.style.setProperty("border-color", this.grooveBox.generatorParams.color);
         this.renderables.forEach(function (renderable) {
             renderable.update();
         });

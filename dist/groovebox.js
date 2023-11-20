@@ -1,3 +1,14 @@
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 import Transport from "./transport.js";
 import UI from "./ui.js";
 import Sequencer from "./sequencer.js";
@@ -12,8 +23,10 @@ var GrooveBox = /** @class */ (function () {
     function GrooveBox(midiAccess) {
         var _this = this;
         this.maxClips = 64;
+        this.storedGenParams = [];
         this.manualPitchOptions = [];
         this.playingPitches = {};
+        this.genChanges = [];
         this.scales = [
             ["Major", [0, 2, 4, 5, 7, 9, 11]],
             ["Harmonic Minor", [0, 2, 3, 5, 7, 8, 11]],
@@ -29,6 +42,8 @@ var GrooveBox = /** @class */ (function () {
         this.storageBox = new StorageBox();
         this.clipSaver = new ClipSaver(this);
         this.generatorParams = this.storageBox.getGeneratorParams();
+        var newGeneratorParams = __assign({}, this.generatorParams);
+        this.genChanges.push([newGeneratorParams, 0]);
         this.ui = new UI(this);
         this.midiAccess = midiAccess;
         var midiOutput = this.getMidiOutput();
@@ -227,8 +242,29 @@ var GrooveBox = /** @class */ (function () {
         }
     };
     GrooveBox.prototype.setGeneratorParam = function (paramName, value) {
-        this.generatorParams[paramName] = value;
+        // Duplicate the generatorParams object
+        var newGeneratorParams = __assign({}, this.generatorParams);
+        // Update the duplicated object with the new value
+        newGeneratorParams[paramName] = value;
+        newGeneratorParams.color = this.colorFromGenParams(newGeneratorParams);
+        // Update the original object reference
+        this.generatorParams = newGeneratorParams;
+        this.genChanges.push([newGeneratorParams, this.currentSequencer().absoluteStep]);
         this.storageBox.setGeneratorParams(this.generatorParams);
+    };
+    GrooveBox.prototype.colorFromGenParams = function (generatorParams) {
+        var maxCol = 64;
+        var tonicColor = generatorParams.tonic / 2;
+        var scaleColor = generatorParams.scaleIndex / this.scales.length * maxCol;
+        var stepsInBarColor = generatorParams.stepsInBar / 16 * maxCol;
+        var stepProbabilityColor = generatorParams.stepProbability / 2;
+        var pitchRangeColor = generatorParams.pitchRange / 12 * maxCol;
+        var octaveRangeColor = generatorParams.octaveRange / 5 * maxCol;
+        var octaveProbabilityColor = generatorParams.octaveProbability / 2;
+        var r = 192 - Math.floor(tonicColor + scaleColor + stepsInBarColor);
+        var g = 192 - Math.floor(stepProbabilityColor + pitchRangeColor);
+        var b = 192 - Math.floor(octaveProbabilityColor + octaveRangeColor);
+        return "rgb(".concat(r, ",").concat(g, ",").concat(b, ")");
     };
     GrooveBox.prototype.setClipParam = function (paramName, value) {
         console.log("setClipParams", paramName, value);
@@ -296,6 +332,29 @@ var GrooveBox = /** @class */ (function () {
     };
     GrooveBox.prototype.readingPitchOptions = function () {
         return this.lastPitchReadAt != undefined && window.performance.now() - this.lastPitchReadAt < 200;
+    };
+    GrooveBox.prototype.generateRandomSettings = function () {
+        this.generatorParams = {
+            "tonic": 64 + (32 - Math.floor(Math.random() * 64)),
+            "scaleIndex": Math.floor(Math.random() * this.scales.length),
+            "stepsInBar": (Math.floor(Math.random() * 4) + 1) * 4,
+            "stepProbability": Math.floor(Math.random() * 128),
+            "pitchRange": Math.floor(Math.random() * 12) + 1,
+            "octaveRange": Math.floor(Math.random() * 5) + 1,
+            "octaveProbability": Math.floor(Math.random() * 128),
+            color: this.randomColor(Math.floor(Math.random() * 1000))
+        };
+    };
+    GrooveBox.prototype.generatorButtonPressed = function (index) {
+        console.log("generatorButtonPressed", index);
+        if (this.storedGenParams[index] != undefined) {
+            this.generatorParams = Object.assign({}, this.storedGenParams[index]);
+            this.generatorParamsIndex = index;
+        }
+        else {
+            this.storedGenParams[index] = __assign({}, this.generatorParams);
+            this.generatorParamsIndex = index;
+        }
     };
     GrooveBox.prototype.randomColor = function (seed) {
         var random = new SeededRandom(seed);

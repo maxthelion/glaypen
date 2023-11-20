@@ -50,7 +50,7 @@ export default class GeneratorParamsPanel {
     }
 
     update() {
-        // console.log(this.renderables)
+        this.element?.style.setProperty("border-color", this.grooveBox.generatorParams.color);
         this.renderables.forEach((renderable) => {
             renderable.update();
         })

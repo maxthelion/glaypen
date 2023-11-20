@@ -14,6 +14,8 @@ import Transport from "./transport.js";
 import TransportDisplay from "./ui/transportdisplay.js";
 import GeneratorToggleControl from "./ui/generatortogglecontrol.js";
 import PhraseSelector from "./ui/phraseselector.js";
+import GeneratorSavedStates from "./ui/generatorsavedstates.js";
+import GenChangeCanvas from "./ui/genchangecanvas.js";
 
 
 
@@ -54,14 +56,21 @@ export default class UI {
             })
             }
         });
+        let genChangeCanvas = new GenChangeCanvas(this, groovebox);
         let generatorToggleControl = new GeneratorToggleControl(this, groovebox);
         let transportDisplay = new TransportDisplay(this, groovebox);
-
+        let randomiseButton = document.querySelector("#randomiseBtn") as HTMLElement;
+        randomiseButton.addEventListener("click", (e) => {
+            groovebox.generateRandomSettings();
+        })
         this.generatorParamsPanel = new GeneratorParamsPanel(this, groovebox);
         this.clipParamsPanel = new ClipParamsPanel(this, groovebox);
         this.currentPane = this.generatorParamsPanel;
         let phraseSelector = new PhraseSelector(this, groovebox);
+        let generatorSavedStates = new GeneratorSavedStates(this, groovebox);
         this.renderables = [
+            genChangeCanvas,
+            generatorSavedStates,
             phraseSelector,
             generatorToggleControl,
             this.playButton,

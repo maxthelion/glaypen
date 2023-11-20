@@ -12,7 +12,7 @@ import SongSequencer from "./songsequencer.js";
 import DrumSequencer from "./drumsequencer.js";
 
 export interface GeneratorParams {
-    [key: string]: number;
+    [key: string]: number | string;
     "tonic": number;
     "scaleIndex": number;
     "stepsInBar": number;
@@ -20,6 +20,7 @@ export interface GeneratorParams {
     "pitchRange": number;
     "octaveRange": number;
     "octaveProbability": number;
+    "color": string;
 }
 type ScalePair = [string, number[]];
 
@@ -31,11 +32,14 @@ export default class GrooveBox {
     selectedOutput?: MIDIOutput;
     clipSaver: ClipSaver;
     generatorParams: GeneratorParams;
+    generatorParamsIndex?: number;
+    storedGenParams: GeneratorParams[] = [];
     manualPitchOptions: number[] = [];
     lastPitchReadAt?: number;
     clipIndex?: number;
     playingPitches: any = {};
     phraseIndex?: number;
+    genChanges: [GeneratorParams, number][] = [];
 
     scales: ScalePair[] = [
         ["Major", [0, 2, 4, 5, 7, 9, 11]],
@@ -61,6 +65,8 @@ export default class GrooveBox {
     constructor(midiAccess: MIDIAccess) {
         this.clipSaver = new ClipSaver(this);
         this.generatorParams = this.storageBox.getGeneratorParams();
+        const newGeneratorParams = { ...this.generatorParams };
+        this.genChanges.push([newGeneratorParams, 0]);
         this.ui = new UI(this);
         this.midiAccess = midiAccess;
         let midiOutput = this.getMidiOutput();
@@ -277,8 +283,33 @@ export default class GrooveBox {
     }
 
     setGeneratorParam(paramName: string, value: number) {
-        this.generatorParams[paramName] = value;
+        // Duplicate the generatorParams object
+        const newGeneratorParams = { ...this.generatorParams };
+
+        // Update the duplicated object with the new value
+        newGeneratorParams[paramName] = value;
+        newGeneratorParams.color = this.colorFromGenParams(newGeneratorParams);
+
+        // Update the original object reference
+        this.generatorParams = newGeneratorParams;
+
+        this.genChanges.push([newGeneratorParams, this.currentSequencer()!.absoluteStep]);
         this.storageBox.setGeneratorParams(this.generatorParams);
+    }
+
+    colorFromGenParams(generatorParams: GeneratorParams): string {
+        let maxCol = 64
+        let tonicColor = generatorParams.tonic / 2;
+        let scaleColor = generatorParams.scaleIndex / this.scales.length * maxCol;
+        let stepsInBarColor = generatorParams.stepsInBar / 16 * maxCol;
+        let stepProbabilityColor = generatorParams.stepProbability / 2;
+        let pitchRangeColor = generatorParams.pitchRange / 12 * maxCol;
+        let octaveRangeColor = generatorParams.octaveRange / 5 * maxCol;
+        let octaveProbabilityColor = generatorParams.octaveProbability / 2;
+        let r = 192 - Math.floor(tonicColor + scaleColor + stepsInBarColor);
+        let g = 192 - Math.floor(stepProbabilityColor + pitchRangeColor );
+        let b = 192 - Math.floor(octaveProbabilityColor + octaveRangeColor);
+        return `rgb(${r},${g},${b})`;
     }
 
     setClipParam(paramName: string, value: number) {
@@ -352,6 +383,30 @@ export default class GrooveBox {
 
     readingPitchOptions(): boolean {
         return this.lastPitchReadAt != undefined && window.performance.now() - this.lastPitchReadAt < 200;
+    }
+
+    generateRandomSettings() {
+        this.generatorParams = {
+            "tonic": 64 + (32 - Math.floor(Math.random() * 64)),
+            "scaleIndex": Math.floor(Math.random() * this.scales.length),
+            "stepsInBar": (Math.floor(Math.random() * 4) +1) * 4,
+            "stepProbability": Math.floor(Math.random() * 128),
+            "pitchRange": Math.floor(Math.random() * 12) + 1,
+            "octaveRange": Math.floor(Math.random() * 5) + 1,
+            "octaveProbability": Math.floor(Math.random() * 128),
+            color: this.randomColor(Math.floor(Math.random() * 1000))
+        }
+    }
+
+    generatorButtonPressed(index: number) {
+        console.log("generatorButtonPressed", index)
+        if (this.storedGenParams[index] != undefined) {
+            this.generatorParams = Object.assign({}, this.storedGenParams[index]);
+            this.generatorParamsIndex = index;
+        } else {
+            this.storedGenParams[index] = { ...this.generatorParams };
+            this.generatorParamsIndex = index;
+        }
     }
 
     randomColor(seed: number): string {

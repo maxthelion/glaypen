@@ -59,6 +59,12 @@ var Sequencer = /** @class */ (function () {
                 //     this.grooveBox.playPitch(chordPitch);
                 // }
                 // console.log("pitch", pitch);
+                if (pitch < 0) {
+                    pitch = 0;
+                }
+                else if (pitch > 127) {
+                    pitch = 127;
+                }
                 var step = new Step(currentStep, 120, [pitch]);
                 // this.grooveBox.playPitch(pitch);
                 this.grooveBox.playStep(step);
