@@ -1,41 +1,67 @@
 import GrooveBox from "./groovebox";
 import Step from "./step.js";
 
+export type StepRawData = {
+    pitches: number[];
+    velocity: number;
+    stepNumber: number;
+}
 export type ClipRawData = {
-    clipData: any;
     color: string;
     clipLength: number;
-    rawSteps: Step[];
+    rawSteps: StepRawData[];
 }
 export default class Clip {
+    index: number = 0;
     steps: (Step | null | undefined)[] = [];
     color: string = "#000000";
     clipData: any;
     originalSteps: (Step | null | undefined)[] = [];
     clipLength: number;
+    grooveBox: GrooveBox;
     
     constructor(groooveBox: GrooveBox, clipData: ClipRawData) {
+        this.grooveBox = groooveBox;
         this.clipData = clipData;
         this.color = clipData.color || "#000000";
         this.clipLength = clipData.clipLength || 16;
         this.steps = new Array(this.clipLength);
         for (let i = 0; i < this.clipLength; i++) {
-            this.steps[i] = clipData.rawSteps[i];
+            let rawStep = clipData.rawSteps[i];
+            if (rawStep !== undefined && rawStep !== null) {
+                this.steps[rawStep.stepNumber] = new Step(i, rawStep.velocity, rawStep.pitches);
+            }
         }
         this.originalSteps = this.steps.slice();
     }
 
     clipRawData(): ClipRawData {
+        this.clipData.clipLength = this.clipLength;
+        this.clipData.rawSteps = this.generateRawSteps();
         return this.clipData
+    }
+
+    generateRawSteps(): StepRawData[] {
+        let steps: StepRawData[] = [];
+        for(let i = 0; i < this.steps.length; i++) {
+            if (this.steps[i] != undefined && this.steps[i] != null) {
+                let step = this.steps[i]!;
+                step.stepNumber = i;
+                steps.push(step!.stepRawData());
+            } 
+        }
+        return steps;
     }
 
     shiftLeft() {
         console.log("shiftLeft", this.steps)
         this.steps.push(this.steps.shift()!);
+        this.save();
     }
 
     shiftRight() {
         this.steps.unshift(this.steps.pop()!);
+        this.save();
     }
 
     shufflePitches() {
@@ -48,6 +74,7 @@ export default class Clip {
                 step.pitches = [randomPitch];
             }
         });
+        this.save();
     }
 
     availablePitches(): number[] {
@@ -81,6 +108,7 @@ export default class Clip {
             let newStepIndex: number = availableStepsNumbers.splice(randomStepIndex, 1)[0];
             this.steps[newStepIndex] = step;
         });
+        this.save();
     }
 
     getOccupiedSteps(): Step[] {
@@ -135,6 +163,7 @@ export default class Clip {
                 this.steps[indexForDeletion] = undefined;
             }
         }
+        this.save();
     }
 
     setClipLength(length: number) {
@@ -148,6 +177,7 @@ export default class Clip {
         } else if (this.steps.length > length) {
             this.steps = this.steps.slice(0, length);
         }
+        this.save();
     }
 
     getStepAtPosition(position: number): Step | null | undefined {
@@ -176,5 +206,8 @@ export default class Clip {
     getParam(param: string): number {
         return this.clipData[param];
     }
-
+    
+    save() {
+        this.grooveBox.saveClip(this)
+    }
 }

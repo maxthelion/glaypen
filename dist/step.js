@@ -6,6 +6,13 @@ var Step = /** @class */ (function () {
         this.velocity = velocity;
         this.pitches = pitches;
     }
+    Step.prototype.stepRawData = function () {
+        return {
+            pitches: this.pitches,
+            velocity: this.velocity,
+            stepNumber: this.stepNumber
+        };
+    };
     return Step;
 }());
 export default Step;

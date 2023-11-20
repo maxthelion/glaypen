@@ -273,6 +273,11 @@ var GrooveBox = /** @class */ (function () {
                 break;
         }
     };
+    GrooveBox.prototype.saveClip = function (clip) {
+        if (this.clipIndex != undefined) {
+            this.clipSaver.saveClipToIndex(clip, this.clipIndex);
+        }
+    };
     GrooveBox.prototype.noteOn = function (pitch) {
         if (this.readingPitchOptions()) {
             this.manualPitchOptions.push(pitch);

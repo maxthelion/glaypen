@@ -1,3 +1,5 @@
+import { StepRawData } from "./clip";
+
 export default class Step {
     pitches: number[] = [];
     velocity: number = 0;
@@ -9,4 +11,11 @@ export default class Step {
         this.pitches = pitches;
     }
 
+    stepRawData(): StepRawData {
+        return {
+            pitches: this.pitches,
+            velocity: this.velocity,
+            stepNumber: this.stepNumber
+        }
+    }
 }

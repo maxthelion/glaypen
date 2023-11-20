@@ -10,27 +10,47 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
 import Step from "./step.js";
 var Clip = /** @class */ (function () {
     function Clip(groooveBox, clipData) {
+        this.index = 0;
         this.steps = [];
         this.color = "#000000";
         this.originalSteps = [];
+        this.grooveBox = groooveBox;
         this.clipData = clipData;
         this.color = clipData.color || "#000000";
         this.clipLength = clipData.clipLength || 16;
         this.steps = new Array(this.clipLength);
         for (var i = 0; i < this.clipLength; i++) {
-            this.steps[i] = clipData.rawSteps[i];
+            var rawStep = clipData.rawSteps[i];
+            if (rawStep !== undefined && rawStep !== null) {
+                this.steps[rawStep.stepNumber] = new Step(i, rawStep.velocity, rawStep.pitches);
+            }
         }
         this.originalSteps = this.steps.slice();
     }
     Clip.prototype.clipRawData = function () {
+        this.clipData.clipLength = this.clipLength;
+        this.clipData.rawSteps = this.generateRawSteps();
         return this.clipData;
+    };
+    Clip.prototype.generateRawSteps = function () {
+        var steps = [];
+        for (var i = 0; i < this.steps.length; i++) {
+            if (this.steps[i] != undefined && this.steps[i] != null) {
+                var step = this.steps[i];
+                step.stepNumber = i;
+                steps.push(step.stepRawData());
+            }
+        }
+        return steps;
     };
     Clip.prototype.shiftLeft = function () {
         console.log("shiftLeft", this.steps);
         this.steps.push(this.steps.shift());
+        this.save();
     };
     Clip.prototype.shiftRight = function () {
         this.steps.unshift(this.steps.pop());
+        this.save();
     };
     Clip.prototype.shufflePitches = function () {
         console.log("shufflePitches", this.steps);
@@ -42,6 +62,7 @@ var Clip = /** @class */ (function () {
                 step.pitches = [randomPitch];
             }
         });
+        this.save();
     };
     Clip.prototype.availablePitches = function () {
         var pitches = [];
@@ -73,6 +94,7 @@ var Clip = /** @class */ (function () {
             var newStepIndex = availableStepsNumbers.splice(randomStepIndex, 1)[0];
             _this.steps[newStepIndex] = step;
         });
+        this.save();
     };
     Clip.prototype.getOccupiedSteps = function () {
         return this.steps.filter(function (step) {
@@ -121,6 +143,7 @@ var Clip = /** @class */ (function () {
                 this.steps[indexForDeletion] = undefined;
             }
         }
+        this.save();
     };
     Clip.prototype.setClipLength = function (length) {
         console.log("setClipLength", length);
@@ -134,6 +157,7 @@ var Clip = /** @class */ (function () {
         else if (this.steps.length > length) {
             this.steps = this.steps.slice(0, length);
         }
+        this.save();
     };
     Clip.prototype.getStepAtPosition = function (position) {
         return this.steps[position % this.steps.length];
@@ -155,6 +179,9 @@ var Clip = /** @class */ (function () {
     };
     Clip.prototype.getParam = function (param) {
         return this.clipData[param];
+    };
+    Clip.prototype.save = function () {
+        this.grooveBox.saveClip(this);
     };
     return Clip;
 }());

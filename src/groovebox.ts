@@ -327,7 +327,11 @@ export default class GrooveBox {
         }
     }
 
-
+    saveClip(clip: Clip) {
+        if (this.clipIndex != undefined) {
+            this.clipSaver.saveClipToIndex(clip, this.clipIndex);
+        }
+    }
     
     noteOn(pitch: number) {
         if (this.readingPitchOptions()){
