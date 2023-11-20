@@ -9,16 +9,8 @@ export default class ClipSaver {
     constructor(grooveBox: GrooveBox) {
         this.grooveBox = grooveBox;
         console.log("ClipSaver constructor", grooveBox.maxClips);
-        this.savedClips = new Array(grooveBox.maxClips);
-        let storedClips = this.getAllClipsFromStorage();
-        storedClips.forEach((clipRawData, index) => {
-            // console.log(index)
-            if (clipRawData !== undefined) {
-
-                let clip = new Clip(this.grooveBox, clipRawData);
-                this.savedClips[index] = clip;
-            }
-        });
+        this.loadClipsArray();
+        console.log("ClipSaver constructor", this.savedClips);
     }
 
     saveClipToIndex(clip: Clip, index: number) {
@@ -37,8 +29,22 @@ export default class ClipSaver {
     }
 
     clearClipAtIndex(index: number) {
-        this.savedClips.splice(index, 1);
+        //this.savedClips.splice(index, 1)
         this.grooveBox.storageBox.clearClipAtIndex(index);
+        this.loadClipsArray();
+    }
+
+    loadClipsArray(){
+        this.savedClips = new Array(this.grooveBox.maxClips);
+        let storedClips = this.getAllClipsFromStorage();
+        storedClips.forEach((clipRawData, index) => {
+            // console.log(index)
+            if (clipRawData !== undefined) {
+
+                let clip = new Clip(this.grooveBox, clipRawData);
+                this.savedClips[index] = clip;
+            }
+        });
     }
 
     getAllClipsFromStorage(): (ClipRawData| undefined)[] {

@@ -133,6 +133,7 @@ var GrooveBox = /** @class */ (function () {
             else if (this.clipIndex !== undefined) {
                 this.songSequencer.rowIndex = Math.floor(this.clipIndex / 8);
             }
+            this.songSequencer.updateClipData();
         }
         this.ui.setMode(modeIndex);
     };
@@ -177,6 +178,9 @@ var GrooveBox = /** @class */ (function () {
         for (var i = 0; i < this.maxClips; i++) {
             this.clipSaver.clearClipAtIndex(i);
         }
+    };
+    GrooveBox.prototype.clearClipAtIndex = function (index) {
+        this.clipSaver.clearClipAtIndex(index);
     };
     GrooveBox.prototype.showPrefsModal = function () {
         this.ui.showPrefsModal();

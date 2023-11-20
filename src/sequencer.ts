@@ -3,7 +3,7 @@ import Clip from "./clip.js";
 import Step from "./step.js";
 
 export type SequencerInterface = {
-    
+
 }
 
 export default class Sequencer implements SequencerInterface{

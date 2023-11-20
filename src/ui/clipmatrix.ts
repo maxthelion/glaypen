@@ -5,6 +5,8 @@ import UI from "../ui";
 export default class ClipMatrix  implements Renderable{
     grooveBox: GrooveBox;
     clipMatrix: HTMLElement | null;
+    lastClipIndex: number = -1;
+    lastClipIndexes: number[] = [];
 
     constructor(ui: UI, grooveBox: GrooveBox) {
         this.grooveBox = grooveBox;
@@ -26,26 +28,44 @@ export default class ClipMatrix  implements Renderable{
                 let index = element!.dataset.step!;
                 this.grooveBox.saveOrLoadClipAtIndex(parseInt(index))
             });
+
+            step.addEventListener("contextmenu", (e) => {
+                console.log("rightclick")
+                let element = e.target as HTMLElement;
+                let index = element!.dataset.step!;
+                this.grooveBox.clearClipAtIndex(parseInt(index))
+                e.preventDefault();
+                return false;
+            });
         }
     }
 
     update() {
         if (this.clipMatrix !== null) {
-            this.clipMatrix.querySelectorAll("a").forEach((step) => {
-                step.classList.remove("active");
-            })
-            if (this.grooveBox.clipSaver.clipIndexes().length > 0) {
-                // console.log("this.grooveBox.clipSaver.clipIndexes()", this.grooveBox.clipSaver.clipIndexes())
-                this.grooveBox.clipSaver.clipIndexes().forEach((clipIndex) => {
-                    let cell = this.clipMatrix!.querySelector(".step" + clipIndex) as HTMLElement;
-                    if (cell !== null){
-                        // console.log(this.grooveBox.clipIndex)
-                        if (this.grooveBox.clipIndex === clipIndex) {
-                            cell.classList.add("active");
-                        }
-                        cell.style.backgroundColor = this.grooveBox.clipSaver.clipAtIndex(clipIndex).color; 
-                    }
+            
+            if (this.grooveBox.clipIndex !== null && this.grooveBox.clipIndex !== undefined
+                && this.grooveBox.clipIndex !== this.lastClipIndex) {
+                
+                this.clipMatrix.querySelectorAll("a").forEach((step) => {
+                    step.classList.remove("active");
                 })
+                let cell = this.clipMatrix!.querySelector(".step" + this.grooveBox.clipIndex) as HTMLElement;
+                cell.classList.add("active");
+                this.lastClipIndex = this.grooveBox.clipIndex;
+            }
+            
+
+            if (this.grooveBox.clipSaver.clipIndexes() !== this.lastClipIndexes){
+                let clipIndexes = this.grooveBox.clipSaver.clipIndexes();
+                this.lastClipIndexes = clipIndexes;
+                for (var i = 0; i < this.grooveBox.maxClips; i++) {
+                    let cell = this.clipMatrix!.querySelector(".step" + i) as HTMLElement;
+                    if (clipIndexes.includes(i) === true) {
+                        cell.style.backgroundColor = this.grooveBox.clipSaver.clipAtIndex(i).color;
+                    } else {
+                        cell.style.backgroundColor = "transparent";
+                    }
+                }
             }
         }
     }

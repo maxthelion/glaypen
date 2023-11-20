@@ -9,6 +9,7 @@ import StorageBox from "./storagebox.js";
 import MidiInputHandler from "./midiinputhandler.js";
 import Step from "./step.js";
 import SongSequencer from "./songsequencer.js";
+import DrumSequencer from "./drumsequencer.js";
 
 export interface GeneratorParams {
     [key: string]: number;
@@ -170,6 +171,7 @@ export default class GrooveBox {
             } else if ( this.clipIndex !== undefined) {
                 this.songSequencer!.rowIndex = Math.floor(this.clipIndex / 8);
             }
+            this.songSequencer!.updateClipData();
         }
         this.ui.setMode(modeIndex);
     }
@@ -217,6 +219,10 @@ export default class GrooveBox {
         for (let i = 0; i < this.maxClips; i++) {
             this.clipSaver.clearClipAtIndex(i);
         }
+    }
+
+    clearClipAtIndex(index: number) {
+        this.clipSaver.clearClipAtIndex(index);
     }
 
     showPrefsModal() {

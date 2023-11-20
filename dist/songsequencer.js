@@ -20,27 +20,59 @@ var SongSequencer = /** @class */ (function (_super) {
         var _this = _super.call(this, grooveBox) || this;
         _this.bar = 0;
         _this.rowIndex = 0;
+        _this.phraseStartIndex = 0;
+        _this.lastRowIndex = 0;
+        _this.clips = [];
+        _this.stepsInPhrase = 0;
+        _this.clipStep = 0;
         return _this;
     }
     SongSequencer.prototype.step = function (loopStep) {
+        this.updateClipData();
         this.absoluteStep += 1;
-        this.currentStep = this.absoluteStep % 16;
+        var phraseStep = this.absoluteStep % this.stepsInPhrase;
+        var allSteps = 0;
+        for (var i = 0; i < this.clips.length; i++) {
+            if (phraseStep < (this.clips[i].clipLength + allSteps)) {
+                this.clip = this.clips[i];
+                this.grooveBox.clipIndex = i + (this.rowIndex * 8);
+                this.clipStep = phraseStep - allSteps;
+                this.currentStep = this.clipStep;
+                this.clip = this.clips[i];
+                break;
+            }
+            else {
+                allSteps += this.clips[i].clipLength;
+            }
+        }
+        this.phraseStartIndex = this.rowIndex * 8;
         this.bar = Math.floor(this.absoluteStep / 16) % 8;
         this.update(this.absoluteStep);
-        this.grooveBox.clipIndex = this.bar + (this.rowIndex * 8);
         // console.log(this.rowIndex, this.bar, this.grooveBox.clipIndex)
     };
-    SongSequencer.prototype.update = function (absoluteStep) {
-        var clip = this.getClipForBar(this.bar);
-        this.clip = clip;
+    SongSequencer.prototype.update = function (clipStep) {
+        var clip = this.clip;
         // console.log("SongSequencer update", this.clip)
         if (clip != undefined &&
-            clip.getStepAtPosition(this.currentStep) != undefined &&
-            clip.getStepAtPosition(this.currentStep) != null) {
-            var step = clip.getStepAtPosition(this.currentStep);
+            clip.getStepAtPosition(this.clipStep) != undefined &&
+            clip.getStepAtPosition(this.clipStep) != null) {
+            var step = clip.getStepAtPosition(this.clipStep);
             var pitches = step.pitches;
             for (var i = 0; i < pitches.length; i++) {
                 this.grooveBox.playPitch(pitches[i]);
+            }
+        }
+    };
+    SongSequencer.prototype.updateClipData = function () {
+        console.log("updateClipData", this.rowIndex);
+        this.lastRowIndex = this.rowIndex;
+        this.clips = [];
+        this.stepsInPhrase = 0;
+        for (var i = 0; i < 8; i++) {
+            var clip = this.grooveBox.clipSaver.savedClips[i + (this.rowIndex * 8)];
+            if (clip != undefined) {
+                this.clips[i] = clip;
+                this.stepsInPhrase += clip.clipLength;
             }
         }
     };
