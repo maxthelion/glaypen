@@ -216,6 +216,25 @@ div.active {
     text-align: center;
     vertical-align: middle;
 }
+
+/* rotary controls */
+.rotarycontrol {
+    position: relative;
+}
+.rotaryvaluelabel {
+    width: 30px;
+    color: white;
+    position: absolute;
+    top: 18px;
+    left: 66px;
+    text-align: center;
+}
+.rotarycontrol .rotarynamelabel {
+    background-color: #333;
+    color: #eee;
+}
+/* rotary controls */
+
 #generatorparams {
     padding: 10px;
     border: 3px solid #222;

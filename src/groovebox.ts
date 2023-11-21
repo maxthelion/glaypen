@@ -323,7 +323,7 @@ export default class GrooveBox {
     }
 
     getGenParamsByIndex(index: number): GeneratorParams {
-        console.log(index, this.generatorParamsArray)
+        // console.log(index, this.generatorParamsArray)
         return this.generatorParamsArray[index];
     }
 

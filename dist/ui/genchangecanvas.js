@@ -35,7 +35,6 @@ var GenChangeCanvas = /** @class */ (function () {
             }
             this.ctx.fillRect(stepNumber * stepWidth, 0, stepWidth * nextStepIndex, this.canvasHeight);
             if (genParamsIndex == this.grooveBox.currentGenParamIndex) {
-                console.log("stepNumber", stepNumber, this.grooveBox.currentGenParamStepIndex);
                 this.ctx.fillStyle = "rgba(255, 255, 255, 1)";
                 this.ctx.fillRect(stepNumber * stepWidth, 0, stepWidth * nextStepIndex, 2);
             }

@@ -272,7 +272,7 @@ var GrooveBox = /** @class */ (function () {
         }
     };
     GrooveBox.prototype.getGenParamsByIndex = function (index) {
-        console.log(index, this.generatorParamsArray);
+        // console.log(index, this.generatorParamsArray)
         return this.generatorParamsArray[index];
     };
     GrooveBox.prototype.colorFromGenParams = function (generatorParams) {

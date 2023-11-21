@@ -1,4 +1,5 @@
 import RotaryDial from "./rotarydial.js";
+import RotaryControl from "./rotarycontrol.js";
 var GeneratorParamsPanel = /** @class */ (function () {
     function GeneratorParamsPanel(ui, grooveBox) {
         var _this = this;
@@ -6,8 +7,34 @@ var GeneratorParamsPanel = /** @class */ (function () {
         this.grooveBox = grooveBox;
         this.ui = ui;
         this.element = document.querySelector("#generatorparams");
-        this.paramElements = this.element.querySelectorAll(".genparam");
         this.renderables = [];
+        // tonic rotary
+        var tonicRotary = new RotaryControl(ui, grooveBox);
+        tonicRotary.setValue = function (value) {
+            var tonicValue = Math.floor(value * 128);
+            this.grooveBox.setGeneratorParam("tonic", tonicValue);
+        };
+        tonicRotary.readValue = function () { return this.grooveBox.generatorParams.tonic / 128; };
+        tonicRotary.displayValue = function () {
+            var pitches = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+            return pitches[this.grooveBox.generatorParams.tonic % 12];
+        };
+        tonicRotary.setLabel("Root note");
+        this.element.prepend(tonicRotary.element);
+        this.renderables.push(tonicRotary);
+        // pitchProbability Rotary 
+        var pitchRangeRotary = new RotaryControl(ui, grooveBox);
+        pitchRangeRotary.setValue = function (value) {
+            var modifiedValue = Math.floor(value * 12);
+            this.grooveBox.setGeneratorParam("pitchRange", modifiedValue);
+        };
+        pitchRangeRotary.readValue = function () { return this.grooveBox.generatorParams.pitchRange / 12; };
+        pitchRangeRotary.displayValue = function () { return this.grooveBox.generatorParams.pitchRange.toString(); };
+        pitchRangeRotary.getIncrement = function () { return 1 / 12; };
+        pitchRangeRotary.setLabel("Pitch range");
+        this.element.prepend(pitchRangeRotary.element);
+        this.renderables.push(pitchRangeRotary);
+        this.paramElements = this.element.querySelectorAll(".genparam");
         var scaleSelect = this.element.querySelector("#scale");
         var scales = this.grooveBox.scales;
         for (var i = 0; i < scales.length; i++) {
