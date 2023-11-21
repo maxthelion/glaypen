@@ -17,12 +17,26 @@ export default class GenChangeCanvas implements Renderable {
         this.ui = ui;
         this.canvasWidth = this.htmlCanvas.width;
         this.canvasHeight = this.htmlCanvas.height;
+        this.htmlCanvas.addEventListener("wheel", this.onWheel.bind(this.ui));
+        this.htmlCanvas.addEventListener("click", this.onHistoryClick.bind(this));
+    }
+
+    onWheel(e: WheelEvent) {
+
+    }
+    
+    onHistoryClick(e: MouseEvent) {
+        let x = e.offsetX;
+        let stepWidth = this.canvasWidth / this.grooveBox.pitchHistory.maxStep;
+        let stepNumber = Math.floor(x / stepWidth);
+        this.grooveBox.setGenParamsFromIndex(stepNumber);
     }
 
     update(): void {
         let index = 0;
         for(let i = 0; i < this.grooveBox.genChanges.length; i++) {
-            let genParams = this.grooveBox.genChanges[i][0];
+            let genParamsIndex: number = this.grooveBox.genChanges[i][0];
+            let genParams = this.grooveBox.getGenParamsByIndex(genParamsIndex);
             let stepNumber = this.grooveBox.genChanges[i][1];
             this.ctx!.fillStyle = genParams.color;
             let stepWidth = this.canvasWidth / this.grooveBox.pitchHistory.maxStep;
@@ -34,7 +48,11 @@ export default class GenChangeCanvas implements Renderable {
                 nextStepIndex = nextItem[1];
             }
             this.ctx!.fillRect(stepNumber * stepWidth, 0, stepWidth * nextStepIndex, this.canvasHeight);
-            
+            if (genParamsIndex == this.grooveBox.currentGenParamIndex) {
+                console.log("stepNumber", stepNumber, this.grooveBox.currentGenParamStepIndex);
+                this.ctx!.fillStyle = "rgba(255, 255, 255, 1)";
+                this.ctx!.fillRect(stepNumber * stepWidth, 0, stepWidth * nextStepIndex, 2);
+            }
         }
 
     }

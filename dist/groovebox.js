@@ -24,6 +24,7 @@ var GrooveBox = /** @class */ (function () {
         var _this = this;
         this.maxClips = 64;
         this.storedGenParams = [];
+        this.generatorParamsArray = [];
         this.manualPitchOptions = [];
         this.playingPitches = {};
         this.genChanges = [];
@@ -42,8 +43,9 @@ var GrooveBox = /** @class */ (function () {
         this.storageBox = new StorageBox();
         this.clipSaver = new ClipSaver(this);
         this.generatorParams = this.storageBox.getGeneratorParams();
-        var newGeneratorParams = __assign({}, this.generatorParams);
-        this.genChanges.push([newGeneratorParams, 0]);
+        this.generatorParamsArray.push(this.generatorParams);
+        this.genChanges.push([0, 0]);
+        this.currentGenParamStepIndex = 0;
         this.ui = new UI(this);
         this.midiAccess = midiAccess;
         var midiOutput = this.getMidiOutput();
@@ -249,8 +251,29 @@ var GrooveBox = /** @class */ (function () {
         newGeneratorParams.color = this.colorFromGenParams(newGeneratorParams);
         // Update the original object reference
         this.generatorParams = newGeneratorParams;
-        this.genChanges.push([newGeneratorParams, this.currentSequencer().absoluteStep]);
+        this.generatorParamsArray.push(newGeneratorParams);
+        this.currentGenParamIndex = this.generatorParamsArray.length - 1;
+        this.genChanges.push([this.currentGenParamIndex, this.currentSequencer().absoluteStep]);
         this.storageBox.setGeneratorParams(this.generatorParams);
+    };
+    GrooveBox.prototype.setGenParamsFromIndex = function (index) {
+        var matchedParams = this.genChanges.filter(function (genChange) {
+            return genChange[1] <= index;
+        }).pop();
+        if (matchedParams != undefined
+            // don't record a step change if the params haven't changed
+            && this.currentGenParamStepIndex != matchedParams[1]) {
+            var foundIndex = matchedParams[0];
+            var newGeneratorParams = this.getGenParamsByIndex(foundIndex);
+            this.generatorParams = newGeneratorParams;
+            this.currentGenParamStepIndex = matchedParams[1];
+            this.currentGenParamIndex = foundIndex;
+            this.genChanges.push([foundIndex, this.currentSequencer().absoluteStep]);
+        }
+    };
+    GrooveBox.prototype.getGenParamsByIndex = function (index) {
+        console.log(index, this.generatorParamsArray);
+        return this.generatorParamsArray[index];
     };
     GrooveBox.prototype.colorFromGenParams = function (generatorParams) {
         var maxCol = 64;
@@ -349,11 +372,11 @@ var GrooveBox = /** @class */ (function () {
         console.log("generatorButtonPressed", index);
         if (this.storedGenParams[index] != undefined) {
             this.generatorParams = Object.assign({}, this.storedGenParams[index]);
-            this.generatorParamsIndex = index;
+            this.genParamPresetIndex = index;
         }
         else {
             this.storedGenParams[index] = __assign({}, this.generatorParams);
-            this.generatorParamsIndex = index;
+            this.genParamPresetIndex = index;
         }
     };
     GrooveBox.prototype.randomColor = function (seed) {

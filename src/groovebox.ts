@@ -32,14 +32,19 @@ export default class GrooveBox {
     selectedOutput?: MIDIOutput;
     clipSaver: ClipSaver;
     generatorParams: GeneratorParams;
-    generatorParamsIndex?: number;
+    // for the buttons under the params
+    genParamPresetIndex?: number;
+    // for the history view
+    currentGenParamStepIndex?: number;
+    currentGenParamIndex?: number;
     storedGenParams: GeneratorParams[] = [];
+    generatorParamsArray: GeneratorParams[] = [];
     manualPitchOptions: number[] = [];
     lastPitchReadAt?: number;
     clipIndex?: number;
     playingPitches: any = {};
     phraseIndex?: number;
-    genChanges: [GeneratorParams, number][] = [];
+    genChanges: [number, number][] = [];
 
     scales: ScalePair[] = [
         ["Major", [0, 2, 4, 5, 7, 9, 11]],
@@ -65,8 +70,9 @@ export default class GrooveBox {
     constructor(midiAccess: MIDIAccess) {
         this.clipSaver = new ClipSaver(this);
         this.generatorParams = this.storageBox.getGeneratorParams();
-        const newGeneratorParams = { ...this.generatorParams };
-        this.genChanges.push([newGeneratorParams, 0]);
+        this.generatorParamsArray.push(this.generatorParams);
+        this.genChanges.push([0, 0]);
+        this.currentGenParamStepIndex = 0;
         this.ui = new UI(this);
         this.midiAccess = midiAccess;
         let midiOutput = this.getMidiOutput();
@@ -292,9 +298,33 @@ export default class GrooveBox {
 
         // Update the original object reference
         this.generatorParams = newGeneratorParams;
-
-        this.genChanges.push([newGeneratorParams, this.currentSequencer()!.absoluteStep]);
+        this.generatorParamsArray.push(newGeneratorParams)
+        this.currentGenParamIndex = this.generatorParamsArray.length - 1;
+        this.genChanges.push([this.currentGenParamIndex, this.currentSequencer()!.absoluteStep]);
         this.storageBox.setGeneratorParams(this.generatorParams);
+    }
+
+    setGenParamsFromIndex(index: number) {
+        let matchedParams = this.genChanges.filter((genChange) => {
+            return genChange[1] <= index;
+        }).pop();
+        if (matchedParams != undefined
+            // don't record a step change if the params haven't changed
+            && this.currentGenParamStepIndex != matchedParams[1] ) {
+
+            let foundIndex = matchedParams[0];
+            const newGeneratorParams = this.getGenParamsByIndex(foundIndex);
+            this.generatorParams = newGeneratorParams;
+            this.currentGenParamStepIndex = matchedParams[1];
+            this.currentGenParamIndex = foundIndex;
+            this.genChanges.push([foundIndex, this.currentSequencer()!.absoluteStep]);
+
+        }
+    }
+
+    getGenParamsByIndex(index: number): GeneratorParams {
+        console.log(index, this.generatorParamsArray)
+        return this.generatorParamsArray[index];
     }
 
     colorFromGenParams(generatorParams: GeneratorParams): string {
@@ -402,10 +432,10 @@ export default class GrooveBox {
         console.log("generatorButtonPressed", index)
         if (this.storedGenParams[index] != undefined) {
             this.generatorParams = Object.assign({}, this.storedGenParams[index]);
-            this.generatorParamsIndex = index;
+            this.genParamPresetIndex = index;
         } else {
             this.storedGenParams[index] = { ...this.generatorParams };
-            this.generatorParamsIndex = index;
+            this.genParamPresetIndex = index;
         }
     }
 
