@@ -3,6 +3,8 @@ import UI from "../ui";
 import RotaryDial from "./rotarydial.js";
 import Renderable from "../interfaces/renderable";
 import RotaryControl from "./rotarycontrol.js";
+import PitchControl from "./generator/pitchcontrol.js";
+import StepControl from "./generator/stepcontrol.js";
 
 export default class GeneratorParamsPanel {
     grooveBox: GrooveBox;
@@ -11,6 +13,7 @@ export default class GeneratorParamsPanel {
     paramElements: NodeListOf<HTMLElement>;
     rotaryElements: RotaryDial[];
     renderables: Renderable[] = [];
+    genPanels: Renderable[] = [];
 
     constructor(ui: UI, grooveBox: GrooveBox) {
         this.grooveBox = grooveBox;
@@ -18,60 +21,30 @@ export default class GeneratorParamsPanel {
         this.element = document.querySelector("#generatorparams")!;
         this.renderables = [];
 
-        // tonic rotary
-        let tonicRotary = new RotaryControl(ui, grooveBox);
-        tonicRotary.setValue = function (value: number) {
-            let tonicValue = Math.floor(value * 128);
-            this.grooveBox.setGeneratorParam("tonic", tonicValue);
-        }
-        tonicRotary.readValue = function () { return this.grooveBox.generatorParams.tonic /  128; }
-        tonicRotary.displayValue = function () {
-            let pitches = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A","A#", "B"]
-            return pitches[ this.grooveBox.generatorParams.tonic % 12 ];
-        }
-        tonicRotary.setLabel("Root note");
-        this.element.prepend(tonicRotary.element);
-        this.renderables.push(tonicRotary);
-        
-        // pitchProbability Rotary 
-        let pitchRangeRotary = new RotaryControl(ui, grooveBox);
-        pitchRangeRotary.setValue = function (value: number) {
-            let modifiedValue = Math.floor(value * 12);
-            this.grooveBox.setGeneratorParam("pitchRange", modifiedValue);
-        }
-        pitchRangeRotary.readValue = function () { return this.grooveBox.generatorParams.pitchRange /  12; }
-        pitchRangeRotary.displayValue = function () { return this.grooveBox.generatorParams.pitchRange.toString(); }
-        pitchRangeRotary.getIncrement = function() { return 1 / 12; }
-        pitchRangeRotary.setLabel("Pitch range");
-        this.element.prepend(pitchRangeRotary.element);
-        this.renderables.push(pitchRangeRotary);
+        let pitchControls = new PitchControl(ui, grooveBox);
+        this.renderables.push(pitchControls);
+        this.genPanels.push(pitchControls);
 
-        // stepProbability Rotary
-        let stepProbabilityRotary = new RotaryControl(ui, grooveBox);
-        stepProbabilityRotary.setValue = function (value: number) {
-            let modifiedValue = Math.floor(value * 128);
-            this.grooveBox.setGeneratorParam("stepProbability", modifiedValue);
-        }
-        stepProbabilityRotary.readValue = function () { return this.grooveBox.generatorParams.stepProbability /  128; }
-        stepProbabilityRotary.displayValue = function () { return this.grooveBox.generatorParams.stepProbability.toString(); }
-        stepProbabilityRotary.getIncrement = function() { return 1 / 128; }
-        stepProbabilityRotary.setLabel("Step probability");
-        this.element.prepend(stepProbabilityRotary.element);
-        this.renderables.push(stepProbabilityRotary);
+        let stepControls = new StepControl(ui, grooveBox);
+        this.renderables.push(stepControls);
+        this.genPanels.push(stepControls);
+        
+        // generator parts tabs
+        let generatorPartsTabs = document.querySelector("#generatorpartstabs") as HTMLDivElement;
+        let generatorPartsTabsButtons = generatorPartsTabs.querySelectorAll(".generatorpartstab");
+        generatorPartsTabsButtons.forEach((button) => {
+            button.addEventListener("click", (e) => {
+                let element = e.target as HTMLElement;
+                let partid = element.dataset.partid;
+                this.setGeneratorPart(partid!);
+            })
+        })
+        this.setGeneratorPart("0")
+        
 
         this.paramElements = this.element.querySelectorAll(".genparam");
         
-        let scaleSelect = this.element.querySelector("#scale") as HTMLSelectElement;
-        let scales = this.grooveBox.scales;
-        for(var i = 0; i < scales.length; i++){
-            let option = document.createElement("option");
-            option.value = i.toString();
-            option.text = scales[i][0];
-            if (this.grooveBox.generatorParams.scaleIndex == i){
-                option.selected = true;
-            }
-            scaleSelect.add(option);
-        }
+
         this.paramElements.forEach((paramElement) => {
             if (paramElement.id !== "scale") {
                 let paramId = paramElement.dataset.paramid;
@@ -91,6 +64,23 @@ export default class GeneratorParamsPanel {
             return new RotaryDial(ui, grooveBox, element as HTMLElement);
         })
         this.renderables = this.renderables.concat(this.rotaryElements);
+    }
+
+    setGeneratorPart(partId: string) {
+        let generatorPartsTabs = document.querySelector("#generatorpartstabs") as HTMLDivElement;
+        let generatorPartsTabsButtons = generatorPartsTabs.querySelectorAll(".generatorpartstab");
+        generatorPartsTabsButtons.forEach((button) => {
+            let buttonEl = button as HTMLButtonElement;
+            if (buttonEl.dataset.partid !== partId){
+                buttonEl.classList.remove("selected");
+            } else {
+                buttonEl.classList.add("selected");
+            }
+        })
+        let panelIndex = parseInt(partId);
+        this.element!.innerHTML = "";
+        this.element?.appendChild(this.genPanels[panelIndex].element!);
+
     }
 
     update() {

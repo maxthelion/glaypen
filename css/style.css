@@ -206,13 +206,38 @@ div.active {
     background-color: #333;
 }
 
-#generatorparams, .halfcells {
+/* generator controls */
+#genpane {
+    display: grid;
+    grid-template-rows: 30px 1fr 30px 30px;
+    grid-gap: 5px;
+    height: 100%;
+}
+#generatorpartstabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 10px;
+}
+#generatorpartstabs .selected{
+    background-color: cornflowerblue;
+}
+.generatorpartstab {
+    display: block;
+    height: 100%;
+    color: #000;
+    background-color: #cccccc;
+    text-decoration: none;
+    font-size: 20px;
+    text-align: center;
+    line-height: 30px;
+}
+.gencontrolset, .halfcells {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 80px;
-    grid-gap: 20px;
+    grid-gap: 10px;
 }
-#generatorparams div, .halfcells div {
+.gencontrolset div, .halfcells div {
     text-align: center;
     vertical-align: middle;
 }

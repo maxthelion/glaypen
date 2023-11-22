@@ -48,7 +48,11 @@
             <div class="leftcol">
                 <div id="genpane" class="modepane">
                     <div id="gentop">
-                        <a href="#" id="randomiseBtn">&#128163;</a>
+                        <div id="generatorpartstabs">
+                            <div class="generatorpartstab" data-partid="0">Pitch</div>
+                            <div class="generatorpartstab" data-partid="1">Steps</div>
+                            <div class="generatorpartstab" data-partid="2">Mods</div>
+                        </div>
                     </div>
                     <div id="generatorparams">
                         
@@ -62,11 +66,7 @@
                             <label for="stepsinbar">Steps in bar</label>
                         </div>
 
-                        <div>
-                            <select class="genparam" name="scale" id="scale" data-paramid="scaleIndex">
-                            </select>
-                            <label for="scale">Scale</label>
-                        </div>
+
 
                         <div>
                             <div class="rotary" data-paramid="octaveRange">
@@ -87,6 +87,8 @@
                             <label for="octave">Octave probability</label>
                         </div>
                     </div>
+                    <a href="#" id="randomiseBtn">&#128163;</a>
+
                     <div id="generatorSavedStates">
 
                     </div>
