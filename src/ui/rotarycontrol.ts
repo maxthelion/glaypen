@@ -50,21 +50,23 @@ export default class RotaryControl implements Renderable {
     }
 
     onWheel(e: WheelEvent) {
-        console.log("onWheel", this);
+        // console.log("onWheel", this);
+        
         if ( Date.now() - this.lastReadTime  < 20){
             e.preventDefault();
             return false;
         }
+        let speed = Math.ceil(Math.abs(e.deltaY) / (500 * this.getIncrement()));
         let increment = this.getIncrement();
-        let value = this.readValue();
+        let newValue = this.readValue();
         if (e.deltaY > 0) {
-            if (value < 1 - increment)
-                value += increment;
+            newValue += increment * speed; 
         } else {
-            if (value > increment)
-                value -= increment;
+            newValue -= increment * speed;
         }
-        this.setValue(value);
+        if (newValue > 1) { newValue = 1;}
+        if (newValue < 0) { newValue = 0;}
+        this.setValue(newValue);
         this.lastReadTime = Date.now();
         e.preventDefault();
         return false;

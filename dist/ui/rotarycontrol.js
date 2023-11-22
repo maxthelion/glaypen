@@ -33,22 +33,27 @@ var RotaryControl = /** @class */ (function () {
         this.labelElement.textContent = label;
     };
     RotaryControl.prototype.onWheel = function (e) {
-        console.log("onWheel", this);
+        // console.log("onWheel", this);
         if (Date.now() - this.lastReadTime < 20) {
             e.preventDefault();
             return false;
         }
+        var speed = Math.ceil(Math.abs(e.deltaY) / (500 * this.getIncrement()));
         var increment = this.getIncrement();
-        var value = this.readValue();
+        var newValue = this.readValue();
         if (e.deltaY > 0) {
-            if (value < 1 - increment)
-                value += increment;
+            newValue += increment * speed;
         }
         else {
-            if (value > increment)
-                value -= increment;
+            newValue -= increment * speed;
         }
-        this.setValue(value);
+        if (newValue > 1) {
+            newValue = 1;
+        }
+        if (newValue < 0) {
+            newValue = 0;
+        }
+        this.setValue(newValue);
         this.lastReadTime = Date.now();
         e.preventDefault();
         return false;
