@@ -1,5 +1,7 @@
 import Step from "./step.js";
 import StepGenerator from "./generators/stepgenerator.js";
+import PitchGenerator from "./generators/pitchgenerator.js";
+import EuclidianStepGenerator from "./generators/euclidianstepgenerator.js";
 var Sequencer = /** @class */ (function () {
     function Sequencer(grooveBox) {
         this.grooveBox = grooveBox;
@@ -7,7 +9,13 @@ var Sequencer = /** @class */ (function () {
         this.currentStep = 0;
         this.clip = undefined;
         this.absoluteStep = 0;
+        this.stepGenerators = [
+            new StepGenerator(this.grooveBox),
+            new EuclidianStepGenerator(this.grooveBox),
+            new StepGenerator(this.grooveBox),
+        ];
         this.stepGenerator = new StepGenerator(this.grooveBox);
+        this.pitchGenerator = new PitchGenerator(this.grooveBox);
     }
     Sequencer.prototype.step = function (loopStep) {
         this.absoluteStep += 1;
@@ -15,8 +23,7 @@ var Sequencer = /** @class */ (function () {
         this.update(this.absoluteStep);
     };
     Sequencer.prototype.availablePitches = function () {
-        // console.log("availablePitches", this.grooveBox.scales[this.grooveBox.generatorParams.scaleIndex][1]);
-        return this.grooveBox.scales[this.grooveBox.generatorParams.scaleIndex][1];
+        return this.pitchGenerator.availablePitches();
     };
     Sequencer.prototype.update = function (absoluteStep) {
         // console.log("update", absoluteStep);
@@ -78,6 +85,9 @@ var Sequencer = /** @class */ (function () {
             }
         }
         this.grooveBox.pitchHistory.incrementMaxStep();
+    };
+    Sequencer.prototype.setStepMode = function (stepMode) {
+        this.stepGenerator = this.stepGenerators[stepMode];
     };
     Sequencer.prototype.updatenew = function (absoluteStep) {
         // console.log("update", absoluteStep);

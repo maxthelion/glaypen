@@ -21,6 +21,11 @@ export interface GeneratorParams {
     "octaveRange": number;
     "octaveProbability": number;
     "color": string;
+    "pitchMode": number;
+    "stepMode": number;
+    // Euclidian steps
+    "stepPulseNumber": number;
+
 }
 type ScalePair = [string, number[]];
 
@@ -418,6 +423,29 @@ export default class GrooveBox {
     readingPitchOptions(): boolean {
         return this.lastPitchReadAt != undefined && window.performance.now() - this.lastPitchReadAt < 200;
     }
+
+    setPitchGen(subModeIndex: number) {
+        if (this.currentSequencer() !== undefined) {
+
+            if (subModeIndex == 0) {
+                // Random / scale
+                // this.currentSequencer()!.pitchGenerator = new PitchGenerator(this);
+            } else if (subModeIndex == 1) {
+                // Chord
+            } else if (subModeIndex == 2) {
+                // Manual
+            }
+            this.setGeneratorParam("pitchMode", subModeIndex);
+        }
+    }
+
+    setStepGen(subModeIndex: number) {
+        if (this.currentSequencer() !== undefined) {
+            this.currentSequencer()!.setStepMode(subModeIndex)
+            this.setGeneratorParam("pitchMode", subModeIndex);
+        }
+    }
+
 
     generateRandomSettings() {
         this.generatorParams = {

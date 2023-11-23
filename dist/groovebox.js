@@ -359,6 +359,27 @@ var GrooveBox = /** @class */ (function () {
     GrooveBox.prototype.readingPitchOptions = function () {
         return this.lastPitchReadAt != undefined && window.performance.now() - this.lastPitchReadAt < 200;
     };
+    GrooveBox.prototype.setPitchGen = function (subModeIndex) {
+        if (this.currentSequencer() !== undefined) {
+            if (subModeIndex == 0) {
+                // Random / scale
+                // this.currentSequencer()!.pitchGenerator = new PitchGenerator(this);
+            }
+            else if (subModeIndex == 1) {
+                // Chord
+            }
+            else if (subModeIndex == 2) {
+                // Manual
+            }
+            this.setGeneratorParam("pitchMode", subModeIndex);
+        }
+    };
+    GrooveBox.prototype.setStepGen = function (subModeIndex) {
+        if (this.currentSequencer() !== undefined) {
+            this.currentSequencer().setStepMode(subModeIndex);
+            this.setGeneratorParam("pitchMode", subModeIndex);
+        }
+    };
     GrooveBox.prototype.generateRandomSettings = function () {
         this.generatorParams = {
             "tonic": 64 + (32 - Math.floor(Math.random() * 64)),

@@ -2,6 +2,8 @@ import GrooveBox from "./groovebox.js";
 import Clip from "./clip.js";
 import Step from "./step.js";
 import StepGenerator from "./generators/stepgenerator.js";
+import PitchGenerator from "./generators/pitchgenerator.js";
+import EuclidianStepGenerator from "./generators/euclidianstepgenerator.js";
 
 export type SequencerInterface = {
 
@@ -14,7 +16,9 @@ export default class Sequencer implements SequencerInterface{
     clip?: Clip;
     absoluteStep: number;
     lastPitch?: number;
+    stepGenerators: StepGenerator[];
     stepGenerator: StepGenerator;
+    pitchGenerator: PitchGenerator;
 
     constructor(grooveBox: GrooveBox) {
         this.grooveBox = grooveBox;
@@ -22,7 +26,13 @@ export default class Sequencer implements SequencerInterface{
         this.currentStep = 0;
         this.clip = undefined;
         this.absoluteStep = 0;
+        this.stepGenerators = [
+            new StepGenerator(this.grooveBox),
+            new EuclidianStepGenerator(this.grooveBox),
+            new StepGenerator(this.grooveBox),
+        ];
         this.stepGenerator = new StepGenerator(this.grooveBox);
+        this.pitchGenerator = new PitchGenerator(this.grooveBox);
     }
 
     step(loopStep: number) {
@@ -32,8 +42,7 @@ export default class Sequencer implements SequencerInterface{
     }
 
     availablePitches() {
-        // console.log("availablePitches", this.grooveBox.scales[this.grooveBox.generatorParams.scaleIndex][1]);
-        return this.grooveBox.scales[this.grooveBox.generatorParams.scaleIndex][1];
+        return this.pitchGenerator.availablePitches();
     }
 
     update(absoluteStep: number) {
@@ -99,7 +108,9 @@ export default class Sequencer implements SequencerInterface{
         this.grooveBox.pitchHistory.incrementMaxStep();
     }
 
-
+    setStepMode(stepMode: number) {
+        this.stepGenerator = this.stepGenerators[stepMode];
+    }
     updatenew(absoluteStep: number) {
 
         // console.log("update", absoluteStep);

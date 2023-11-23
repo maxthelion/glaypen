@@ -26,11 +26,16 @@ export default class PitchControl extends BaseControlSet {
         this.setScaleValue()
     }
     
+    setPitchGenMode(mode: number){
+        this.grooveBox.setPitchGen(mode);
+    }
+
     setSubControls(mode: number){
         this.subModeIndex = mode;
         let ui = this.ui;
         let grooveBox = this.grooveBox;
         let controlSet = this.controlSet;
+        this.setPitchGenMode(mode);
         controlSet.innerHTML = "";
 
         switch(mode){

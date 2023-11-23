@@ -33,12 +33,16 @@ var PitchControl = /** @class */ (function (_super) {
         _super.prototype.update.call(this);
         this.setScaleValue();
     };
+    PitchControl.prototype.setPitchGenMode = function (mode) {
+        this.grooveBox.setPitchGen(mode);
+    };
     PitchControl.prototype.setSubControls = function (mode) {
         var _this = this;
         this.subModeIndex = mode;
         var ui = this.ui;
         var grooveBox = this.grooveBox;
         var controlSet = this.controlSet;
+        this.setPitchGenMode(mode);
         controlSet.innerHTML = "";
         switch (mode) {
             case 0:
