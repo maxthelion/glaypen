@@ -1,4 +1,5 @@
 import Step from "./step.js";
+import StepGenerator from "./generators/stepgenerator.js";
 var Sequencer = /** @class */ (function () {
     function Sequencer(grooveBox) {
         this.grooveBox = grooveBox;
@@ -6,6 +7,7 @@ var Sequencer = /** @class */ (function () {
         this.currentStep = 0;
         this.clip = undefined;
         this.absoluteStep = 0;
+        this.stepGenerator = new StepGenerator(this.grooveBox);
     }
     Sequencer.prototype.step = function (loopStep) {
         this.absoluteStep += 1;
@@ -22,7 +24,7 @@ var Sequencer = /** @class */ (function () {
             scalePitches = this.grooveBox.manualPitchOptions;
         }
         var stepsInBar = this.grooveBox.generatorParams.stepsInBar;
-        var stepProbability = this.grooveBox.generatorParams.stepProbability / 128;
+        var stepProbability = this.stepGenerator.stepProbability(currentStep);
         var pitchRange = this.grooveBox.generatorParams.pitchRange;
         var octaveRange = this.grooveBox.generatorParams.octaveRange;
         var octaveProbability = this.grooveBox.generatorParams.octaveProbability / 128;

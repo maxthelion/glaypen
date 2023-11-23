@@ -233,13 +233,36 @@ div.active {
 }
 .gencontrolset, .halfcells {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 80px;
     grid-gap: 10px;
 }
 .gencontrolset div, .halfcells div {
     text-align: center;
     vertical-align: middle;
+}
+.gencontrolset {
+    padding: 10px;
+}
+
+.stepgenmode {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 30px;
+    align-items: center;
+}
+.stepgenmode .stepgenmodebutton{
+    display: block;
+    height: 100%;
+    color: #000;
+    background-color: #cccccc;
+    text-decoration: none;
+    font-size: 20px;
+    text-align: center;
+    line-height: 30px;
+}
+.stepgenmode .stepgenmodebutton.selected {
+    background-color: cornflowerblue;
 }
 
 /* rotary controls */

@@ -1,6 +1,7 @@
 import GrooveBox from "./groovebox.js";
 import Clip from "./clip.js";
 import Step from "./step.js";
+import StepGenerator from "./generators/stepgenerator.js";
 
 export type SequencerInterface = {
 
@@ -13,6 +14,7 @@ export default class Sequencer implements SequencerInterface{
     clip?: Clip;
     absoluteStep: number;
     lastPitch?: number;
+    stepGenerator: StepGenerator;
 
     constructor(grooveBox: GrooveBox) {
         this.grooveBox = grooveBox;
@@ -20,6 +22,7 @@ export default class Sequencer implements SequencerInterface{
         this.currentStep = 0;
         this.clip = undefined;
         this.absoluteStep = 0;
+        this.stepGenerator = new StepGenerator(this.grooveBox);
     }
 
     step(loopStep: number) {
@@ -39,7 +42,7 @@ export default class Sequencer implements SequencerInterface{
             scalePitches = this.grooveBox.manualPitchOptions;
         }
         let stepsInBar = this.grooveBox.generatorParams.stepsInBar;
-        let stepProbability = this.grooveBox.generatorParams.stepProbability / 128;
+        let stepProbability = this.stepGenerator.stepProbability(currentStep);
         let pitchRange = this.grooveBox.generatorParams.pitchRange;
         let octaveRange = this.grooveBox.generatorParams.octaveRange;
         let octaveProbability = this.grooveBox.generatorParams.octaveProbability / 128;
