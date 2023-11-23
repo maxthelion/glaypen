@@ -13,6 +13,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+import PianoNoteView from "../pianonoteview.js";
 import RotaryControl from "../rotarycontrol.js";
 import BaseControlSet from "./basecontrolset.js";
 var PitchControl = /** @class */ (function (_super) {
@@ -20,12 +21,20 @@ var PitchControl = /** @class */ (function (_super) {
     function PitchControl(ui, grooveBox) {
         var _this = _super.call(this, ui, grooveBox) || this;
         _this.setSubControls(0);
+        _this.pianoNoteView = new PianoNoteView(ui, grooveBox);
+        _this.headElement.appendChild(_this.pianoNoteView.element);
+        _this.renderables.push(_this.pianoNoteView);
         return _this;
     }
     PitchControl.prototype.getSubModeLabels = function () {
         return "Scale Chord Manual".split(" ");
     };
+    PitchControl.prototype.update = function () {
+        _super.prototype.update.call(this);
+        this.setScaleValue();
+    };
     PitchControl.prototype.setSubControls = function (mode) {
+        var _this = this;
         this.subModeIndex = mode;
         var ui = this.ui;
         var grooveBox = this.grooveBox;
@@ -65,12 +74,17 @@ var PitchControl = /** @class */ (function (_super) {
                 // <label for="scale">Scale</label>
                 // </div>
                 var div = document.createElement("div");
-                var scaleSelect = document.createElement("select");
-                scaleSelect.classList.add("genparam");
-                scaleSelect.name = "scale";
-                scaleSelect.id = "scale";
-                scaleSelect.dataset.paramid = "scaleIndex";
-                div.appendChild(scaleSelect);
+                this.scaleSelect = document.createElement("select");
+                this.scaleSelect.classList.add("genparam");
+                this.scaleSelect.name = "scale";
+                this.scaleSelect.id = "scale";
+                this.scaleSelect.dataset.paramid = "scaleIndex";
+                this.scaleSelect.addEventListener("change", function (e) {
+                    var element = e.target;
+                    var value = element.value;
+                    _this.grooveBox.setGeneratorParam("scaleIndex", parseInt(value));
+                });
+                div.appendChild(this.scaleSelect);
                 controlSet.appendChild(div);
                 var scales = this.grooveBox.scales;
                 for (var i = 0; i < scales.length; i++) {
@@ -80,13 +94,16 @@ var PitchControl = /** @class */ (function (_super) {
                     if (this.grooveBox.generatorParams.scaleIndex == i) {
                         option.selected = true;
                     }
-                    scaleSelect.add(option);
+                    this.scaleSelect.add(option);
                 }
                 break;
             case 1:
                 // something
                 break;
         }
+    };
+    PitchControl.prototype.setScaleValue = function () {
+        this.scaleSelect.value = this.grooveBox.generatorParams.scaleIndex.toString();
     };
     return PitchControl;
 }(BaseControlSet));

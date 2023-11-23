@@ -275,6 +275,9 @@ var GrooveBox = /** @class */ (function () {
         // console.log(index, this.generatorParamsArray)
         return this.generatorParamsArray[index];
     };
+    GrooveBox.prototype.availablePitches = function () {
+        return this.currentSequencer().availablePitches();
+    };
     GrooveBox.prototype.colorFromGenParams = function (generatorParams) {
         var maxCol = 64;
         var tonicColor = generatorParams.tonic / 2;

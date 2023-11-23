@@ -13,7 +13,7 @@ export default class GeneratorSavedStates implements Renderable{
         this.elements = []
         let parentElement = document.querySelector("#generatorSavedStates") as HTMLElement;
         for (let i = 0; i < 16; i++) {
-            console.log("GeneratorSavedStates constructor", parentElement);
+            // console.log("GeneratorSavedStates constructor", parentElement);
             let div = document.createElement("div");
             let element = document.createElement("a");
             div.appendChild(element);

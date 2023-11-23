@@ -14,6 +14,10 @@ var Sequencer = /** @class */ (function () {
         this.currentStep = this.absoluteStep % 16;
         this.update(this.absoluteStep);
     };
+    Sequencer.prototype.availablePitches = function () {
+        // console.log("availablePitches", this.grooveBox.scales[this.grooveBox.generatorParams.scaleIndex][1]);
+        return this.grooveBox.scales[this.grooveBox.generatorParams.scaleIndex][1];
+    };
     Sequencer.prototype.update = function (absoluteStep) {
         // console.log("update", absoluteStep);
         var currentStep = absoluteStep % 16;

@@ -327,6 +327,10 @@ export default class GrooveBox {
         return this.generatorParamsArray[index];
     }
 
+    availablePitches(): number[] {
+        return this.currentSequencer()!.availablePitches();
+    }
+
     colorFromGenParams(generatorParams: GeneratorParams): string {
         let maxCol = 64
         let tonicColor = generatorParams.tonic / 2;

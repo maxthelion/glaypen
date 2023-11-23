@@ -1,18 +1,29 @@
 import GrooveBox from "../../groovebox";
 import Renderable from "../../interfaces/renderable";
 import UI from "../../ui";
+import PianoNoteView from "../pianonoteview.js";
 import RotaryControl from "../rotarycontrol.js";
 import BaseControlSet from "./basecontrolset.js";
 
 export default class PitchControl extends BaseControlSet {
+    pianoNoteView: PianoNoteView;
+    scaleSelect: HTMLSelectElement;
 
     constructor(ui: UI, grooveBox: GrooveBox) {
         super(ui, grooveBox);
         this.setSubControls(0);
+        this.pianoNoteView = new PianoNoteView(ui, grooveBox);
+        this.headElement.appendChild(this.pianoNoteView.element);
+        this.renderables.push(this.pianoNoteView);
     }
 
     getSubModeLabels(): string[]{
         return "Scale Chord Manual".split(" ");
+    }
+
+    update(): void {
+        super.update();
+        this.setScaleValue()
     }
     
     setSubControls(mode: number){
@@ -59,12 +70,17 @@ export default class PitchControl extends BaseControlSet {
                 // <label for="scale">Scale</label>
                 // </div>
                 let div = document.createElement("div");
-                let scaleSelect = document.createElement("select");
-                scaleSelect.classList.add("genparam");
-                scaleSelect.name = "scale";
-                scaleSelect.id = "scale";
-                scaleSelect.dataset.paramid = "scaleIndex";
-                div.appendChild(scaleSelect);
+                this.scaleSelect = document.createElement("select");
+                this.scaleSelect.classList.add("genparam");
+                this.scaleSelect.name = "scale";
+                this.scaleSelect.id = "scale";
+                this.scaleSelect.dataset.paramid = "scaleIndex";
+                this.scaleSelect.addEventListener("change", (e) => {
+                    let element = e.target as HTMLSelectElement;
+                    let value = element.value;
+                    this.grooveBox.setGeneratorParam("scaleIndex", parseInt(value));
+                })
+                div.appendChild(this.scaleSelect);
                 controlSet.appendChild(div);
 
                 let scales = this.grooveBox.scales;
@@ -75,7 +91,7 @@ export default class PitchControl extends BaseControlSet {
                     if (this.grooveBox.generatorParams.scaleIndex == i){
                         option.selected = true;
                     }
-                    scaleSelect.add(option);
+                    this.scaleSelect.add(option);
                 }
                 break;
             case 1:
@@ -85,4 +101,9 @@ export default class PitchControl extends BaseControlSet {
         }
 
     }
+
+    setScaleValue(){
+        this.scaleSelect.value = this.grooveBox.generatorParams.scaleIndex.toString();
+    }
 }
+

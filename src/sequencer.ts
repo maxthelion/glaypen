@@ -31,6 +31,11 @@ export default class Sequencer implements SequencerInterface{
         this.update(this.absoluteStep);
     }
 
+    availablePitches() {
+        // console.log("availablePitches", this.grooveBox.scales[this.grooveBox.generatorParams.scaleIndex][1]);
+        return this.grooveBox.scales[this.grooveBox.generatorParams.scaleIndex][1];
+    }
+
     update(absoluteStep: number) {
 
         // console.log("update", absoluteStep);

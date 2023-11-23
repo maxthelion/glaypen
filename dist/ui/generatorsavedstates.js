@@ -5,7 +5,7 @@ var GeneratorSavedStates = /** @class */ (function () {
         this.elements = [];
         var parentElement = document.querySelector("#generatorSavedStates");
         for (var i = 0; i < 16; i++) {
-            console.log("GeneratorSavedStates constructor", parentElement);
+            // console.log("GeneratorSavedStates constructor", parentElement);
             var div = document.createElement("div");
             var element = document.createElement("a");
             div.appendChild(element);
