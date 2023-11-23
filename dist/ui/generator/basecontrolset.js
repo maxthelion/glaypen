@@ -1,7 +1,7 @@
 var BaseControlSet = /** @class */ (function () {
     function BaseControlSet(ui, grooveBox) {
         this.modeButtons = [];
-        this.subModeIndex = 0;
+        this.subRenderables = [];
         this.subModeLabels = "SubMode1 SubMode2 SubMode3".split(" ");
         console.log("BaseControlSet constructor");
         this.grooveBox = grooveBox;
@@ -15,12 +15,8 @@ var BaseControlSet = /** @class */ (function () {
         this.element.appendChild(this.controlSet);
         this.addModeButtons(this.getSubModeLabels());
         this.renderables = [];
-        this.setSubControls(0);
+        this.setSubControls();
     }
-    // overload in subclass
-    BaseControlSet.prototype.setSubModeIndex = function (index) {
-        this.subModeIndex = index;
-    };
     BaseControlSet.prototype.getSubModeLabels = function () {
         console.log("getSubModeLabels", this.subModeLabels);
         return this.subModeLabels;
@@ -41,20 +37,28 @@ var BaseControlSet = /** @class */ (function () {
             button.addEventListener("click", function (e) {
                 var element = e.target;
                 var modeIndex = element.dataset.modeIndex;
-                _this.grooveBox.setGeneratorParam("pitchmodeindex", parseInt(modeIndex));
-                _this.subModeIndex = parseInt(modeIndex);
-                _this.setSubControls(parseInt(modeIndex));
+                _this.onModeChange(parseInt(modeIndex));
+                _this.setSubControls();
             });
         }
         this.headElement.appendChild(stepGenMode);
     };
-    BaseControlSet.prototype.setSubControls = function (mode) {
+    BaseControlSet.prototype.onModeChange = function (mode) {
+    };
+    BaseControlSet.prototype.getSubModeIndex = function () {
+        throw new Error("Method not implemented.");
+    };
+    BaseControlSet.prototype.setSubControls = function () {
+        console.log("setSubControls");
+        var controlSet = this.controlSet;
+        this.subRenderables = [];
+        controlSet.innerHTML = "";
     };
     BaseControlSet.prototype.update = function () {
         this.modeButtons.forEach(function (button) {
             button.classList.remove("selected");
         });
-        this.modeButtons[this.subModeIndex].classList.add("selected");
+        this.modeButtons[this.getSubModeIndex()].classList.add("selected");
         this.renderables.forEach(function (renderable) {
             renderable.update();
         });

@@ -26,8 +26,12 @@ export default class PianoNoteView implements Renderable {
         this.element.appendChild(this.canvas);
     }
 
+    currentPitchGenerator(){
+        return this.grooveBox.currentSequencer()!.pitchGenerator;
+    }
+
     update() {
-        let inputPitches = this.grooveBox.availablePitches();
+        let inputPitches = this.currentPitchGenerator().availablePitches();
         if (this.ctx !== null && 
             inputPitches !== undefined && 
             inputPitches.length > 0){

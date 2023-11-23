@@ -39,6 +39,6 @@ export default class GeneratorSavedStates implements Renderable{
                   element.style.backgroundColor = "red";
                 }
             }
-        }
+        })
     }
 }

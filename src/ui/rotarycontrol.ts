@@ -7,7 +7,7 @@ export default class RotaryControl implements Renderable {
     element: HTMLElement;
     valueLabel: HTMLElement;
     labelElement: HTMLElement;
-    cachedValue: number = 0;
+    cachedValue: number = -1;
     rotaryCanvas: HTMLCanvasElement;
     grooveBox: GrooveBox;
     ui: UI;
@@ -38,6 +38,7 @@ export default class RotaryControl implements Renderable {
     }
     
     update(): void {
+        console.log("update",this.labelElement.textContent)
         if (this.cachedValue !== this.readValue()){
             this.valueLabel.textContent = this.displayValue();
             this.renderWithValue(this.readValue());
@@ -50,7 +51,6 @@ export default class RotaryControl implements Renderable {
     }
 
     onWheel(e: WheelEvent) {
-        // console.log("onWheel", this);
         
         if ( Date.now() - this.lastReadTime  < 20){
             e.preventDefault();

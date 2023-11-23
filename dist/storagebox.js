@@ -1,14 +1,5 @@
 var StorageBox = /** @class */ (function () {
     function StorageBox() {
-        this.defaultGeneratorParams = {
-            tonic: 48,
-            scaleIndex: 4,
-            stepsInBar: 16,
-            stepProbability: 128,
-            pitchRange: 4,
-            octaveRange: 2,
-            octaveProbability: 0.1
-        };
         this.storage = window.localStorage;
     }
     StorageBox.prototype.getOutputId = function () {
@@ -28,7 +19,7 @@ var StorageBox = /** @class */ (function () {
             return JSON.parse(this.storage.getItem("generatorParams"));
         }
         else {
-            return this.defaultGeneratorParams;
+            return undefined;
         }
     };
     StorageBox.prototype.setClipAtIndex = function (clipRawData, index) {

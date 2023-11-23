@@ -11,12 +11,7 @@ export default class BaseControlSet implements Renderable {
     controlSet: HTMLElement;
     ui: UI;
     modeButtons: HTMLElement[] = [];
-    subModeIndex: number = 0;
-
-    // overload in subclass
-    setSubModeIndex(index: number){
-        this.subModeIndex = index;
-    }
+    subRenderables: Renderable[] = [];
 
     subModeLabels: string[] = "SubMode1 SubMode2 SubMode3".split(" ");
 
@@ -35,7 +30,7 @@ export default class BaseControlSet implements Renderable {
         this.addModeButtons(this.getSubModeLabels());
         this.renderables = [];
 
-        this.setSubControls(0);
+        this.setSubControls();
     }
 
     getSubModeLabels(): string[]{
@@ -58,23 +53,32 @@ export default class BaseControlSet implements Renderable {
             button.addEventListener("click", (e) => {
                 let element = e.target as HTMLElement;
                 let modeIndex = element.dataset.modeIndex!;
-                this.grooveBox.setGeneratorParam("pitchmodeindex", parseInt(modeIndex));
-                this.subModeIndex = parseInt(modeIndex);
-                this.setSubControls(parseInt(modeIndex));
+                this.onModeChange(parseInt(modeIndex));
+                this.setSubControls();
             })
         }
         this.headElement.appendChild(stepGenMode);
     }
 
-    setSubControls(mode: number){
+    onModeChange(mode: number){
+        
+    }
+    getSubModeIndex(): number {
+        throw new Error("Method not implemented.");
+    }
 
+    setSubControls(){
+        console.log("setSubControls")
+        let controlSet = this.controlSet;
+        this.subRenderables = [];
+        controlSet.innerHTML = "";
     }
 
     update(): void {
         this.modeButtons.forEach((button) => {
             button.classList.remove("selected");
         });
-        this.modeButtons[this.subModeIndex].classList.add("selected");
+        this.modeButtons[this.getSubModeIndex()].classList.add("selected");
 
         this.renderables.forEach((renderable) => {
             renderable.update();

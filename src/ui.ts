@@ -114,7 +114,7 @@ export default class UI {
         const modePanes = document.querySelectorAll(".modepane");
         modePanes.forEach((element) => {
             element.classList.add("hidden"); 
-        });        
+        });
         if (modeIndex == 0 || modeIndex == 1) {
             this.currentPane = this.generatorParamsPanel;
             document.querySelector("#genpane")!.classList.remove("hidden");

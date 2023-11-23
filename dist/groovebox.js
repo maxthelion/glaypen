@@ -19,6 +19,7 @@ import ClipSaver from "./clipsaver.js";
 import StorageBox from "./storagebox.js";
 import MidiInputHandler from "./midiinputhandler.js";
 import SongSequencer from "./songsequencer.js";
+import GeneratorManager from "./generatormanager.js";
 var GrooveBox = /** @class */ (function () {
     function GrooveBox(midiAccess) {
         var _this = this;
@@ -39,10 +40,22 @@ var GrooveBox = /** @class */ (function () {
             ["Japanese Mode", [0, 1, 5, 7, 8]],
             ["Hirajoshi", [0, 2, 3, 7, 8]],
         ];
+        this.chords = [
+            ["Major Triad", [0, 4, 7]],
+            ["Minor Triad", [0, 3, 7]],
+            ["Diminished Triad", [0, 3, 6]],
+            ["Augmented Triad", [0, 4, 8]],
+            ["Major Seventh", [0, 4, 7, 11]],
+            ["Minor Seventh", [0, 3, 7, 10]],
+            ["Dominant Seventh", [0, 4, 7, 10]],
+            ["Suspended Second", [0, 2, 7]],
+            ["Suspended Fourth", [0, 5, 7]],
+        ];
         this.modeIndex = 0;
         this.storageBox = new StorageBox();
         this.clipSaver = new ClipSaver(this);
-        this.generatorParams = this.storageBox.getGeneratorParams();
+        this.generatorManager = new GeneratorManager(this);
+        this.generatorParams = this.generatorManager.getCurrentParams();
         this.generatorParamsArray.push(this.generatorParams);
         this.genChanges.push([0, 0]);
         this.currentGenParamStepIndex = 0;
@@ -275,6 +288,9 @@ var GrooveBox = /** @class */ (function () {
         // console.log(index, this.generatorParamsArray)
         return this.generatorParamsArray[index];
     };
+    GrooveBox.prototype.getChords = function () {
+        return this.chords;
+    };
     GrooveBox.prototype.availablePitches = function () {
         return this.currentSequencer().availablePitches();
     };
@@ -361,23 +377,14 @@ var GrooveBox = /** @class */ (function () {
     };
     GrooveBox.prototype.setPitchGen = function (subModeIndex) {
         if (this.currentSequencer() !== undefined) {
-            if (subModeIndex == 0) {
-                // Random / scale
-                // this.currentSequencer()!.pitchGenerator = new PitchGenerator(this);
-            }
-            else if (subModeIndex == 1) {
-                // Chord
-            }
-            else if (subModeIndex == 2) {
-                // Manual
-            }
+            this.currentSequencer().setPitchMode(subModeIndex);
             this.setGeneratorParam("pitchMode", subModeIndex);
         }
     };
     GrooveBox.prototype.setStepGen = function (subModeIndex) {
         if (this.currentSequencer() !== undefined) {
             this.currentSequencer().setStepMode(subModeIndex);
-            this.setGeneratorParam("pitchMode", subModeIndex);
+            this.setGeneratorParam("stepMode", subModeIndex);
         }
     };
     GrooveBox.prototype.generateRandomSettings = function () {

@@ -11,7 +11,6 @@ export default class PitchControl extends BaseControlSet {
 
     constructor(ui: UI, grooveBox: GrooveBox) {
         super(ui, grooveBox);
-        this.setSubControls(0);
         this.pianoNoteView = new PianoNoteView(ui, grooveBox);
         this.headElement.appendChild(this.pianoNoteView.element);
         this.renderables.push(this.pianoNoteView);
@@ -21,27 +20,29 @@ export default class PitchControl extends BaseControlSet {
         return "Scale Chord Manual".split(" ");
     }
 
-    update(): void {
-        super.update();
-        this.setScaleValue()
-    }
-    
-    setPitchGenMode(mode: number){
+    onModeChange(mode: number): void {
         this.grooveBox.setPitchGen(mode);
     }
 
-    setSubControls(mode: number){
-        this.subModeIndex = mode;
-        let ui = this.ui;
-        let grooveBox = this.grooveBox;
-        let controlSet = this.controlSet;
-        this.setPitchGenMode(mode);
-        controlSet.innerHTML = "";
+    update(): void {
+        super.update();
+        this.subRenderables.forEach((renderable) => {
+            renderable.update();
+        })
+        this.setScaleValue()
+    }
 
-        switch(mode){
+    getSubModeIndex(): number {
+        return this.grooveBox.generatorParams.pitchMode;
+    }
+
+    setSubControls(){
+        super.setSubControls();
+
+        switch(this.getSubModeIndex()){
             case 0:
                 // tonic rotary
-                let tonicRotary = new RotaryControl(ui, grooveBox);
+                let tonicRotary = new RotaryControl(this.ui, this.grooveBox);
                 tonicRotary.setValue = function (value: number) {
                     let tonicValue = Math.floor(value * 128);
                     this.grooveBox.setGeneratorParam("tonic", tonicValue);
@@ -52,11 +53,11 @@ export default class PitchControl extends BaseControlSet {
                     return pitches[ this.grooveBox.generatorParams.tonic % 12 ];
                 }
                 tonicRotary.setLabel("Root note");
-                controlSet.appendChild(tonicRotary.element);
-                this.renderables.push(tonicRotary);
+                this.controlSet.appendChild(tonicRotary.element);
+                this.subRenderables.push(tonicRotary);
                 
                 // pitchProbability Rotary 
-                let pitchRangeRotary = new RotaryControl(ui, grooveBox);
+                let pitchRangeRotary = new RotaryControl(this.ui, this.grooveBox);
                 pitchRangeRotary.setValue = function (value: number) {
                     let modifiedValue = Math.floor(value * 12);
                     this.grooveBox.setGeneratorParam("pitchRange", modifiedValue);
@@ -65,8 +66,8 @@ export default class PitchControl extends BaseControlSet {
                 pitchRangeRotary.displayValue = function () { return this.grooveBox.generatorParams.pitchRange.toString(); }
                 pitchRangeRotary.getIncrement = function() { return 1 / 12; }
                 pitchRangeRotary.setLabel("Pitch range");
-                controlSet.appendChild(pitchRangeRotary.element);
-                this.renderables.push(pitchRangeRotary);
+                this.controlSet.appendChild(pitchRangeRotary.element);
+                this.subRenderables.push(pitchRangeRotary);
 
 
                 // <div>
@@ -86,7 +87,7 @@ export default class PitchControl extends BaseControlSet {
                     this.grooveBox.setGeneratorParam("scaleIndex", parseInt(value));
                 })
                 div.appendChild(this.scaleSelect);
-                controlSet.appendChild(div);
+                this.controlSet.appendChild(div);
 
                 let scales = this.grooveBox.scales;
                 for(var i = 0; i < scales.length; i++){
@@ -100,7 +101,44 @@ export default class PitchControl extends BaseControlSet {
                 }
                 break;
             case 1:
+                //
+                // chordRoot rotary
+                let chordRoot = new RotaryControl(this.ui, this.grooveBox);
+                chordRoot.setValue = function (value: number) {
+                    let tonicValue = Math.floor(value * 128);
+                    this.grooveBox.setGeneratorParam("chordRoot", tonicValue);
+                }
+                chordRoot.readValue = function () { return this.grooveBox.generatorParams.chordRoot /  128; }
+                chordRoot.displayValue = function () {
+                    let pitches = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A","A#", "B"]
+                    console.log("this.displayValue")
+                    return pitches[ this.grooveBox.generatorParams.chordRoot % 12 ];
+                }
+                chordRoot.setLabel("Root note");
+                this.controlSet.appendChild(chordRoot.element);
+                this.subRenderables.push(chordRoot);
+                console.log("chordRoot", this.subRenderables)
 
+                let chordDiv = document.createElement("div");
+                this.scaleSelect = document.createElement("select");
+                this.scaleSelect.addEventListener("change", (e) => {
+                    let element = e.target as HTMLSelectElement;
+                    let value = element.value;
+                    this.grooveBox.setGeneratorParam("chordIndex", parseInt(value));
+                })
+                chordDiv.appendChild(this.scaleSelect);
+                this.controlSet.appendChild(chordDiv);
+
+                let chords = this.grooveBox.getChords();
+                for(var i = 0; i < chords.length; i++){
+                    let option = document.createElement("option");
+                    option.value = i.toString();
+                    option.text = chords[i][0];
+                    if (this.grooveBox.generatorParams.chordIndex == i){
+                        option.selected = true;
+                    }
+                    this.scaleSelect.add(option);
+                }
                 // something
                 break;
         }
@@ -108,7 +146,9 @@ export default class PitchControl extends BaseControlSet {
     }
 
     setScaleValue(){
-        this.scaleSelect.value = this.grooveBox.generatorParams.scaleIndex.toString();
+        if (this.scaleSelect !== undefined) {
+            this.scaleSelect.value = this.grooveBox.generatorParams.scaleIndex.toString();
+        }
     }
 }
 

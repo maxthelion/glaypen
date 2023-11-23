@@ -1,6 +1,6 @@
 var RotaryControl = /** @class */ (function () {
     function RotaryControl(ui, grooveBox) {
-        this.cachedValue = 0;
+        this.cachedValue = -1;
         this.lastReadTime = 0;
         this.grooveBox = grooveBox;
         this.ui = ui;
@@ -23,6 +23,7 @@ var RotaryControl = /** @class */ (function () {
         this.element.addEventListener("wheel", this.onWheel.bind(this));
     }
     RotaryControl.prototype.update = function () {
+        console.log("update", this.labelElement.textContent);
         if (this.cachedValue !== this.readValue()) {
             this.valueLabel.textContent = this.displayValue();
             this.renderWithValue(this.readValue());
@@ -33,7 +34,6 @@ var RotaryControl = /** @class */ (function () {
         this.labelElement.textContent = label;
     };
     RotaryControl.prototype.onWheel = function (e) {
-        // console.log("onWheel", this);
         if (Date.now() - this.lastReadTime < 20) {
             e.preventDefault();
             return false;

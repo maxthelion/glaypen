@@ -3,15 +3,6 @@ import { GeneratorParams } from "./groovebox";
 
 export default class StorageBox {
     storage: Storage;
-    defaultGeneratorParams: GeneratorParams = {
-        tonic: 48,
-        scaleIndex: 4,
-        stepsInBar: 16,
-        stepProbability: 128,
-        pitchRange: 4,
-        octaveRange: 2,
-        octaveProbability: 0.1
-    }
 
     constructor() {
         this.storage = window.localStorage;
@@ -33,11 +24,11 @@ export default class StorageBox {
         this.storage.setItem("generatorParams", JSON.stringify(generatorParams));
     }
 
-    getGeneratorParams(): GeneratorParams {
+    getGeneratorParams(): GeneratorParams | undefined {
         if (this.storage.getItem("generatorParams") != null && this.storage.getItem("generatorParams") != undefined) {
             return JSON.parse(this.storage.getItem("generatorParams")!)
         } else {
-            return this.defaultGeneratorParams;
+            return undefined;
         }
     }
 

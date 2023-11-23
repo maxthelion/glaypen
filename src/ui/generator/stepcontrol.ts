@@ -15,23 +15,23 @@ export default class StepControl extends BaseControlSet {
         return "Random Euclidean Manual".split(" ");
     }
 
-    setStepGenMode(mode: number){
+    onModeChange(mode: number): void {
+        this.grooveBox.setGeneratorParam("pitchMode", mode);
         this.grooveBox.setStepGen(mode);
     }
-    
-    setSubControls(mode: number){
-        this.subModeIndex = mode;
-        let ui = this.ui;
-        let grooveBox = this.grooveBox;
-        let controlSet = this.controlSet;
-        this.setStepGenMode(mode);
-        controlSet.innerHTML = "";
 
-        switch(mode){
+    getSubModeIndex(): number {
+        return this.grooveBox.generatorParams.pitchMode;
+    }
+    
+    setSubControls(){
+        super.setSubControls();
+
+        switch(this.getSubModeIndex()){
             case 0:
 
                 // stepProbability Rotary
-                let stepProbabilityRotary = new RotaryControl(ui, grooveBox);
+                let stepProbabilityRotary = new RotaryControl(this.ui, this.grooveBox);
                 stepProbabilityRotary.setValue = function (value: number) {
                     let modifiedValue = Math.floor(value * 128);
                     this.grooveBox.setGeneratorParam("stepProbability", modifiedValue);
@@ -40,11 +40,11 @@ export default class StepControl extends BaseControlSet {
                 stepProbabilityRotary.displayValue = function () { return this.grooveBox.generatorParams.stepProbability.toString(); }
                 stepProbabilityRotary.getIncrement = function() { return 1 / 128; }
                 stepProbabilityRotary.setLabel("Step probability");
-                controlSet.appendChild(stepProbabilityRotary.element);
+                this.controlSet.appendChild(stepProbabilityRotary.element);
                 this.renderables.push(stepProbabilityRotary);
 
                 // stepsInBar Rotary
-                let stepsInBarRotary = new RotaryControl(ui, grooveBox);
+                let stepsInBarRotary = new RotaryControl(this.ui, this.grooveBox);
                 stepsInBarRotary.setValue = function (value: number) {
                     let modifiedValue = Math.floor(value * 4) * 4;
                     this.grooveBox.setGeneratorParam("stepsInBar", modifiedValue);
@@ -53,12 +53,12 @@ export default class StepControl extends BaseControlSet {
                 stepsInBarRotary.displayValue = function () { return this.grooveBox.generatorParams.stepsInBar.toString(); }
                 stepsInBarRotary.getIncrement = function() { return 1 / 4; }
                 stepsInBarRotary.setLabel("Steps in bar");
-                controlSet.appendChild(stepsInBarRotary.element);
+                this.controlSet.appendChild(stepsInBarRotary.element);
                 this.renderables.push(stepsInBarRotary);
 
             case 1:
                 // stepProbability Rotary
-                let stepPulseNumberRotary = new RotaryControl(ui, grooveBox);
+                let stepPulseNumberRotary = new RotaryControl(this.ui, this.grooveBox);
                 stepPulseNumberRotary.setValue = function (value: number) {
                     let modifiedValue = Math.floor(value * 16);
                     this.grooveBox.setGeneratorParam("stepPulseNumber", modifiedValue);
@@ -67,7 +67,7 @@ export default class StepControl extends BaseControlSet {
                 stepPulseNumberRotary.displayValue = function () { return this.grooveBox.generatorParams.stepPulseNumber.toString(); }
                 stepPulseNumberRotary.getIncrement = function() { return 1 / 16; }
                 stepPulseNumberRotary.setLabel("Steps");
-                controlSet.appendChild(stepPulseNumberRotary.element);
+                this.controlSet.appendChild(stepPulseNumberRotary.element);
                 this.renderables.push(stepPulseNumberRotary);
 
                 // // stepsInBar Rotary

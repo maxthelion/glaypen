@@ -25,20 +25,19 @@ var StepControl = /** @class */ (function (_super) {
     StepControl.prototype.getSubModeLabels = function () {
         return "Random Euclidean Manual".split(" ");
     };
-    StepControl.prototype.setStepGenMode = function (mode) {
+    StepControl.prototype.onModeChange = function (mode) {
+        this.grooveBox.setGeneratorParam("pitchMode", mode);
         this.grooveBox.setStepGen(mode);
     };
-    StepControl.prototype.setSubControls = function (mode) {
-        this.subModeIndex = mode;
-        var ui = this.ui;
-        var grooveBox = this.grooveBox;
-        var controlSet = this.controlSet;
-        this.setStepGenMode(mode);
-        controlSet.innerHTML = "";
-        switch (mode) {
+    StepControl.prototype.getSubModeIndex = function () {
+        return this.grooveBox.generatorParams.pitchMode;
+    };
+    StepControl.prototype.setSubControls = function () {
+        _super.prototype.setSubControls.call(this);
+        switch (this.getSubModeIndex()) {
             case 0:
                 // stepProbability Rotary
-                var stepProbabilityRotary = new RotaryControl(ui, grooveBox);
+                var stepProbabilityRotary = new RotaryControl(this.ui, this.grooveBox);
                 stepProbabilityRotary.setValue = function (value) {
                     var modifiedValue = Math.floor(value * 128);
                     this.grooveBox.setGeneratorParam("stepProbability", modifiedValue);
@@ -47,10 +46,10 @@ var StepControl = /** @class */ (function (_super) {
                 stepProbabilityRotary.displayValue = function () { return this.grooveBox.generatorParams.stepProbability.toString(); };
                 stepProbabilityRotary.getIncrement = function () { return 1 / 128; };
                 stepProbabilityRotary.setLabel("Step probability");
-                controlSet.appendChild(stepProbabilityRotary.element);
+                this.controlSet.appendChild(stepProbabilityRotary.element);
                 this.renderables.push(stepProbabilityRotary);
                 // stepsInBar Rotary
-                var stepsInBarRotary = new RotaryControl(ui, grooveBox);
+                var stepsInBarRotary = new RotaryControl(this.ui, this.grooveBox);
                 stepsInBarRotary.setValue = function (value) {
                     var modifiedValue = Math.floor(value * 4) * 4;
                     this.grooveBox.setGeneratorParam("stepsInBar", modifiedValue);
@@ -59,11 +58,11 @@ var StepControl = /** @class */ (function (_super) {
                 stepsInBarRotary.displayValue = function () { return this.grooveBox.generatorParams.stepsInBar.toString(); };
                 stepsInBarRotary.getIncrement = function () { return 1 / 4; };
                 stepsInBarRotary.setLabel("Steps in bar");
-                controlSet.appendChild(stepsInBarRotary.element);
+                this.controlSet.appendChild(stepsInBarRotary.element);
                 this.renderables.push(stepsInBarRotary);
             case 1:
                 // stepProbability Rotary
-                var stepPulseNumberRotary = new RotaryControl(ui, grooveBox);
+                var stepPulseNumberRotary = new RotaryControl(this.ui, this.grooveBox);
                 stepPulseNumberRotary.setValue = function (value) {
                     var modifiedValue = Math.floor(value * 16);
                     this.grooveBox.setGeneratorParam("stepPulseNumber", modifiedValue);
@@ -72,7 +71,7 @@ var StepControl = /** @class */ (function (_super) {
                 stepPulseNumberRotary.displayValue = function () { return this.grooveBox.generatorParams.stepPulseNumber.toString(); };
                 stepPulseNumberRotary.getIncrement = function () { return 1 / 16; };
                 stepPulseNumberRotary.setLabel("Steps");
-                controlSet.appendChild(stepPulseNumberRotary.element);
+                this.controlSet.appendChild(stepPulseNumberRotary.element);
                 this.renderables.push(stepPulseNumberRotary);
             // // stepsInBar Rotary
             // let stepsInBarRotary = new RotaryControl(ui, grooveBox);

@@ -12,8 +12,11 @@ var PianoNoteView = /** @class */ (function () {
         this.ctx = this.canvas.getContext('2d');
         this.element.appendChild(this.canvas);
     }
+    PianoNoteView.prototype.currentPitchGenerator = function () {
+        return this.grooveBox.currentSequencer().pitchGenerator;
+    };
     PianoNoteView.prototype.update = function () {
-        var inputPitches = this.grooveBox.availablePitches();
+        var inputPitches = this.currentPitchGenerator().availablePitches();
         if (this.ctx !== null &&
             inputPitches !== undefined &&
             inputPitches.length > 0) {
