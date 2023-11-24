@@ -20,6 +20,12 @@ var GeneratorManager = /** @class */ (function () {
         this.grooveBox = grooveBox;
         var storedParams = this.grooveBox.storageBox.getGeneratorParams();
         if (storedParams !== undefined && storedParams !== null) {
+            if (storedParams.stepMode === undefined) {
+                storedParams.stepMode = 0;
+            }
+            if (storedParams.pitchMode === undefined) {
+                storedParams.pitchMode = 0;
+            }
             this.currentGeneratorParams = storedParams;
         }
         else {

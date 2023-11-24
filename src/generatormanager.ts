@@ -26,6 +26,12 @@ export default class GeneratorManager {
         this.grooveBox = grooveBox;
         let storedParams = this.grooveBox.storageBox.getGeneratorParams();
         if (storedParams !== undefined && storedParams !== null) {
+            if (storedParams.stepMode === undefined) {
+                storedParams.stepMode = 0;
+            }
+            if (storedParams.pitchMode === undefined) {
+                storedParams.pitchMode = 0;
+            }
             this.currentGeneratorParams = storedParams!;
         } else {
             this.currentGeneratorParams = this.defaultGeneratorParams;
