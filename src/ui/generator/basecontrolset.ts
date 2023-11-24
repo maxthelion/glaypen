@@ -54,15 +54,14 @@ export default class BaseControlSet implements Renderable {
                 let element = e.target as HTMLElement;
                 let modeIndex = element.dataset.modeIndex!;
                 this.onModeChange(parseInt(modeIndex));
-                this.setSubControls();
             })
         }
         this.headElement.appendChild(stepGenMode);
     }
 
     onModeChange(mode: number){
-        
     }
+
     getSubModeIndex(): number {
         throw new Error("Method not implemented.");
     }
@@ -83,5 +82,8 @@ export default class BaseControlSet implements Renderable {
         this.renderables.forEach((renderable) => {
             renderable.update();
         });
+        this.subRenderables.forEach((renderable) => {
+            renderable.update();
+        })
     }
 }

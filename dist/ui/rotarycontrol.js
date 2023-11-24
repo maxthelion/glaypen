@@ -23,7 +23,7 @@ var RotaryControl = /** @class */ (function () {
         this.element.addEventListener("wheel", this.onWheel.bind(this));
     }
     RotaryControl.prototype.update = function () {
-        console.log("update", this.labelElement.textContent);
+        // console.log("update",this.labelElement.textContent)
         if (this.cachedValue !== this.readValue()) {
             this.valueLabel.textContent = this.displayValue();
             this.renderWithValue(this.readValue());

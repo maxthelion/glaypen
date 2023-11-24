@@ -38,7 +38,7 @@ export default class RotaryControl implements Renderable {
     }
     
     update(): void {
-        console.log("update",this.labelElement.textContent)
+        // console.log("update",this.labelElement.textContent)
         if (this.cachedValue !== this.readValue()){
             this.valueLabel.textContent = this.displayValue();
             this.renderWithValue(this.readValue());

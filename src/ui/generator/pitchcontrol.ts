@@ -22,13 +22,11 @@ export default class PitchControl extends BaseControlSet {
 
     onModeChange(mode: number): void {
         this.grooveBox.setPitchGen(mode);
+        this.setSubControls();
     }
 
     update(): void {
         super.update();
-        this.subRenderables.forEach((renderable) => {
-            renderable.update();
-        })
         this.setScaleValue()
     }
 

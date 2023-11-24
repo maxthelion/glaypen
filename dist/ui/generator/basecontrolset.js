@@ -38,7 +38,6 @@ var BaseControlSet = /** @class */ (function () {
                 var element = e.target;
                 var modeIndex = element.dataset.modeIndex;
                 _this.onModeChange(parseInt(modeIndex));
-                _this.setSubControls();
             });
         }
         this.headElement.appendChild(stepGenMode);
@@ -60,6 +59,9 @@ var BaseControlSet = /** @class */ (function () {
         });
         this.modeButtons[this.getSubModeIndex()].classList.add("selected");
         this.renderables.forEach(function (renderable) {
+            renderable.update();
+        });
+        this.subRenderables.forEach(function (renderable) {
             renderable.update();
         });
     };

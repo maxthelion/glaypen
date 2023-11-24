@@ -30,12 +30,10 @@ var PitchControl = /** @class */ (function (_super) {
     };
     PitchControl.prototype.onModeChange = function (mode) {
         this.grooveBox.setPitchGen(mode);
+        this.setSubControls();
     };
     PitchControl.prototype.update = function () {
         _super.prototype.update.call(this);
-        this.subRenderables.forEach(function (renderable) {
-            renderable.update();
-        });
         this.setScaleValue();
     };
     PitchControl.prototype.getSubModeIndex = function () {

@@ -8,7 +8,6 @@ export default class StepControl extends BaseControlSet {
 
     constructor(ui: UI, grooveBox: GrooveBox) {
         super(ui, grooveBox);
-        this.setSubControls(0);
     }
 
     getSubModeLabels(): string[]{
@@ -16,12 +15,13 @@ export default class StepControl extends BaseControlSet {
     }
 
     onModeChange(mode: number): void {
-        this.grooveBox.setGeneratorParam("pitchMode", mode);
+        // console.log("StepControl onModeChange", mode)
         this.grooveBox.setStepGen(mode);
+        this.setSubControls();
     }
 
     getSubModeIndex(): number {
-        return this.grooveBox.generatorParams.pitchMode;
+        return this.grooveBox.generatorParams.stepMode;
     }
     
     setSubControls(){
@@ -41,7 +41,7 @@ export default class StepControl extends BaseControlSet {
                 stepProbabilityRotary.getIncrement = function() { return 1 / 128; }
                 stepProbabilityRotary.setLabel("Step probability");
                 this.controlSet.appendChild(stepProbabilityRotary.element);
-                this.renderables.push(stepProbabilityRotary);
+                this.subRenderables.push(stepProbabilityRotary);
 
                 // stepsInBar Rotary
                 let stepsInBarRotary = new RotaryControl(this.ui, this.grooveBox);
@@ -54,9 +54,10 @@ export default class StepControl extends BaseControlSet {
                 stepsInBarRotary.getIncrement = function() { return 1 / 4; }
                 stepsInBarRotary.setLabel("Steps in bar");
                 this.controlSet.appendChild(stepsInBarRotary.element);
-                this.renderables.push(stepsInBarRotary);
-
+                this.subRenderables.push(stepsInBarRotary);
+                break;
             case 1:
+                console.log("Euclidean mode")
                 // stepProbability Rotary
                 let stepPulseNumberRotary = new RotaryControl(this.ui, this.grooveBox);
                 stepPulseNumberRotary.setValue = function (value: number) {
@@ -68,8 +69,8 @@ export default class StepControl extends BaseControlSet {
                 stepPulseNumberRotary.getIncrement = function() { return 1 / 16; }
                 stepPulseNumberRotary.setLabel("Steps");
                 this.controlSet.appendChild(stepPulseNumberRotary.element);
-                this.renderables.push(stepPulseNumberRotary);
-
+                this.subRenderables.push(stepPulseNumberRotary);
+                break;
                 // // stepsInBar Rotary
                 // let stepsInBarRotary = new RotaryControl(ui, grooveBox);
                 // stepsInBarRotary.setValue = function (value: number) {

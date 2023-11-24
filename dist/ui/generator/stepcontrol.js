@@ -18,19 +18,18 @@ import BaseControlSet from "./basecontrolset.js";
 var StepControl = /** @class */ (function (_super) {
     __extends(StepControl, _super);
     function StepControl(ui, grooveBox) {
-        var _this = _super.call(this, ui, grooveBox) || this;
-        _this.setSubControls(0);
-        return _this;
+        return _super.call(this, ui, grooveBox) || this;
     }
     StepControl.prototype.getSubModeLabels = function () {
         return "Random Euclidean Manual".split(" ");
     };
     StepControl.prototype.onModeChange = function (mode) {
-        this.grooveBox.setGeneratorParam("pitchMode", mode);
+        // console.log("StepControl onModeChange", mode)
         this.grooveBox.setStepGen(mode);
+        this.setSubControls();
     };
     StepControl.prototype.getSubModeIndex = function () {
-        return this.grooveBox.generatorParams.pitchMode;
+        return this.grooveBox.generatorParams.stepMode;
     };
     StepControl.prototype.setSubControls = function () {
         _super.prototype.setSubControls.call(this);
@@ -47,7 +46,7 @@ var StepControl = /** @class */ (function (_super) {
                 stepProbabilityRotary.getIncrement = function () { return 1 / 128; };
                 stepProbabilityRotary.setLabel("Step probability");
                 this.controlSet.appendChild(stepProbabilityRotary.element);
-                this.renderables.push(stepProbabilityRotary);
+                this.subRenderables.push(stepProbabilityRotary);
                 // stepsInBar Rotary
                 var stepsInBarRotary = new RotaryControl(this.ui, this.grooveBox);
                 stepsInBarRotary.setValue = function (value) {
@@ -59,8 +58,10 @@ var StepControl = /** @class */ (function (_super) {
                 stepsInBarRotary.getIncrement = function () { return 1 / 4; };
                 stepsInBarRotary.setLabel("Steps in bar");
                 this.controlSet.appendChild(stepsInBarRotary.element);
-                this.renderables.push(stepsInBarRotary);
+                this.subRenderables.push(stepsInBarRotary);
+                break;
             case 1:
+                console.log("Euclidean mode");
                 // stepProbability Rotary
                 var stepPulseNumberRotary = new RotaryControl(this.ui, this.grooveBox);
                 stepPulseNumberRotary.setValue = function (value) {
@@ -72,7 +73,8 @@ var StepControl = /** @class */ (function (_super) {
                 stepPulseNumberRotary.getIncrement = function () { return 1 / 16; };
                 stepPulseNumberRotary.setLabel("Steps");
                 this.controlSet.appendChild(stepPulseNumberRotary.element);
-                this.renderables.push(stepPulseNumberRotary);
+                this.subRenderables.push(stepPulseNumberRotary);
+                break;
             // // stepsInBar Rotary
             // let stepsInBarRotary = new RotaryControl(ui, grooveBox);
             // stepsInBarRotary.setValue = function (value: number) {
