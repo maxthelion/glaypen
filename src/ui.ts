@@ -16,6 +16,7 @@ import GeneratorToggleControl from "./ui/generatortogglecontrol.js";
 import PhraseSelector from "./ui/phraseselector.js";
 import GeneratorSavedStates from "./ui/generatorsavedstates.js";
 import GenChangeCanvas from "./ui/genchangecanvas.js";
+import TempoDisplay from "./ui/tempodisplay.js";
 
 
 
@@ -33,6 +34,9 @@ export default class UI {
     clipParamsPanel: ClipParamsPanel;
     generatorParamsPanel: GeneratorParamsPanel;
     lastClipLength: number = -1;
+    clockIndicator: HTMLElement;
+
+
 
     constructor(groovebox: GrooveBox) {
         var sequencerSteps = document.querySelectorAll(".step");
@@ -59,6 +63,9 @@ export default class UI {
         let genChangeCanvas = new GenChangeCanvas(this, groovebox);
         let generatorToggleControl = new GeneratorToggleControl(this, groovebox);
         let transportDisplay = new TransportDisplay(this, groovebox);
+        let tempoDisplay = new TempoDisplay(this, groovebox);
+        this.addClockIndicator();
+
         let randomiseButton = document.querySelector("#randomiseBtn") as HTMLElement;
         randomiseButton.addEventListener("click", (e) => {
             groovebox.generateRandomSettings();
@@ -69,6 +76,7 @@ export default class UI {
         let phraseSelector = new PhraseSelector(this, groovebox);
         let generatorSavedStates = new GeneratorSavedStates(this, groovebox);
         this.renderables = [
+            tempoDisplay,
             genChangeCanvas,
             generatorSavedStates,
             phraseSelector,
@@ -82,6 +90,23 @@ export default class UI {
         ];
         this.prefsButton = new PrefsButton(this, groovebox);
 
+    }
+
+    addClockIndicator() {
+        let transportElement = document.querySelector(".transport")!;
+        this.clockIndicator = document.createElement("div");
+        this.clockIndicator.classList.add("clockindicator");
+        transportElement.appendChild(this.clockIndicator);
+    }
+
+    updateClockIndicator() {
+        if(this.grooveBox.transport.lastTick + 1000 > Date.now()){
+            // this.clockIndicator.classList.add("active");
+            this.clockIndicator.textContent = ">";
+        } else {
+            // this.clockIndicator.classList.remove("active");
+            this.clockIndicator.textContent = "ss";
+        }
     }
 
     update() {
@@ -107,6 +132,7 @@ export default class UI {
         this.renderables.forEach((renderable) => {
             renderable.update();
         })
+        this.updateClockIndicator();
         this.currentPane.update()
     }
 

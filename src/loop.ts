@@ -5,17 +5,21 @@ import GrooveBox from "./groovebox.js";
 export default class Loop {
     step: number;
     grooveBox: GrooveBox;
-    intervalNumber?: TimeOut;
+    intervalNumber?: Timeout | number;
 
     constructor(grooveBox: GrooveBox) {
         this.grooveBox = grooveBox;
         this.step = 0;
     }
 
-    start() {
+    startWithInterval() {
         this.intervalNumber = setInterval(() => {
             this.update();
         }, 120);
+    }
+
+    start() {
+        
     }
 
     stop() {

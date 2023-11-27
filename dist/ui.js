@@ -12,6 +12,7 @@ import GeneratorToggleControl from "./ui/generatortogglecontrol.js";
 import PhraseSelector from "./ui/phraseselector.js";
 import GeneratorSavedStates from "./ui/generatorsavedstates.js";
 import GenChangeCanvas from "./ui/genchangecanvas.js";
+import TempoDisplay from "./ui/tempodisplay.js";
 var UI = /** @class */ (function () {
     function UI(groovebox) {
         var _this = this;
@@ -41,6 +42,8 @@ var UI = /** @class */ (function () {
         var genChangeCanvas = new GenChangeCanvas(this, groovebox);
         var generatorToggleControl = new GeneratorToggleControl(this, groovebox);
         var transportDisplay = new TransportDisplay(this, groovebox);
+        var tempoDisplay = new TempoDisplay(this, groovebox);
+        this.addClockIndicator();
         var randomiseButton = document.querySelector("#randomiseBtn");
         randomiseButton.addEventListener("click", function (e) {
             groovebox.generateRandomSettings();
@@ -51,6 +54,7 @@ var UI = /** @class */ (function () {
         var phraseSelector = new PhraseSelector(this, groovebox);
         var generatorSavedStates = new GeneratorSavedStates(this, groovebox);
         this.renderables = [
+            tempoDisplay,
             genChangeCanvas,
             generatorSavedStates,
             phraseSelector,
@@ -64,6 +68,22 @@ var UI = /** @class */ (function () {
         ];
         this.prefsButton = new PrefsButton(this, groovebox);
     }
+    UI.prototype.addClockIndicator = function () {
+        var transportElement = document.querySelector(".transport");
+        this.clockIndicator = document.createElement("div");
+        this.clockIndicator.classList.add("clockindicator");
+        transportElement.appendChild(this.clockIndicator);
+    };
+    UI.prototype.updateClockIndicator = function () {
+        if (this.grooveBox.transport.lastTick + 1000 > Date.now()) {
+            // this.clockIndicator.classList.add("active");
+            this.clockIndicator.textContent = ">";
+        }
+        else {
+            // this.clockIndicator.classList.remove("active");
+            this.clockIndicator.textContent = "ss";
+        }
+    };
     UI.prototype.update = function () {
         var _this = this;
         this.sequencerSteps.forEach(function (sequencerStep) {
@@ -88,6 +108,7 @@ var UI = /** @class */ (function () {
         this.renderables.forEach(function (renderable) {
             renderable.update();
         });
+        this.updateClockIndicator();
         this.currentPane.update();
     };
     UI.prototype.setMode = function (modeIndex) {

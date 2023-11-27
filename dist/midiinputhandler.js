@@ -6,23 +6,29 @@ var MidiInputHandler = /** @class */ (function () {
     }
     MidiInputHandler.prototype.handleClockMessage = function (event) {
         switch (event.data[0]) {
+            // timing clock
             case 248:
                 this.grooveBox.transport.tick();
                 break;
+            // start
             case 250:
-                this.grooveBox.transport.start();
-                console.log("start", event.data);
+                this.grooveBox.transport.startByMidi();
                 break;
+            // continue
             case 251:
-                this.grooveBox.transport.start();
+                this.grooveBox.transport.startByMidi();
                 break;
+            // stop
             case 252:
-                this.grooveBox.transport.stop();
+                this.grooveBox.transport.stopByMidi();
+                console.log("stop");
                 break;
+            // note on
             case 146:
                 // console.log("note on", event.data);
                 this.grooveBox.noteOn(event.data[1]);
                 break;
+            // note off
             case 130:
                 // console.log("note off", event.data);
                 break;

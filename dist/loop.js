@@ -3,11 +3,13 @@ var Loop = /** @class */ (function () {
         this.grooveBox = grooveBox;
         this.step = 0;
     }
-    Loop.prototype.start = function () {
+    Loop.prototype.startWithInterval = function () {
         var _this = this;
         this.intervalNumber = setInterval(function () {
             _this.update();
         }, 120);
+    };
+    Loop.prototype.start = function () {
     };
     Loop.prototype.stop = function () {
         if (this.intervalNumber != undefined) {

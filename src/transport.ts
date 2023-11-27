@@ -6,6 +6,9 @@ export default class Transport {
     playing: boolean = false;
     loop: Loop
     tickNumber: number = 0;
+    lastTick: number = 0;
+    midiSync: boolean = false;
+    tempo: number = 120;
 
     constructor(groovebox: GrooveBox) {
         this.grooveBox = groovebox;
@@ -20,23 +23,57 @@ export default class Transport {
         }
     }
 
+    increaseTempo() {
+        this.tempo += 1;
+    }
+
+    decreaseTempo() { 
+        this.tempo -= 1;
+    }
+
     tick() {
+        // console.log("tick");
+        // if (!this.playing ) {
+        //     this.playing = true;
+        //     this.loop.reset();
+        // }
+        this.midiSync = true;
         this.tickNumber++;
+        this.lastTick = Date.now();
         if(this.tickNumber % 6 === 0) {
             this.loop.update();
         }
     }
 
     stop() {
+        if (this.midiSync == true || !this.playing) {
+            return;
+        }
         this.playing = false;
         this.loop.stop();
     }
 
     start() {
+        if (this.midiSync == true || this.playing) {
+            return;
+        }
         this.playing = true;
         if(this.grooveBox.modeIndex === 2){
             this.loop.reset();    
         }
+        this.loop.startWithInterval();
+    }
+
+    startByMidi() {
+        this.playing = true;
+        this.midiSync = true;
+        this.loop.reset();
         this.loop.start();
+    }
+
+    stopByMidi() {
+        this.midiSync = false;
+        this.playing = false;
+        this.loop.stop();
     }
 }
