@@ -13,7 +13,7 @@ import DrumSequencer from "./drumsequencer.js";
 import GeneratorManager from "./generatormanager.js";
 
 export interface GeneratorParams {
-    [key: string]: number | string;
+    [key: string]: number | string | number[];
     "tonic": number;
     "scaleIndex": number;
     "stepsInBar": number;
@@ -28,6 +28,7 @@ export interface GeneratorParams {
     "stepPulseNumber": number;
     "chordIndex": number;
     "chordRoot": number;
+    "manualSteps": number[];
 }
 type ScalePair = [string, number[]];
 

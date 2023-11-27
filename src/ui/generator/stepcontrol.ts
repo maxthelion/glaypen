@@ -3,6 +3,7 @@ import Renderable from "../../interfaces/renderable";
 import UI from "../../ui";
 import RotaryControl from "../rotarycontrol.js";
 import BaseControlSet from "./basecontrolset.js";
+import ManualStepControl from "./manualstepcontrol.js";
 
 export default class StepControl extends BaseControlSet {
 
@@ -83,6 +84,11 @@ export default class StepControl extends BaseControlSet {
                 // stepsInBarRotary.setLabel("Steps in bar");
                 // controlSet.appendChild(stepsInBarRotary.element);
                 // this.renderables.push(stepsInBarRotary);
+            case 2:
+                let manualStepControl = new ManualStepControl(this.ui, this.grooveBox);
+                this.controlSet.appendChild(manualStepControl.element);
+                this.subRenderables.push(manualStepControl);
+                break
         }
     }
 

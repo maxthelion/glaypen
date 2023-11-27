@@ -1,5 +1,6 @@
 import ChordGenerator from "./generators/chordgenerator.js";
 import EuclidianStepGenerator from "./generators/euclidianstepgenerator.js";
+import ManualStepGenerator from "./generators/manualstepgenerator.js";
 import PitchGenerator from "./generators/pitchgenerator.js";
 import StepGenerator from "./generators/stepgenerator.js";
 var GeneratorManager = /** @class */ (function () {
@@ -16,6 +17,7 @@ var GeneratorManager = /** @class */ (function () {
             pitchMode: 0,
             color: "#000000",
             stepPulseNumber: 4,
+            manualSteps: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         };
         this.grooveBox = grooveBox;
         var storedParams = this.grooveBox.storageBox.getGeneratorParams();
@@ -32,6 +34,13 @@ var GeneratorManager = /** @class */ (function () {
             this.currentGeneratorParams = this.defaultGeneratorParams;
         }
     }
+    GeneratorManager.prototype.setManualStepProbability = function (step, probability) {
+        if (this.currentGeneratorParams.manualSteps === undefined) {
+            this.currentGeneratorParams.manualSteps = this.defaultGeneratorParams.manualSteps;
+        }
+        this.currentGeneratorParams.manualSteps[step] = probability;
+        this.grooveBox.storageBox.setGeneratorParams(this.currentGeneratorParams);
+    };
     GeneratorManager.prototype.getCurrentParams = function () {
         return this.currentGeneratorParams;
     };
@@ -44,8 +53,10 @@ var GeneratorManager = /** @class */ (function () {
                 return new StepGenerator(this.grooveBox);
             case 1:
                 return new EuclidianStepGenerator(this.grooveBox);
+            case 2:
+                return new ManualStepGenerator(this.grooveBox);
             default:
-                throw new Error("Invalid stepMode" + this.currentGeneratorParams.stepMode);
+                throw new Error("Invalid stepMode " + this.currentGeneratorParams.stepMode);
         }
     };
     GeneratorManager.prototype.buildCurrentPitchGenerator = function () {

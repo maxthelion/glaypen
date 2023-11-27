@@ -5,6 +5,7 @@ import StepGenerator from "./generators/stepgenerator.js";
 import PitchGenerator from "./generators/pitchgenerator.js";
 import EuclidianStepGenerator from "./generators/euclidianstepgenerator.js";
 import ChordGenerator from "./generators/chordgenerator.js";
+import ManualStepGenerator from "./generators/manualstepgenerator.js";
 
 export type SequencerInterface = {
 
@@ -31,7 +32,7 @@ export default class Sequencer implements SequencerInterface{
         this.stepGenerators = [
             new StepGenerator(this.grooveBox),
             new EuclidianStepGenerator(this.grooveBox),
-            new StepGenerator(this.grooveBox),
+            new ManualStepGenerator(this.grooveBox),
         ];
         this.pitchGenerators = [
             new PitchGenerator(this.grooveBox),

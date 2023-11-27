@@ -15,6 +15,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 import RotaryControl from "../rotarycontrol.js";
 import BaseControlSet from "./basecontrolset.js";
+import ManualStepControl from "./manualstepcontrol.js";
 var StepControl = /** @class */ (function (_super) {
     __extends(StepControl, _super);
     function StepControl(ui, grooveBox) {
@@ -87,6 +88,11 @@ var StepControl = /** @class */ (function (_super) {
             // stepsInBarRotary.setLabel("Steps in bar");
             // controlSet.appendChild(stepsInBarRotary.element);
             // this.renderables.push(stepsInBarRotary);
+            case 2:
+                var manualStepControl = new ManualStepControl(this.ui, this.grooveBox);
+                this.controlSet.appendChild(manualStepControl.element);
+                this.subRenderables.push(manualStepControl);
+                break;
         }
     };
     return StepControl;

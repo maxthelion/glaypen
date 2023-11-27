@@ -1,5 +1,6 @@
 import ChordGenerator from "./generators/chordgenerator.js";
 import EuclidianStepGenerator from "./generators/euclidianstepgenerator.js";
+import ManualStepGenerator from "./generators/manualstepgenerator.js";
 import PitchGenerator from "./generators/pitchgenerator.js";
 import StepGenerator from "./generators/stepgenerator.js";
 import GrooveBox, { GeneratorParams } from "./groovebox.js";
@@ -20,7 +21,9 @@ export default class GeneratorManager {
         pitchMode: 0,
         color: "#000000",
         stepPulseNumber: 4,
+        manualSteps: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,0 ,0 ,0 ,0 ,0],
     }
+
 
     constructor(grooveBox: GrooveBox) {
         this.grooveBox = grooveBox;
@@ -38,6 +41,14 @@ export default class GeneratorManager {
         }
     }
 
+    setManualStepProbability(step: number, probability: number) {
+        if (this.currentGeneratorParams.manualSteps === undefined) {
+            this.currentGeneratorParams.manualSteps = this.defaultGeneratorParams.manualSteps;
+        }
+        this.currentGeneratorParams.manualSteps[step] = probability;
+        this.grooveBox.storageBox.setGeneratorParams(this.currentGeneratorParams);
+    }
+
     getCurrentParams() {
         return this.currentGeneratorParams;
     }
@@ -52,8 +63,10 @@ export default class GeneratorManager {
                 return new StepGenerator(this.grooveBox);
             case 1:
                 return new EuclidianStepGenerator(this.grooveBox);
+            case 2:
+                return new ManualStepGenerator(this.grooveBox);
             default:
-                throw new Error("Invalid stepMode" + this.currentGeneratorParams.stepMode);
+                throw new Error("Invalid stepMode " + this.currentGeneratorParams.stepMode);
         }
     }
 
