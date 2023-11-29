@@ -12,6 +12,7 @@ var PitchHistory = /** @class */ (function () {
     };
     PitchHistory.prototype.addStep = function (stepNumber, step) {
         // console.log("addStep", stepNumber, step);
+        step.stepNumber = stepNumber;
         this.steps[stepNumber] = step;
     };
     PitchHistory.prototype.moveWindow = function (direction) {
@@ -40,7 +41,7 @@ var PitchHistory = /** @class */ (function () {
         else if (endIndex > this.maxStep) {
             startIndex = this.maxStep - this.windowLength;
         }
-        console.log(startIndex);
+        // console.log(startIndex)
         this.windowStart = startIndex;
     };
     PitchHistory.prototype.clearWindow = function () {
@@ -59,7 +60,9 @@ var PitchHistory = /** @class */ (function () {
         };
         for (var i = minStep; i < minStep + this.windowLength; i++) {
             if (this.steps[i] != undefined) {
-                clipData.rawSteps[i - minStep] = this.steps[i];
+                var step = this.steps[i];
+                step.stepNumber = i - minStep;
+                clipData.rawSteps[i - minStep] = step;
             }
         }
         return clipData;

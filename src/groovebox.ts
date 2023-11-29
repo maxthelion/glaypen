@@ -231,6 +231,7 @@ export default class GrooveBox {
     saveClipToIndex(index: number) {
         let clip = this.clipSequencer!.clip;
         if (clip != undefined){
+            console.log("saveClipToIndex", index, clip);
             this.clipSaver.saveClipToIndex(clip, index);
         }
     }

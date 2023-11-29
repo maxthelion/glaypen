@@ -22,7 +22,7 @@ var Clip = /** @class */ (function () {
         for (var i = 0; i < this.clipLength; i++) {
             var rawStep = clipData.rawSteps[i];
             if (rawStep !== undefined && rawStep !== null) {
-                this.steps[rawStep.stepNumber] = new Step(i, rawStep.velocity, rawStep.pitches);
+                this.steps[rawStep.stepNumber] = new Step(rawStep.stepNumber, rawStep.velocity, rawStep.pitches);
             }
         }
         this.originalSteps = this.steps.slice();

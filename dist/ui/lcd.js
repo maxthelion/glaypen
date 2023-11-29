@@ -27,7 +27,7 @@ var LCD = /** @class */ (function () {
                         else {
                             _this.ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
                         }
-                        _this.renderStepPitches(step, index, stepWidth, stepHeight);
+                        _this.renderStepPitches(step, step.stepNumber, stepWidth, stepHeight);
                     }
                 });
             }
@@ -55,7 +55,7 @@ var LCD = /** @class */ (function () {
                             else {
                                 _this.ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
                             }
-                            _this.renderStepPitches(step, index, stepWidth, stepHeight);
+                            _this.renderStepPitches(step, step.stepNumber, stepWidth, stepHeight);
                         }
                     });
                 }

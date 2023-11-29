@@ -186,6 +186,7 @@ var GrooveBox = /** @class */ (function () {
     GrooveBox.prototype.saveClipToIndex = function (index) {
         var clip = this.clipSequencer.clip;
         if (clip != undefined) {
+            console.log("saveClipToIndex", index, clip);
             this.clipSaver.saveClipToIndex(clip, index);
         }
     };

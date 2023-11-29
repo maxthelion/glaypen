@@ -20,6 +20,7 @@ export default class PitchHistory {
 
     addStep(stepNumber: number,step: Step) {
         // console.log("addStep", stepNumber, step);
+        step.stepNumber = stepNumber;
         this.steps[stepNumber] = step;
     }
 
@@ -48,7 +49,7 @@ export default class PitchHistory {
         } else if (endIndex > this.maxStep) {
             startIndex = this.maxStep - this.windowLength;
         }
-        console.log(startIndex)
+        // console.log(startIndex)
         this.windowStart = startIndex;
     }
 
@@ -70,7 +71,10 @@ export default class PitchHistory {
         };
         for (let i = minStep; i < minStep + this.windowLength; i++) {
             if (this.steps[i] != undefined) {
-                clipData.rawSteps[i - minStep] = this.steps[i];
+                let step = this.steps[i];
+                step.stepNumber = i - minStep;
+                clipData.rawSteps[i - minStep] = step;
+
             }
         }
         return clipData;

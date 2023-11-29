@@ -36,7 +36,7 @@ export default class LCD implements Renderable {
                         } else {
                             this.ctx!.fillStyle = "rgba(255, 255, 255, 0.2)";
                         }
-                        this.renderStepPitches(step, index, stepWidth, stepHeight);
+                        this.renderStepPitches(step, step.stepNumber, stepWidth, stepHeight);
                     }
                 })
 
@@ -62,7 +62,7 @@ export default class LCD implements Renderable {
                             } else {
                                 this.ctx!.fillStyle = "rgba(255, 255, 255, 0.2)";
                             }
-                            this.renderStepPitches(step, index, stepWidth, stepHeight);
+                            this.renderStepPitches(step, step.stepNumber, stepWidth, stepHeight);
                         }
                     })
                 }
