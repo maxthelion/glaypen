@@ -4,7 +4,7 @@ export default class EuclidianStepGenerator extends StepGenerator {
     stepProbability(step: number) {
         let stepsInBar = 16;
         let probability = this.euclidianRhythm(this.grooveBox.generatorParams.stepPulseNumber, stepsInBar)[step]
-        console.log("stepProbability", step, probability)
+        // console.log("stepProbability", step, probability)
         return probability;
     }   
 

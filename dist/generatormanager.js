@@ -47,6 +47,24 @@ var GeneratorManager = /** @class */ (function () {
     GeneratorManager.prototype.getCurrentAttribute = function (attribute) {
         return this.currentGeneratorParams[attribute];
     };
+    GeneratorManager.prototype.getPitchModeIndex = function () {
+        return this.currentGeneratorParams.pitchMode;
+    };
+    GeneratorManager.prototype.getStepModeIndex = function () {
+        return this.currentGeneratorParams.stepMode;
+    };
+    GeneratorManager.prototype.noteOn = function (pitch) {
+        if (this.getPitchModeIndex() == 0) {
+            this.setGeneratorParam("tonic", pitch);
+        }
+        else if (this.getPitchModeIndex() == 1) {
+            this.setGeneratorParam("chordRoot", pitch);
+        }
+    };
+    GeneratorManager.prototype.setGeneratorParam = function (param, value) {
+        this.currentGeneratorParams[param] = value;
+        this.grooveBox.setGeneratorParam(param, value);
+    };
     GeneratorManager.prototype.buildCurrentStepGenerator = function () {
         switch (this.currentGeneratorParams.stepMode) {
             case 0:

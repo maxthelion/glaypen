@@ -4,6 +4,7 @@ import PitchGenerator from "./generators/pitchgenerator.js";
 import EuclidianStepGenerator from "./generators/euclidianstepgenerator.js";
 import ChordGenerator from "./generators/chordgenerator.js";
 import ManualStepGenerator from "./generators/manualstepgenerator.js";
+import ManualPitchGenerator from "./generators/manualpitchgenerator.js";
 var Sequencer = /** @class */ (function () {
     function Sequencer(grooveBox) {
         this.grooveBox = grooveBox;
@@ -19,7 +20,7 @@ var Sequencer = /** @class */ (function () {
         this.pitchGenerators = [
             new PitchGenerator(this.grooveBox),
             new ChordGenerator(this.grooveBox),
-            new PitchGenerator(this.grooveBox),
+            new ManualPitchGenerator(this.grooveBox),
         ];
         this.stepGenerator = this.grooveBox.generatorManager.buildCurrentStepGenerator();
         this.pitchGenerator = this.grooveBox.generatorManager.buildCurrentPitchGenerator();

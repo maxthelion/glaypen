@@ -8,16 +8,12 @@ export default class StorageBox {
         this.storage = window.localStorage;
     }
 
-    getOutputId(): string {
-        return this.storage.getItem("outputPortId") || "";
+    get(key: string): string | null {
+        return this.storage.getItem(key);
     }
 
-    setOutputId(outputId: string) {
-        this.storage.setItem("outputPortId", outputId);
-    }
-
-    setInputId(inputId: string) {
-        this.storage.setItem("inputPortId", inputId);
+    set(key: string, value: string) {
+        this.storage.setItem(key, value);
     }
 
     setGeneratorParams(generatorParams: GeneratorParams) {

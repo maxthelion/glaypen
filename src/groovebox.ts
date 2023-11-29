@@ -6,11 +6,11 @@ import Clip from "./clip.js";
 import PitchHistory from "./pitchhistory.js";
 import ClipSaver from "./clipsaver.js";
 import StorageBox from "./storagebox.js";
-import MidiInputHandler from "./midiinputhandler.js";
 import Step from "./step.js";
 import SongSequencer from "./songsequencer.js";
 import DrumSequencer from "./drumsequencer.js";
 import GeneratorManager from "./generatormanager.js";
+import MidiManager from "./midi/midimanager.js";
 
 export interface GeneratorParams {
     [key: string]: number | string | number[];
@@ -86,8 +86,8 @@ export default class GrooveBox {
     clipSequencer?: ClipSequencer;
     songSequencer?: SongSequencer;
     clockInput?: MIDIInput;
-    midiInputHandler?: MidiInputHandler;
     generatorManager: GeneratorManager;
+    midiManager: MidiManager;
 
     constructor(midiAccess: MIDIAccess) {
         this.clipSaver = new ClipSaver(this);
@@ -98,14 +98,9 @@ export default class GrooveBox {
         this.currentGenParamStepIndex = 0;
         this.ui = new UI(this);
         this.midiAccess = midiAccess;
-        let midiOutput = this.getMidiOutput();
-        let midiInput = this.getMidiInput();
-        if (midiInput == undefined || midiOutput == undefined) {
+        this.midiManager = new MidiManager(this, midiAccess);
+        if (this.midiManager.needsPrefs()) {
             this.ui.showPrefsModal("No MIDI devices set");
-        } else {
-            this.selectedOutput = midiOutput;
-            this.clockInput = midiInput;
-            this.midiInputHandler = new MidiInputHandler(this, this.clockInput);
         }
         this.clipSequencer = undefined
         this.songSequencer = new SongSequencer(this);
@@ -153,14 +148,14 @@ export default class GrooveBox {
         let maxLength = 1000;
         if (this.playingPitches[pitch] != undefined) {
             var noteOffMessage = [0x80, pitch, 0x40];   
-            this.selectedOutput!.send(noteOffMessage); 
+            this.midiManager.currentOutput()!.send(noteOffMessage); 
             this.playingPitches[pitch] = undefined;
         }
         // console.log("playPitch", pitch, velocity);
         let velocityInHex = velocity.toString(16);
         var noteOnMessage = [0x90, pitch, Number('0x' + velocityInHex)];    // Note on, middle C, full velocity
         this.playingPitches[pitch] = window.performance.now();
-        this.selectedOutput!.send(noteOnMessage);  // Send note on message to first MIDI output device
+        this.midiManager.currentOutput()!.send(noteOnMessage);  // Send note on message to first MIDI output device
     }
 
     clearExpiredNotes() {
@@ -171,7 +166,7 @@ export default class GrooveBox {
                 // console.log("time", key, time, pitch, this.playingPitches);
                 if (time != undefined && window.performance.now() - time > 500) {
                     var noteOffMessage = [0x80, pitch, 0x40];   
-                    this.selectedOutput!.send(noteOffMessage); 
+                    this.midiManager.currentOutput()!.send(noteOffMessage); 
                     this.playingPitches[pitch] = undefined;
                 }
             }
@@ -266,50 +261,6 @@ export default class GrooveBox {
     }
     closePrefsModal() {
         this.ui.closePrefsModal();
-    }
-
-    getMidiOutput(): MIDIOutput|undefined {
-        let outputId = this.storageBox.getOutputId();
-        if (outputId == undefined) {
-            return undefined;
-        }
-        let output = this.midiAccess.outputs.get(outputId)
-        return output;
-    }
-
-    getMidiOutputs(): MIDIOutput[] {
-        var outputs = Array.from(this.midiAccess.outputs.values());
-        return outputs;
-    }
-
-    getMidiInputs(): MIDIInput[] {
-        var inputs = Array.from(this.midiAccess.inputs.values());
-        return inputs;
-    }
-
-    getMidiInput(): MIDIInput {
-        let inputId = "-1687982579"
-        return this.midiAccess.inputs.get(inputId)
-    }
-
-    setMidiOutput(outputId: string) {
-        var groooveBox = this;
-        navigator.requestMIDIAccess().then(function(midiAccess) {
-            var selectedOutput = midiAccess.outputs.get(outputId);
-            if (selectedOutput) {
-                groooveBox.storageBox.setOutputId(outputId);
-                groooveBox.selectedOutput = selectedOutput;
-            }
-        });
-    }
-
-    setMidiInput(inputId: string) {
-        let selectedInput = this.midiAccess.inputs.get(inputId);
-        if (selectedInput) {
-            this.storageBox.setInputId(inputId);
-            this.clockInput = selectedInput;
-            this.midiInputHandler = new MidiInputHandler(this, this.clockInput);
-        }
     }
 
     setGeneratorParam(paramName: string, value: number) {
@@ -427,12 +378,20 @@ export default class GrooveBox {
     }
     
     noteOn(pitch: number) {
-        if (this.readingPitchOptions()){
-            this.manualPitchOptions.push(pitch);
-        } else {
-            this.manualPitchOptions = [pitch];
+        this.playPitch(pitch);
+        this.generatorManager.noteOn(pitch);
+        if (this.generatorManager.getPitchModeIndex() == 2) {
+            if (this.readingPitchOptions()){
+                this.manualPitchOptions.push(pitch);
+            } else {
+                this.manualPitchOptions = [pitch];
+            }
+            this.lastPitchReadAt = window.performance.now();
         }
-        this.lastPitchReadAt = window.performance.now();
+    }
+
+    readingPitchOptions(): boolean {
+        return this.lastPitchReadAt != undefined && window.performance.now() - this.lastPitchReadAt < 200;
     }
 
     setExtractLength(length: number) {
@@ -443,9 +402,6 @@ export default class GrooveBox {
         this.clipSequencer = new ClipSequencer(this, clip);
     }
 
-    readingPitchOptions(): boolean {
-        return this.lastPitchReadAt != undefined && window.performance.now() - this.lastPitchReadAt < 200;
-    }
 
     setPitchGen(subModeIndex: number) {
         if (this.currentSequencer() !== undefined) {

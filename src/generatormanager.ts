@@ -57,6 +57,27 @@ export default class GeneratorManager {
         return this.currentGeneratorParams[attribute];
     }
 
+    getPitchModeIndex() {
+        return this.currentGeneratorParams.pitchMode;
+    }
+
+    getStepModeIndex() {
+        return this.currentGeneratorParams.stepMode;
+    }
+
+    noteOn(pitch: number) {
+        if (this.getPitchModeIndex() == 0) {
+            this.setGeneratorParam("tonic", pitch);
+        } else if (this.getPitchModeIndex() == 1) {
+            this.setGeneratorParam("chordRoot", pitch);
+        }
+    }
+
+    setGeneratorParam(param: string, value: number) {
+        this.currentGeneratorParams[param] = value;
+        this.grooveBox.setGeneratorParam(param, value);
+    }
+
     buildCurrentStepGenerator() {
         switch(this.currentGeneratorParams.stepMode) {
             case 0:

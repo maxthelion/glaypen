@@ -1,4 +1,4 @@
-import GrooveBox from "./groovebox";
+import GrooveBox from "../groovebox";
 
 export default class MidiInputHandler {
     grooveBox: GrooveBox;
@@ -31,6 +31,7 @@ export default class MidiInputHandler {
             // note on
             case 146:    
                 // console.log("note on", event.data);
+                console.log("note on", event.data[1]);
                 this.grooveBox.noteOn(event.data[1]);
                 break;
             // note off

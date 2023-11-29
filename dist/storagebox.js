@@ -2,14 +2,11 @@ var StorageBox = /** @class */ (function () {
     function StorageBox() {
         this.storage = window.localStorage;
     }
-    StorageBox.prototype.getOutputId = function () {
-        return this.storage.getItem("outputPortId") || "";
+    StorageBox.prototype.get = function (key) {
+        return this.storage.getItem(key);
     };
-    StorageBox.prototype.setOutputId = function (outputId) {
-        this.storage.setItem("outputPortId", outputId);
-    };
-    StorageBox.prototype.setInputId = function (inputId) {
-        this.storage.setItem("inputPortId", inputId);
+    StorageBox.prototype.set = function (key, value) {
+        this.storage.setItem(key, value);
     };
     StorageBox.prototype.setGeneratorParams = function (generatorParams) {
         this.storage.setItem("generatorParams", JSON.stringify(generatorParams));
