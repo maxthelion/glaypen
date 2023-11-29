@@ -30,6 +30,7 @@ var GrooveBox = /** @class */ (function () {
         this.playingPitches = {};
         this.genChanges = [];
         this.scales = [
+            ["Chromatic", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]],
             ["Major", [0, 2, 4, 5, 7, 9, 11]],
             ["Harmonic Minor", [0, 2, 3, 5, 7, 8, 11]],
             ["Melodic Minor", [0, 2, 3, 5, 7, 9, 11]],
@@ -39,6 +40,15 @@ var GrooveBox = /** @class */ (function () {
             ["Akebono", [0, 2, 3, 7, 8]],
             ["Japanese Mode", [0, 1, 5, 7, 8]],
             ["Hirajoshi", [0, 2, 3, 7, 8]],
+            ["In-Sen", [0, 1, 5, 7, 10]],
+            ["Iwato", [0, 1, 5, 6, 10]],
+            ["Kumoi", [0, 2, 3, 7, 9]],
+            ["Pelog", [0, 1, 3, 7, 8]],
+            ["Whole Tone", [0, 2, 4, 6, 8, 10]],
+            ["Augmented", [0, 3, 4, 7, 8, 11]],
+            ["Diminished", [0, 2, 3, 5, 6, 8, 9, 11]],
+            ["Gypsy", [0, 1, 4, 5, 7, 8, 10]],
+            ["Hungarian Minor", [0, 2, 3, 6, 7, 8, 11]],
         ];
         this.chords = [
             ["Major Triad", [0, 4, 7]],

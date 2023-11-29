@@ -1,5 +1,7 @@
 var PitchGenerator = /** @class */ (function () {
     function PitchGenerator(grooveBox) {
+        this.direction = 1;
+        this.lastPitch = -1;
         this.grooveBox = grooveBox;
     }
     PitchGenerator.prototype.generateRandomPitch = function () {
@@ -25,7 +27,19 @@ var PitchGenerator = /** @class */ (function () {
         var pitchRange = this.grooveBox.generatorParams.pitchRange;
         var octaveRange = this.grooveBox.generatorParams.octaveRange;
         var octaveProbability = this.grooveBox.generatorParams.octaveProbability / 128;
+        if (this.lastPitch == -1) {
+            this.lastPitch = tonic;
+        }
         var pitchInterval = Math.floor(Math.random() * pitchRange);
+        // var pitchInterval = this.lastPitch + this.direction;
+        // if (pitchInterval < 0) {
+        //     pitchInterval = 0;
+        //     this.direction = 1;
+        // } else if (pitchInterval > pitchRange - 1) {
+        //     pitchInterval = pitchRange - 1;
+        //     this.direction = -1;
+        // }
+        // this.lastPitch = pitchInterval;
         pitchInterval = pitchInterval % scalePitches.length;
         var pitch = tonic + scalePitches[pitchInterval];
         if (Math.random() > (octaveProbability)) {
