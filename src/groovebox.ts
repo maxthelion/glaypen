@@ -12,24 +12,6 @@ import DrumSequencer from "./drumsequencer.js";
 import GeneratorManager from "./generatormanager.js";
 import MidiManager from "./midi/midimanager.js";
 
-export interface GeneratorParams {
-    [key: string]: number | string | number[];
-    "tonic": number;
-    "scaleIndex": number;
-    "stepsInBar": number;
-    "stepProbability": number;
-    "pitchRange": number;
-    "octaveRange": number;
-    "octaveProbability": number;
-    "color": string;
-    "pitchMode": number;
-    "stepMode": number;
-    // Euclidian steps
-    "stepPulseNumber": number;
-    "chordIndex": number;
-    "chordRoot": number;
-    "manualSteps": number[];
-}
 type ScalePair = [string, number[]];
 
 export default class GrooveBox {
@@ -369,9 +351,6 @@ export default class GrooveBox {
             this.generatorManager.setGeneratorParam("stepMode", subModeIndex);
         }
     }
-
-
-
 
     generatorButtonPressed(index: number) {
         console.log("generatorButtonPressed", index)

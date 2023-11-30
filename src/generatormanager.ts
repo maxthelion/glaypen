@@ -3,14 +3,15 @@ import EuclidianStepGenerator from "./generators/euclidianstepgenerator.js";
 import ManualStepGenerator from "./generators/manualstepgenerator.js";
 import PitchGenerator from "./generators/pitchgenerator.js";
 import StepGenerator from "./generators/stepgenerator.js";
-import GrooveBox, { GeneratorParams } from "./groovebox.js";
+import GrooveBox from "./groovebox.js";
+import GeneratorParamsInterface from "./interfaces/generatorinterface.js";
 import Step from "./step.js";
 import StorageBox from "./storagebox.js";
 
 export default class GeneratorManager {
-    currentGeneratorParams: GeneratorParams;
+    currentGeneratorParams: GeneratorParamsInterface;
     grooveBox: GrooveBox;
-    defaultGeneratorParams: GeneratorParams = {
+    defaultGeneratorParams: GeneratorParamsInterface = {
         tonic: 48,
         scaleIndex: 4,
         stepsInBar: 16,
@@ -33,8 +34,8 @@ export default class GeneratorManager {
     // for the history view
     currentGenParamStepIndex?: number;
     currentGenParamIndex?: number;
-    storedGenParams: GeneratorParams[] = [];
-    generatorParamsArray: GeneratorParams[] = [];
+    storedGenParams: GeneratorParamsInterface[] = [];
+    generatorParamsArray: GeneratorParamsInterface[] = [];
     genChanges: [number, number][] = [];
     storageBox: StorageBox;
 
@@ -136,7 +137,7 @@ export default class GeneratorManager {
         }
     }
 
-    getGenParamsByIndex(index: number): GeneratorParams {
+    getGenParamsByIndex(index: number): GeneratorParamsInterface {
         // console.log(index, this.generatorParamsArray)
         return this.generatorParamsArray[index];
     }
@@ -167,7 +168,7 @@ export default class GeneratorManager {
         }
     }
 
-    colorFromGenParams(generatorParams: GeneratorParams): string {
+    colorFromGenParams(generatorParams: GeneratorParamsInterface): string {
         let maxCol = 64
         let tonicColor = generatorParams.tonic / 2;
         let scaleColor = generatorParams.scaleIndex / this.grooveBox.scales.length * maxCol;
