@@ -21,8 +21,8 @@ var ChordGenerator = /** @class */ (function (_super) {
     }
     ChordGenerator.prototype.availablePitches = function () {
         var chords = this.grooveBox.chords;
-        var chordRoot = this.grooveBox.generatorParams.chordRoot;
-        var chordIndex = this.grooveBox.generatorParams.chordIndex;
+        var chordRoot = this.grooveBox.generatorManager.getNumberAttribute("chordRoot");
+        var chordIndex = this.grooveBox.generatorManager.getNumberAttribute("chordIndex");
         var chordPitches = chords[chordIndex][1];
         var pitches = [];
         for (var i = 0; i < chordPitches.length; i++) {
@@ -32,12 +32,12 @@ var ChordGenerator = /** @class */ (function (_super) {
         return pitches;
     };
     ChordGenerator.prototype.getNextPitch = function () {
-        var chordIndex = this.grooveBox.generatorParams.chordIndex;
+        var chordIndex = this.grooveBox.generatorManager.getNumberAttribute("chordIndex");
         var scalePitches = this.grooveBox.chords[chordIndex][1];
-        var root = this.grooveBox.generatorParams.chordRoot;
+        var root = this.grooveBox.generatorManager.getNumberAttribute("chordRoot");
         var pitchRange = scalePitches.length;
-        // let octaveRange = this.grooveBox.generatorParams.octaveRange;
-        // let octaveProbability = this.grooveBox.generatorParams.octaveProbability / 128;
+        // let octaveRange = this.grooveBox.generatorManager.getNumberAttribute("octaveRange");
+        // let octaveProbability = this.grooveBox.generatorManager.getNumberAttribute("octaveProbability") / 128;
         var pitchInterval = Math.floor(Math.random() * pitchRange);
         pitchInterval = pitchInterval % scalePitches.length;
         var pitch = root + scalePitches[pitchInterval];

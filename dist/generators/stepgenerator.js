@@ -3,7 +3,7 @@ var StepGenerator = /** @class */ (function () {
         this.grooveBox = grooveBox;
     }
     StepGenerator.prototype.stepProbability = function (step) {
-        var probability = this.grooveBox.generatorParams.stepProbability / 128;
+        var probability = this.grooveBox.generatorManager.getNumberAttribute("stepProbability") / 128;
         return probability;
     };
     return StepGenerator;

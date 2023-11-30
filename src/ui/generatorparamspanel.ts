@@ -14,6 +14,9 @@ export default class GeneratorParamsPanel {
     rotaryElements: RotaryDial[];
     renderables: Renderable[] = [];
     genPanels: Renderable[] = [];
+    currentPart: Renderable;
+    pitchPanel: PitchControl;
+    stepPanel: StepControl;
 
     constructor(ui: UI, grooveBox: GrooveBox) {
         this.grooveBox = grooveBox;
@@ -21,13 +24,11 @@ export default class GeneratorParamsPanel {
         this.element = document.querySelector("#generatorparams")!;
         this.renderables = [];
 
-        let pitchControls = new PitchControl(ui, grooveBox);
-        this.renderables.push(pitchControls);
-        this.genPanels.push(pitchControls);
+        this.pitchPanel = new PitchControl(ui, grooveBox);
+        this.genPanels.push(this.pitchPanel);
 
-        let stepControls = new StepControl(ui, grooveBox);
-        this.renderables.push(stepControls);
-        this.genPanels.push(stepControls);
+        this.stepPanel = new StepControl(ui, grooveBox);
+        this.genPanels.push(this.stepPanel);
         
         // generator parts tabs
         let generatorPartsTabs = document.querySelector("#generatorpartstabs") as HTMLDivElement;
@@ -77,6 +78,16 @@ export default class GeneratorParamsPanel {
                 buttonEl.classList.add("selected");
             }
         })
+        switch (partId) {
+            case "0":
+                this.currentPart = this.pitchPanel;
+                break;
+            case "1":
+                this.currentPart = this.stepPanel;
+                break;
+            default:
+                break;
+        }
         let panelIndex = parseInt(partId);
         this.element!.innerHTML = "";
         this.element?.appendChild(this.genPanels[panelIndex].element!);
@@ -84,7 +95,8 @@ export default class GeneratorParamsPanel {
     }
 
     update() {
-        this.element?.style.setProperty("border-color", this.grooveBox.generatorParams.color);
+        this.element?.style.setProperty("border-color", this.grooveBox.generatorManager.getColor());
+        this.currentPart.update();
         this.renderables.forEach((renderable) => {
             renderable.update();
         })

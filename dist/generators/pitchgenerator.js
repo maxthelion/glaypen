@@ -3,16 +3,17 @@ var PitchGenerator = /** @class */ (function () {
         this.direction = 1;
         this.lastPitch = -1;
         this.grooveBox = grooveBox;
+        this.generatorManager = this.grooveBox.generatorManager;
     }
     PitchGenerator.prototype.generateRandomPitch = function () {
         var pitch = 1;
         return pitch;
     };
     PitchGenerator.prototype.availablePitches = function () {
-        var tonic = this.grooveBox.generatorParams.tonic;
-        var scaleIndex = this.grooveBox.generatorParams.scaleIndex;
+        var tonic = this.generatorManager.currentGeneratorParams.tonic;
+        var scaleIndex = this.generatorManager.currentGeneratorParams.scaleIndex;
         var scalePitches = this.grooveBox.scales[scaleIndex][1];
-        var pitchRange = this.grooveBox.generatorParams.pitchRange;
+        var pitchRange = this.generatorManager.currentGeneratorParams.pitchRange;
         var pitches = [];
         for (var i = 0; i < pitchRange; i++) {
             var pitch = tonic + scalePitches[i];
@@ -21,12 +22,12 @@ var PitchGenerator = /** @class */ (function () {
         return pitches;
     };
     PitchGenerator.prototype.getNextPitch = function () {
-        var scaleIndex = this.grooveBox.generatorParams.scaleIndex;
+        var scaleIndex = this.generatorManager.currentGeneratorParams.scaleIndex;
         var scalePitches = this.grooveBox.scales[scaleIndex][1];
-        var tonic = this.grooveBox.generatorParams.tonic;
-        var pitchRange = this.grooveBox.generatorParams.pitchRange;
-        var octaveRange = this.grooveBox.generatorParams.octaveRange;
-        var octaveProbability = this.grooveBox.generatorParams.octaveProbability / 128;
+        var tonic = this.generatorManager.currentGeneratorParams.tonic;
+        var pitchRange = this.generatorManager.currentGeneratorParams.pitchRange;
+        var octaveRange = this.generatorManager.currentGeneratorParams.octaveRange;
+        var octaveProbability = this.generatorManager.currentGeneratorParams.octaveProbability / 128;
         if (this.lastPitch == -1) {
             this.lastPitch = tonic;
         }

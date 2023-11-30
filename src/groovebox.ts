@@ -39,20 +39,12 @@ export default class GrooveBox {
     ui: UI;
     selectedOutput?: MIDIOutput;
     clipSaver: ClipSaver;
-    generatorParams: GeneratorParams;
-    // for the buttons under the params
-    genParamPresetIndex?: number;
-    // for the history view
-    currentGenParamStepIndex?: number;
-    currentGenParamIndex?: number;
-    storedGenParams: GeneratorParams[] = [];
-    generatorParamsArray: GeneratorParams[] = [];
+    
     manualPitchOptions: number[] = [];
     lastPitchReadAt?: number;
     clipIndex?: number;
     playingPitches: any = {};
     phraseIndex?: number;
-    genChanges: [number, number][] = [];
 
     scales: ScalePair[] = [
         ["Chromatic", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ,10 ,11]],
@@ -89,6 +81,25 @@ export default class GrooveBox {
         ["Suspended Fourth", [0, 5, 7]],
 
     ]
+    majorRelativeChords: ScalePair[] = [
+        ["I", [0, 4, 7]],
+        ["ii", [2, 5, 9]],
+        ["iii", [4, 7, 11]],
+        ["IV", [5, 9, 12]],
+        ["V", [7, 11, 14]],
+        ["vi", [9, 12, 16]],
+        ["vii", [11, 14, 17]],
+    ]
+    minorRelativeChords: ScalePair[] = [
+        ["i", [0, 3, 7]],
+        ["ii", [2, 5, 8]],
+        ["III", [3, 7, 10]],
+        ["iv", [5, 8, 12]],
+        ["v", [7, 10, 14]],
+        ["VI", [8, 12, 15]],
+        ["VII", [10, 14, 17]],
+    ]
+
     modeIndex: number = 0;
     storageBox: StorageBox = new StorageBox();
     midiAccess: MIDIAccess;
@@ -102,10 +113,6 @@ export default class GrooveBox {
     constructor(midiAccess: MIDIAccess) {
         this.clipSaver = new ClipSaver(this);
         this.generatorManager = new GeneratorManager(this);
-        this.generatorParams = this.generatorManager.getCurrentParams();
-        this.generatorParamsArray.push(this.generatorParams);
-        this.genChanges.push([0, 0]);
-        this.currentGenParamStepIndex = 0;
         this.ui = new UI(this);
         this.midiAccess = midiAccess;
         this.midiManager = new MidiManager(this, midiAccess);
@@ -274,42 +281,7 @@ export default class GrooveBox {
     }
 
     setGeneratorParam(paramName: string, value: number) {
-        // Duplicate the generatorParams object
-        const newGeneratorParams = { ...this.generatorParams };
-
-        // Update the duplicated object with the new value
-        newGeneratorParams[paramName] = value;
-        newGeneratorParams.color = this.colorFromGenParams(newGeneratorParams);
-
-        // Update the original object reference
-        this.generatorParams = newGeneratorParams;
-        this.generatorParamsArray.push(newGeneratorParams)
-        this.currentGenParamIndex = this.generatorParamsArray.length - 1;
-        this.genChanges.push([this.currentGenParamIndex, this.currentSequencer()!.absoluteStep]);
-        this.storageBox.setGeneratorParams(this.generatorParams);
-    }
-
-    setGenParamsFromIndex(index: number) {
-        let matchedParams = this.genChanges.filter((genChange) => {
-            return genChange[1] <= index;
-        }).pop();
-        if (matchedParams != undefined
-            // don't record a step change if the params haven't changed
-            && this.currentGenParamStepIndex != matchedParams[1] ) {
-
-            let foundIndex = matchedParams[0];
-            const newGeneratorParams = this.getGenParamsByIndex(foundIndex);
-            this.generatorParams = newGeneratorParams;
-            this.currentGenParamStepIndex = matchedParams[1];
-            this.currentGenParamIndex = foundIndex;
-            this.genChanges.push([foundIndex, this.currentSequencer()!.absoluteStep]);
-
-        }
-    }
-
-    getGenParamsByIndex(index: number): GeneratorParams {
-        // console.log(index, this.generatorParamsArray)
-        return this.generatorParamsArray[index];
+        this.generatorManager.setGeneratorParam(paramName, value)
     }
 
     getChords(): ScalePair[] {
@@ -318,21 +290,6 @@ export default class GrooveBox {
 
     availablePitches(): number[] {
         return this.currentSequencer()!.availablePitches();
-    }
-
-    colorFromGenParams(generatorParams: GeneratorParams): string {
-        let maxCol = 64
-        let tonicColor = generatorParams.tonic / 2;
-        let scaleColor = generatorParams.scaleIndex / this.scales.length * maxCol;
-        let stepsInBarColor = generatorParams.stepsInBar / 16 * maxCol;
-        let stepProbabilityColor = generatorParams.stepProbability / 2;
-        let pitchRangeColor = generatorParams.pitchRange / 12 * maxCol;
-        let octaveRangeColor = generatorParams.octaveRange / 5 * maxCol;
-        let octaveProbabilityColor = generatorParams.octaveProbability / 2;
-        let r = 192 - Math.floor(tonicColor + scaleColor + stepsInBarColor);
-        let g = 192 - Math.floor(stepProbabilityColor + pitchRangeColor );
-        let b = 192 - Math.floor(octaveProbabilityColor + octaveRangeColor);
-        return `rgb(${r},${g},${b})`;
     }
 
     setClipParam(paramName: string, value: number) {
@@ -364,20 +321,6 @@ export default class GrooveBox {
             return this.clipSequencer!.clip;    
         } else if (this.modeIndex == 3){
             return this.songSequencer!.clip;
-        }
-    }
-
-    rotaryTarget(){
-        switch(this.modeIndex) {
-            case 0:
-                return this.generatorParams;
-                break;
-            case 1:
-                return this.clipSequencer?.clip;
-                break;
-            case 2:
-                return this.clipSequencer?.clip;
-                break;
         }
     }
 
@@ -416,40 +359,29 @@ export default class GrooveBox {
     setPitchGen(subModeIndex: number) {
         if (this.currentSequencer() !== undefined) {
             this.currentSequencer()!.setPitchMode(subModeIndex)
-            this.setGeneratorParam("pitchMode", subModeIndex);
+            this.generatorManager.setGeneratorParam("pitchMode", subModeIndex);
         }
     }
 
     setStepGen(subModeIndex: number) {
         if (this.currentSequencer() !== undefined) {
             this.currentSequencer()!.setStepMode(subModeIndex)
-            this.setGeneratorParam("stepMode", subModeIndex);
+            this.generatorManager.setGeneratorParam("stepMode", subModeIndex);
         }
     }
 
 
-    generateRandomSettings() {
-        this.generatorParams = {
-            "tonic": 64 + (32 - Math.floor(Math.random() * 64)),
-            "scaleIndex": Math.floor(Math.random() * this.scales.length),
-            "stepsInBar": (Math.floor(Math.random() * 4) +1) * 4,
-            "stepProbability": Math.floor(Math.random() * 128),
-            "pitchRange": Math.floor(Math.random() * 12) + 1,
-            "octaveRange": Math.floor(Math.random() * 5) + 1,
-            "octaveProbability": Math.floor(Math.random() * 128),
-            color: this.randomColor(Math.floor(Math.random() * 1000))
-        }
-    }
+
 
     generatorButtonPressed(index: number) {
         console.log("generatorButtonPressed", index)
-        if (this.storedGenParams[index] != undefined) {
-            this.generatorParams = Object.assign({}, this.storedGenParams[index]);
-            this.genParamPresetIndex = index;
-        } else {
-            this.storedGenParams[index] = { ...this.generatorParams };
-            this.genParamPresetIndex = index;
-        }
+        // if (this.storedGenParams[index] != undefined) {
+        //     this.generatorParams = Object.assign({}, this.storedGenParams[index]);
+        //     this.genParamPresetIndex = index;
+        // } else {
+        //     this.storedGenParams[index] = { ...this.generatorParams };
+        //     this.genParamPresetIndex = index;
+        // }
     }
 
     randomColor(seed: number): string {

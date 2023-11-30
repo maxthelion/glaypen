@@ -23,6 +23,8 @@ var PitchControl = /** @class */ (function (_super) {
         _this.pianoNoteView = new PianoNoteView(ui, grooveBox);
         _this.headElement.appendChild(_this.pianoNoteView.element);
         _this.renderables.push(_this.pianoNoteView);
+        _this.generatorManager = grooveBox.generatorManager;
+        console.log("pitch control constructor", _this.generatorManager);
         return _this;
     }
     PitchControl.prototype.getSubModeLabels = function () {
@@ -37,7 +39,8 @@ var PitchControl = /** @class */ (function (_super) {
         this.setScaleValue();
     };
     PitchControl.prototype.getSubModeIndex = function () {
-        return this.grooveBox.generatorParams.pitchMode;
+        // console.log("getSubModeIndex", this.generatorManager)
+        return this.grooveBox.generatorManager.getPitchModeIndex();
     };
     PitchControl.prototype.setSubControls = function () {
         var _this = this;
@@ -45,31 +48,13 @@ var PitchControl = /** @class */ (function (_super) {
         switch (this.getSubModeIndex()) {
             case 0:
                 // tonic rotary
-                var tonicRotary = new RotaryControl(this.ui, this.grooveBox);
-                tonicRotary.setValue = function (value) {
-                    var tonicValue = Math.floor(value * 128);
-                    this.grooveBox.setGeneratorParam("tonic", tonicValue);
-                };
-                tonicRotary.readValue = function () { return this.grooveBox.generatorParams.tonic / 128; };
+                var tonicRotary = this.addRotaryControl("tonic", "Root note", 12);
                 tonicRotary.displayValue = function () {
                     var pitches = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-                    return pitches[this.grooveBox.generatorParams.tonic % 12];
+                    return pitches[this.readValue() % 12];
                 };
-                tonicRotary.setLabel("Root note");
-                this.controlSet.appendChild(tonicRotary.element);
-                this.subRenderables.push(tonicRotary);
-                // pitchProbability Rotary 
-                var pitchRangeRotary = new RotaryControl(this.ui, this.grooveBox);
-                pitchRangeRotary.setValue = function (value) {
-                    var modifiedValue = Math.floor(value * 12);
-                    this.grooveBox.setGeneratorParam("pitchRange", modifiedValue);
-                };
-                pitchRangeRotary.readValue = function () { return this.grooveBox.generatorParams.pitchRange / 12; };
-                pitchRangeRotary.displayValue = function () { return this.grooveBox.generatorParams.pitchRange.toString(); };
-                pitchRangeRotary.getIncrement = function () { return 1 / 12; };
-                pitchRangeRotary.setLabel("Pitch range");
-                this.controlSet.appendChild(pitchRangeRotary.element);
-                this.subRenderables.push(pitchRangeRotary);
+                // pitchProbability Rotary
+                this.addRotaryControl("pitchRange", "Pitch range", 12);
                 // <div>
                 // <select class="genparam" name="scale" id="scale" data-paramid="scaleIndex">
                 // </select>
@@ -93,7 +78,7 @@ var PitchControl = /** @class */ (function (_super) {
                     var option = document.createElement("option");
                     option.value = i.toString();
                     option.text = scales[i][0];
-                    if (this.grooveBox.generatorParams.scaleIndex == i) {
+                    if (this.grooveBox.generatorManager.getCurrentAttribute("scaleIndex") == i) {
                         option.selected = true;
                     }
                     this.scaleSelect.add(option);
@@ -102,21 +87,12 @@ var PitchControl = /** @class */ (function (_super) {
             case 1:
                 //
                 // chordRoot rotary
-                var chordRoot = new RotaryControl(this.ui, this.grooveBox);
-                chordRoot.setValue = function (value) {
-                    var tonicValue = Math.floor(value * 128);
-                    this.grooveBox.setGeneratorParam("chordRoot", tonicValue);
-                };
-                chordRoot.readValue = function () { return this.grooveBox.generatorParams.chordRoot / 128; };
-                chordRoot.displayValue = function () {
+                var chordRootRotary = this.addRotaryControl("chordRoot", "Root note", 12);
+                chordRootRotary.displayValue = function () {
                     var pitches = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-                    console.log("this.displayValue");
-                    return pitches[this.grooveBox.generatorParams.chordRoot % 12];
+                    // console.log("this.displayValue")
+                    return pitches[this.grooveBox.generatorManager.currentGeneratorParams.chordRoot % 12];
                 };
-                chordRoot.setLabel("Root note");
-                this.controlSet.appendChild(chordRoot.element);
-                this.subRenderables.push(chordRoot);
-                console.log("chordRoot", this.subRenderables);
                 var chordDiv = document.createElement("div");
                 this.scaleSelect = document.createElement("select");
                 this.scaleSelect.addEventListener("change", function (e) {
@@ -131,7 +107,7 @@ var PitchControl = /** @class */ (function (_super) {
                     var option = document.createElement("option");
                     option.value = i.toString();
                     option.text = chords[i][0];
-                    if (this.grooveBox.generatorParams.chordIndex == i) {
+                    if (this.grooveBox.generatorManager.currentGeneratorParams.chordIndex == i) {
                         option.selected = true;
                     }
                     this.scaleSelect.add(option);
@@ -140,9 +116,18 @@ var PitchControl = /** @class */ (function (_super) {
                 break;
         }
     };
+    PitchControl.prototype.addRotaryControl = function (paramName, label, valueScale) {
+        var rotary = new RotaryControl(this.ui, this.grooveBox);
+        rotary.valueScale = valueScale;
+        rotary.paramName = paramName;
+        rotary.setLabel(label);
+        this.controlSet.appendChild(rotary.element);
+        this.subRenderables.push(rotary);
+        return rotary;
+    };
     PitchControl.prototype.setScaleValue = function () {
         if (this.scaleSelect !== undefined) {
-            this.scaleSelect.value = this.grooveBox.generatorParams.scaleIndex.toString();
+            this.scaleSelect.value = this.generatorManager.currentGeneratorParams.scaleIndex.toString();
         }
     };
     return PitchControl;

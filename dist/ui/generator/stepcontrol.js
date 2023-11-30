@@ -30,70 +30,33 @@ var StepControl = /** @class */ (function (_super) {
         this.setSubControls();
     };
     StepControl.prototype.getSubModeIndex = function () {
-        return this.grooveBox.generatorParams.stepMode;
+        return this.grooveBox.generatorManager.getStepModeIndex();
     };
     StepControl.prototype.setSubControls = function () {
         _super.prototype.setSubControls.call(this);
         switch (this.getSubModeIndex()) {
             case 0:
-                // stepProbability Rotary
-                var stepProbabilityRotary = new RotaryControl(this.ui, this.grooveBox);
-                stepProbabilityRotary.setValue = function (value) {
-                    var modifiedValue = Math.floor(value * 128);
-                    this.grooveBox.setGeneratorParam("stepProbability", modifiedValue);
-                };
-                stepProbabilityRotary.readValue = function () { return this.grooveBox.generatorParams.stepProbability / 128; };
-                stepProbabilityRotary.displayValue = function () { return this.grooveBox.generatorParams.stepProbability.toString(); };
-                stepProbabilityRotary.getIncrement = function () { return 1 / 128; };
-                stepProbabilityRotary.setLabel("Step probability");
-                this.controlSet.appendChild(stepProbabilityRotary.element);
-                this.subRenderables.push(stepProbabilityRotary);
-                // stepsInBar Rotary
-                var stepsInBarRotary = new RotaryControl(this.ui, this.grooveBox);
-                stepsInBarRotary.setValue = function (value) {
-                    var modifiedValue = Math.floor(value * 4) * 4;
-                    this.grooveBox.setGeneratorParam("stepsInBar", modifiedValue);
-                };
-                stepsInBarRotary.readValue = function () { return this.grooveBox.generatorParams.stepsInBar / 16; };
-                stepsInBarRotary.displayValue = function () { return this.grooveBox.generatorParams.stepsInBar.toString(); };
-                stepsInBarRotary.getIncrement = function () { return 1 / 4; };
-                stepsInBarRotary.setLabel("Steps in bar");
-                this.controlSet.appendChild(stepsInBarRotary.element);
-                this.subRenderables.push(stepsInBarRotary);
+                this.addRotaryControl("stepProbability", "Step probability", 128);
+                this.addRotaryControl("stepsInBar", "Steps in bar", 16);
                 break;
             case 1:
-                console.log("Euclidean mode");
-                // stepProbability Rotary
-                var stepPulseNumberRotary = new RotaryControl(this.ui, this.grooveBox);
-                stepPulseNumberRotary.setValue = function (value) {
-                    var modifiedValue = Math.floor(value * 16);
-                    this.grooveBox.setGeneratorParam("stepPulseNumber", modifiedValue);
-                };
-                stepPulseNumberRotary.readValue = function () { return this.grooveBox.generatorParams.stepPulseNumber / 16; };
-                stepPulseNumberRotary.displayValue = function () { return this.grooveBox.generatorParams.stepPulseNumber.toString(); };
-                stepPulseNumberRotary.getIncrement = function () { return 1 / 16; };
-                stepPulseNumberRotary.setLabel("Steps");
-                this.controlSet.appendChild(stepPulseNumberRotary.element);
-                this.subRenderables.push(stepPulseNumberRotary);
+                this.addRotaryControl("stepPulseNumber", "Steps", 16);
                 break;
-            // // stepsInBar Rotary
-            // let stepsInBarRotary = new RotaryControl(ui, grooveBox);
-            // stepsInBarRotary.setValue = function (value: number) {
-            //     let modifiedValue = Math.floor(value * 4) * 4;
-            //     this.grooveBox.setGeneratorParam("stepsInBar", modifiedValue);
-            // }
-            // stepsInBarRotary.readValue = function () { return this.grooveBox.generatorParams.stepsInBar /  16; }
-            // stepsInBarRotary.displayValue = function () { return this.grooveBox.generatorParams.stepsInBar.toString(); }
-            // stepsInBarRotary.getIncrement = function() { return 1 / 4; }
-            // stepsInBarRotary.setLabel("Steps in bar");
-            // controlSet.appendChild(stepsInBarRotary.element);
-            // this.renderables.push(stepsInBarRotary);
             case 2:
                 var manualStepControl = new ManualStepControl(this.ui, this.grooveBox);
                 this.controlSet.appendChild(manualStepControl.element);
                 this.subRenderables.push(manualStepControl);
                 break;
         }
+    };
+    StepControl.prototype.addRotaryControl = function (paramName, label, valueScale) {
+        var rotary = new RotaryControl(this.ui, this.grooveBox);
+        rotary.valueScale = valueScale;
+        rotary.paramName = paramName;
+        rotary.setLabel(label);
+        this.controlSet.appendChild(rotary.element);
+        this.subRenderables.push(rotary);
+        return rotary;
     };
     return StepControl;
 }(BaseControlSet));

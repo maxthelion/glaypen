@@ -12,6 +12,8 @@ export default class RotaryControl implements Renderable {
     grooveBox: GrooveBox;
     ui: UI;
     lastReadTime: number = 0;
+    valueScale: number = 128;
+    paramName: string = "";
 
 
     constructor(ui: UI, grooveBox:GrooveBox) {
@@ -38,8 +40,8 @@ export default class RotaryControl implements Renderable {
     }
     
     update(): void {
-        // console.log("update",this.labelElement.textContent)
         if (this.cachedValue !== this.readValue()){
+            console.log("update",this.labelElement.textContent, this.readValue())
             this.valueLabel.textContent = this.displayValue();
             this.renderWithValue(this.readValue());
             this.cachedValue = this.readValue();
@@ -51,7 +53,6 @@ export default class RotaryControl implements Renderable {
     }
 
     onWheel(e: WheelEvent) {
-        
         if ( Date.now() - this.lastReadTime  < 20){
             e.preventDefault();
             return false;
@@ -72,21 +73,27 @@ export default class RotaryControl implements Renderable {
         return false;
     }
 
-    readValue(): number {
-        return  this.cachedValue;
-    }
-
     setValue(value: number) {
-        this.cachedValue = value;
-        this.update();
+        let modifiedValue = Math.floor(value * this.valueScale );
+        console.log("setValue", value, modifiedValue)
+        this.grooveBox.setGeneratorParam(this.paramName, modifiedValue);
     }
 
-    getIncrement(): number {
-        return 1 / 128;
+    readValue() { 
+        let value = this.grooveBox.generatorManager.getNumberAttribute(this.paramName) /  this.valueScale;
+        // console.log("readValue", value)
+        return  value;
     }
-    displayValue() {
-        return this.readValue().toPrecision(3).toString();
+    displayValue() { 
+        let value = this.grooveBox.generatorManager.getNumberAttribute(this.paramName);
+        return (value != undefined) ? value.toString() : "0"; 
     }
+    getIncrement() { 
+        let increment = 1 / this.valueScale;
+        // console.log("getIncrement", this.valueScale, increment)
+        return increment; 
+    }
+
 
     renderCircle(){
         if(this.rotaryCanvas) {
@@ -109,7 +116,7 @@ export default class RotaryControl implements Renderable {
     }
 
     renderWithValue(value: number) {
-        
+        console.log("renderWithValue", value)
         // this.textLabel.innerHTML = value.toString();
         if (value != undefined){
             let ctx = this.rotaryCanvas.getContext('2d')!;

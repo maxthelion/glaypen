@@ -8,7 +8,7 @@ export default class StepGenerator {
     }
 
     stepProbability(step: number) {
-        let probability = this.grooveBox.generatorParams.stepProbability / 128;
+        let probability = this.grooveBox.generatorManager.getNumberAttribute("stepProbability") / 128;
         return probability;
     }
 }

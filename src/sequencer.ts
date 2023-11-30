@@ -59,7 +59,7 @@ export default class Sequencer implements SequencerInterface{
 
         // console.log("update", absoluteStep);
         let currentStep = absoluteStep % 16;
-        let stepsInBar = this.grooveBox.generatorParams.stepsInBar;
+        let stepsInBar = this.grooveBox.generatorManager.getNumberAttribute("stepsInBar");
         let stepProbability = this.stepGenerator.stepProbability(currentStep);
         
         var scalePitches
@@ -99,49 +99,4 @@ export default class Sequencer implements SequencerInterface{
         this.pitchGenerator = this.pitchGenerators[pitchMode];
     }
 
-    updatenew(absoluteStep: number) {
-
-        // console.log("update", absoluteStep);
-        let currentStep = absoluteStep % 16;
-        let tonic = this.grooveBox.generatorParams.tonic;
-        let scaleIndex = this.grooveBox.generatorParams.scaleIndex;
-        let scalePitches = this.grooveBox.scales[scaleIndex][1];
-        if (this.grooveBox.manualPitchOptions.length > 0) {
-            scalePitches = this.grooveBox.manualPitchOptions;
-        }
-        let stepsInBar = this.grooveBox.generatorParams.stepsInBar;
-        let stepProbability = this.grooveBox.generatorParams.stepProbability / 128;
-        let pitchRange = this.grooveBox.generatorParams.pitchRange;
-        let octaveRange = this.grooveBox.generatorParams.octaveRange;
-        let octaveProbability = this.grooveBox.generatorParams.octaveProbability / 128;
-         if (currentStep % (16 / stepsInBar) == 0) {
-            if (Math.random() <= (stepProbability) ) {
-                if (this.grooveBox.manualPitchOptions.length > 0) {
-                    var pitchInterval = Math.floor( Math.random() * scalePitches.length);
-                    var pitch = scalePitches[pitchInterval];
-                }else {
-                    var pitchInterval = Math.floor( Math.random() * pitchRange);
-                    if (this.lastPitch != undefined) {
-                        var pitch = this.lastPitch + scalePitches[pitchInterval];
-                        if (Math.random() > (octaveProbability) ) {
-                            let octaveChange = Math.floor( Math.random() * octaveRange) - Math.floor(octaveRange / 2);
-                            pitch += (octaveChange * 12);
-                        }
-                    } else {
-                        var pitch = tonic + scalePitches[pitchInterval];
-                        if (Math.random() > (octaveProbability) ) {
-                            let octaveChange = Math.floor( Math.random() * octaveRange) - Math.floor(octaveRange / 2);
-                            pitch += (octaveChange * 12);
-                        }  
-                    }
-                    this.lastPitch = pitch;
-                }
-                let step = new Step(currentStep, 120, [pitch]);
-                // this.grooveBox.playPitch(pitch);
-                this.grooveBox.playStep(step);
-                this.grooveBox.pitchHistory.addStep(absoluteStep, step);
-            }
-        }
-        this.grooveBox.pitchHistory.incrementMaxStep();
-    }
 }

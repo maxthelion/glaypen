@@ -1,3 +1,4 @@
+import GeneratorManager from "../generatormanager";
 import GrooveBox from "../groovebox";
 
 export default class PitchGenerator {
@@ -5,9 +6,11 @@ export default class PitchGenerator {
     grooveBox: GrooveBox;
     direction: number = 1;
     lastPitch: number = -1;
+    generatorManager: GeneratorManager;
 
     constructor(grooveBox: GrooveBox) {
         this.grooveBox = grooveBox;
+        this.generatorManager = this.grooveBox.generatorManager;
     }
 
     generateRandomPitch() {
@@ -16,10 +19,10 @@ export default class PitchGenerator {
     }
 
     availablePitches() {
-        let tonic = this.grooveBox.generatorParams.tonic;
-        let scaleIndex = this.grooveBox.generatorParams.scaleIndex;
+        let tonic = this.generatorManager.currentGeneratorParams.tonic;
+        let scaleIndex = this.generatorManager.currentGeneratorParams.scaleIndex;
         let scalePitches = this.grooveBox.scales[scaleIndex][1];
-        let pitchRange = this.grooveBox.generatorParams.pitchRange;
+        let pitchRange = this.generatorManager.currentGeneratorParams.pitchRange;
         let pitches = [];
         for (let i = 0; i < pitchRange; i++) {
             let pitch = tonic + scalePitches[i];
@@ -30,12 +33,12 @@ export default class PitchGenerator {
 
     getNextPitch() {
         
-        let scaleIndex = this.grooveBox.generatorParams.scaleIndex;
+        let scaleIndex = this.generatorManager.currentGeneratorParams.scaleIndex;
         let scalePitches = this.grooveBox.scales[scaleIndex][1];
-        let tonic = this.grooveBox.generatorParams.tonic;
-        let pitchRange = this.grooveBox.generatorParams.pitchRange;
-        let octaveRange = this.grooveBox.generatorParams.octaveRange;
-        let octaveProbability = this.grooveBox.generatorParams.octaveProbability / 128;
+        let tonic = this.generatorManager.currentGeneratorParams.tonic;
+        let pitchRange = this.generatorManager.currentGeneratorParams.pitchRange;
+        let octaveRange = this.generatorManager.currentGeneratorParams.octaveRange;
+        let octaveProbability = this.generatorManager.currentGeneratorParams.octaveProbability / 128;
         if (this.lastPitch == -1) {
             this.lastPitch = tonic;
         }

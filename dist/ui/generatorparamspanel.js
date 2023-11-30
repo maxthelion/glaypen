@@ -10,12 +10,10 @@ var GeneratorParamsPanel = /** @class */ (function () {
         this.ui = ui;
         this.element = document.querySelector("#generatorparams");
         this.renderables = [];
-        var pitchControls = new PitchControl(ui, grooveBox);
-        this.renderables.push(pitchControls);
-        this.genPanels.push(pitchControls);
-        var stepControls = new StepControl(ui, grooveBox);
-        this.renderables.push(stepControls);
-        this.genPanels.push(stepControls);
+        this.pitchPanel = new PitchControl(ui, grooveBox);
+        this.genPanels.push(this.pitchPanel);
+        this.stepPanel = new StepControl(ui, grooveBox);
+        this.genPanels.push(this.stepPanel);
         // generator parts tabs
         var generatorPartsTabs = document.querySelector("#generatorpartstabs");
         var generatorPartsTabsButtons = generatorPartsTabs.querySelectorAll(".generatorpartstab");
@@ -61,13 +59,24 @@ var GeneratorParamsPanel = /** @class */ (function () {
                 buttonEl.classList.add("selected");
             }
         });
+        switch (partId) {
+            case "0":
+                this.currentPart = this.pitchPanel;
+                break;
+            case "1":
+                this.currentPart = this.stepPanel;
+                break;
+            default:
+                break;
+        }
         var panelIndex = parseInt(partId);
         this.element.innerHTML = "";
         (_a = this.element) === null || _a === void 0 ? void 0 : _a.appendChild(this.genPanels[panelIndex].element);
     };
     GeneratorParamsPanel.prototype.update = function () {
         var _a;
-        (_a = this.element) === null || _a === void 0 ? void 0 : _a.style.setProperty("border-color", this.grooveBox.generatorParams.color);
+        (_a = this.element) === null || _a === void 0 ? void 0 : _a.style.setProperty("border-color", this.grooveBox.generatorManager.getColor());
+        this.currentPart.update();
         this.renderables.forEach(function (renderable) {
             renderable.update();
         });
