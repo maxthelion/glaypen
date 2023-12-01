@@ -13,6 +13,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+import IntervalProbabilityControl from "../intervalprobabilitycontrol.js";
 import PianoNoteView from "../pianonoteview.js";
 import RotaryControl from "../rotarycontrol.js";
 import BaseControlSet from "./basecontrolset.js";
@@ -20,6 +21,7 @@ var PitchControl = /** @class */ (function (_super) {
     __extends(PitchControl, _super);
     function PitchControl(ui, grooveBox) {
         var _this = _super.call(this, ui, grooveBox) || this;
+        _this.intervalProbabilityControls = [];
         _this.pianoNoteView = new PianoNoteView(ui, grooveBox);
         _this.headElement.appendChild(_this.pianoNoteView.element);
         _this.renderables.push(_this.pianoNoteView);
@@ -37,83 +39,159 @@ var PitchControl = /** @class */ (function (_super) {
     PitchControl.prototype.update = function () {
         _super.prototype.update.call(this);
         this.setScaleValue();
+        this.highlightInterval();
+    };
+    PitchControl.prototype.highlightInterval = function () {
+        if (this.intervalProbabilityControls.length > 0) {
+            this.intervalProbabilityControls.forEach(function (button) {
+                button.update();
+            });
+        }
     };
     PitchControl.prototype.getSubModeIndex = function () {
         // console.log("getSubModeIndex", this.generatorManager)
         return this.grooveBox.generatorManager.getPitchModeIndex();
     };
     PitchControl.prototype.setSubControls = function () {
-        var _this = this;
         _super.prototype.setSubControls.call(this);
         switch (this.getSubModeIndex()) {
             case 0:
-                // tonic rotary
-                var tonicRotary = this.addRotaryControl("tonic", "Root note", 12);
-                tonicRotary.displayValue = function () {
+                var keyRotary = this.addRotaryControl("scaleKey", "Key", 12);
+                keyRotary.displayValue = function () {
                     var pitches = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-                    return pitches[this.readValue() % 12];
+                    return pitches[Math.round(this.readValue() * 12) % 12];
                 };
+                this.addScaleSelect();
+                // tonic rotary
+                var tonicRotary = this.addRotaryControl("tonic", "Scale offset", 0);
+                tonicRotary.getValueScale = function () {
+                    return this.grooveBox.generatorManager.getScale().length;
+                };
+                // tonicRotary.displayValue = function () {
+                //     let pitches = 
+                //     let octave = Math.floor((this.readValue() * this.valueScale) / 12);
+                //     return pitches[ Math.round(this.readValue() * this.valueScale) % 12 ] + octave.toString();
+                // }
+                var octaveRotary = this.addRotaryControl("scaleOctaveRoot", "Octave", 10);
                 // pitchProbability Rotary
                 this.addRotaryControl("pitchRange", "Pitch range", 12);
-                // <div>
-                // <select class="genparam" name="scale" id="scale" data-paramid="scaleIndex">
-                // </select>
-                // <label for="scale">Scale</label>
-                // </div>
-                var div = document.createElement("div");
-                this.scaleSelect = document.createElement("select");
-                this.scaleSelect.classList.add("genparam");
-                this.scaleSelect.name = "scale";
-                this.scaleSelect.id = "scale";
-                this.scaleSelect.dataset.paramid = "scaleIndex";
-                this.scaleSelect.addEventListener("change", function (e) {
-                    var element = e.target;
-                    var value = element.value;
-                    _this.grooveBox.setGeneratorParam("scaleIndex", parseInt(value));
-                });
-                div.appendChild(this.scaleSelect);
-                this.controlSet.appendChild(div);
-                var scales = this.grooveBox.scales;
-                for (var i = 0; i < scales.length; i++) {
-                    var option = document.createElement("option");
-                    option.value = i.toString();
-                    option.text = scales[i][0];
-                    if (this.grooveBox.generatorManager.getCurrentAttribute("scaleIndex") == i) {
-                        option.selected = true;
-                    }
-                    this.scaleSelect.add(option);
-                }
+                this.addIntervalChooser();
                 break;
             case 1:
                 //
                 // chordRoot rotary
-                var chordRootRotary = this.addRotaryControl("chordRoot", "Root note", 12);
-                chordRootRotary.displayValue = function () {
-                    var pitches = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-                    // console.log("this.displayValue")
-                    return pitches[this.grooveBox.generatorManager.currentGeneratorParams.chordRoot % 12];
+                var chordRootRotary = this.addRotaryControl("chordRoot", "Chord offset", 12);
+                chordRootRotary.getValueScale = function () {
+                    return this.grooveBox.generatorManager.getChordScale().length;
                 };
-                var chordDiv = document.createElement("div");
-                this.scaleSelect = document.createElement("select");
-                this.scaleSelect.addEventListener("change", function (e) {
-                    var element = e.target;
-                    var value = element.value;
-                    _this.grooveBox.setGeneratorParam("chordIndex", parseInt(value));
-                });
-                chordDiv.appendChild(this.scaleSelect);
-                this.controlSet.appendChild(chordDiv);
-                var chords = this.grooveBox.getChords();
-                for (var i = 0; i < chords.length; i++) {
-                    var option = document.createElement("option");
-                    option.value = i.toString();
-                    option.text = chords[i][0];
-                    if (this.grooveBox.generatorManager.currentGeneratorParams.chordIndex == i) {
-                        option.selected = true;
-                    }
-                    this.scaleSelect.add(option);
-                }
+                this.addScaleSelect("chordScaleIndex", "Chord scale");
+                var chordOctaveRotary = this.addRotaryControl("chordOctaveRoot", "Octave", 10);
+                var chordKey = this.addRotaryControl("chordKey", "Key", 12);
+                chordKey.displayValue = function () {
+                    var pitches = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+                    return pitches[Math.round(this.readValue() * 12) % 12];
+                };
+                this.addChordChooser();
+                this.addChordSelect();
                 // something
                 break;
+        }
+    };
+    PitchControl.prototype.addChordChooser = function () {
+        var _this = this;
+        var div = document.createElement("div");
+        div.classList.add("chordchooser");
+        var chordNames = ["I", "ii", "iii", "IV", "V", "vi", "vii"];
+        var chordModes = ["maj", "min", "min", "maj", "maj", "min", "dim"];
+        for (var i = 0; i < 7; i++) {
+            var button = document.createElement("a");
+            button.href = "#";
+            button.classList.add("chordbutton");
+            button.textContent = chordNames[i];
+            button.dataset.chordIndex = this.mapModeToChordIndex(chordModes[i]).toString();
+            button.dataset.chordRoot = i.toString();
+            div.appendChild(button);
+            button.addEventListener("click", function (e) {
+                var element = e.target;
+                var chordRoot = element.dataset.chordRoot;
+                var chordIndex = element.dataset.chordIndex;
+                _this.grooveBox.setGeneratorParam("chordRoot", parseInt(chordRoot));
+                _this.grooveBox.setGeneratorParam("chordIndex", parseInt(chordIndex));
+            });
+        }
+        this.footElement.appendChild(div);
+    };
+    PitchControl.prototype.addIntervalChooser = function () {
+        var div = document.createElement("div");
+        div.classList.add("intervalchooser");
+        var intervals = [];
+        for (var i = 0; i < 12; i++) {
+            intervals.push(i);
+        }
+        this.intervalProbabilityControls = [];
+        for (var i = 0; i < intervals.length; i++) {
+            var intervalProbabilityControl = new IntervalProbabilityControl(this.ui, this.grooveBox, i);
+            div.appendChild(intervalProbabilityControl.element);
+            this.subRenderables.push(intervalProbabilityControl);
+            this.intervalProbabilityControls.push(intervalProbabilityControl);
+        }
+        this.footElement.appendChild(div);
+    };
+    PitchControl.prototype.mapModeToChordIndex = function (mode) {
+        switch (mode) {
+            case "maj":
+                return 0;
+            case "min":
+                return 1;
+            case "dim":
+                return 2;
+        }
+    };
+    PitchControl.prototype.addScaleSelect = function (paramName, label) {
+        var _this = this;
+        if (paramName === void 0) { paramName = "scaleIndex"; }
+        if (label === void 0) { label = "Scale"; }
+        var div = document.createElement("div");
+        this.scaleSelect = document.createElement("select");
+        this.scaleSelect.dataset.paramid = paramName;
+        this.scaleSelect.addEventListener("change", function (e) {
+            var element = e.target;
+            var value = element.value;
+            _this.grooveBox.setGeneratorParam(paramName, parseInt(value));
+        });
+        div.appendChild(this.scaleSelect);
+        this.controlSet.appendChild(div);
+        var scales = this.grooveBox.scales;
+        for (var i = 0; i < scales.length; i++) {
+            var option = document.createElement("option");
+            option.value = i.toString();
+            option.text = scales[i][0];
+            if (this.grooveBox.generatorManager.getCurrentAttribute(paramName) == i) {
+                option.selected = true;
+            }
+            this.scaleSelect.add(option);
+        }
+    };
+    PitchControl.prototype.addChordSelect = function () {
+        var _this = this;
+        var chordDiv = document.createElement("div");
+        this.scaleSelect = document.createElement("select");
+        this.scaleSelect.addEventListener("change", function (e) {
+            var element = e.target;
+            var value = element.value;
+            _this.grooveBox.setGeneratorParam("chordIndex", parseInt(value));
+        });
+        chordDiv.appendChild(this.scaleSelect);
+        this.footElement.appendChild(chordDiv);
+        var chords = this.grooveBox.getChords();
+        for (var i = 0; i < chords.length; i++) {
+            var option = document.createElement("option");
+            option.value = i.toString();
+            option.text = chords[i][0];
+            if (this.grooveBox.generatorManager.currentGeneratorParams.chordIndex == i) {
+                option.selected = true;
+            }
+            this.scaleSelect.add(option);
         }
     };
     PitchControl.prototype.addRotaryControl = function (paramName, label, valueScale) {

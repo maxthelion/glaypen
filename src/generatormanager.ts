@@ -22,7 +22,13 @@ export default class GeneratorManager {
         stepMode: 0,
         pitchMode: 0,
         scaleKey: 60,
+        scaleOctaveRoot: 0,
+        scaleIntervalProbabilities: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        chordOctaveRoot: 0,
         chordKey: 60,
+        chordScaleIndex: 0,
+        chordIndex: 0,
+        chordRoot: 0,
         color: "#000000",
         stepPulseNumber: 4,
         manualSteps: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,0 ,0 ,0 ,0 ,0],
@@ -45,11 +51,10 @@ export default class GeneratorManager {
         this.grooveBox = grooveBox;
         let storedParams = this.grooveBox.storageBox.getGeneratorParams();
         if (storedParams !== undefined && storedParams !== null) {
-            if (storedParams.stepMode === undefined) {
-                storedParams.stepMode = 0;
-            }
-            if (storedParams.pitchMode === undefined) {
-                storedParams.pitchMode = 0;
+            for (const key in this.defaultGeneratorParams) {
+                if (!storedParams.hasOwnProperty(key)) {
+                    storedParams[key] = this.defaultGeneratorParams[key];
+                }
             }
             this.currentGeneratorParams = storedParams!;
         } else {
@@ -68,6 +73,19 @@ export default class GeneratorManager {
         this.grooveBox.storageBox.setGeneratorParams(this.currentGeneratorParams);
     }
 
+    getScale(){
+        return this.grooveBox.scales[this.currentGeneratorParams.scaleIndex][1];
+    }
+
+    getChordScale(){
+        return this.grooveBox.scales[this.currentGeneratorParams.chordScaleIndex][1];
+    }
+
+    setIntervalProbability(index: number, probability: number) {
+        this.currentGeneratorParams.scaleIntervalProbabilities[index] = probability;
+        this.grooveBox.storageBox.setGeneratorParams(this.currentGeneratorParams);
+    }
+    
     getCurrentParams() {
         return this.currentGeneratorParams;
     }
@@ -180,7 +198,15 @@ export default class GeneratorManager {
         let r = 192 - Math.floor(tonicColor + scaleColor + stepsInBarColor);
         let g = 192 - Math.floor(stepProbabilityColor + pitchRangeColor );
         let b = 192 - Math.floor(octaveProbabilityColor + octaveRangeColor);
-        return `rgb(${r},${g},${b})`;
+        
+        // return `rgb(${r},${g},${b})`;
+        let h = Math.floor(tonicColor + scaleColor + stepsInBarColor);
+        let s = Math.floor(stepProbabilityColor + pitchRangeColor );
+        let l = Math.floor(octaveProbabilityColor + octaveRangeColor);
+        let hsl = `hsl(${h},${s}%,${l}%)`;
+        console.log(hsl);
+        return `hsl(${h},${s}%,${l}%)`;
+
     }
 
     generateRandomSettings() {

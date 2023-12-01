@@ -180,9 +180,9 @@ body {
     color: #fff;
     text-shadow: 0 0 10px #fff;
 }
-div.active {
+/* div.active {
     background-color: #000 !important;
-}
+} */
 #generatorSavedStates {
     display: grid;
     grid-template-columns: repeat(16, 1fr);
@@ -265,7 +265,6 @@ div.active {
 .gencontrolset {
     padding: 10px;
 }
-
 .stepgenmode {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -278,12 +277,69 @@ div.active {
     color: #000;
     background-color: #cccccc;
     text-decoration: none;
+    font-size: 16px;
+    text-align: center;
+    line-height: 20px;
+}
+.stepgenmode .stepgenmodebutton.selected {
+    background-color: cornflowerblue;
+}
+
+.chordchooser {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: 30px;
+    grid-gap: 5px;
+    align-items: center;
+}
+.chordchooser .chordbutton{
+    display: block;
+    height: 100%;
+    color: #000;
+    background-color: #cccccc;
+    text-decoration: none;
     font-size: 20px;
     text-align: center;
     line-height: 30px;
 }
-.stepgenmode .stepgenmodebutton.selected {
-    background-color: cornflowerblue;
+
+.intervalchooser {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: 30px;
+    grid-gap: 2px;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+.intervalholder {
+    display: grid;
+    grid-template-rows: 30px 20px;
+}
+.intervalamountbar {
+    display: block;
+    height: 100%;
+    width: 100%;
+}
+.intervalprobabilitycontrol {
+    vertical-align: bottom;
+    background-color: #333;
+}
+.intervalprobabilitycontrol.active {
+    background-color:#d93333;
+}
+.intervalprobabilitycontrol.active .intervalamountbar {
+    background-color:  #872e2e;
+}
+.intervalchooser .chordbutton{
+    display: block;
+    height: 100%;
+    color: #000;
+    background-color: #cccccc;
+    text-decoration: none;
+    font-size: 12px;
+    text-align: center;
+    line-height: 30px;
 }
 
 /* rotary controls */
@@ -295,11 +351,13 @@ div.active {
     color: white;
     position: absolute;
     top: 18px;
-    left: 66px;
+    left: 30px;
     text-align: center;
+    font-size: 12px;
 }
 .rotarycontrol .rotarynamelabel {
     background-color: #333;
+    font-size: 12px;
     color: #eee;
 }
 /* rotary controls */

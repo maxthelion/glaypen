@@ -316,7 +316,14 @@ var GrooveBox = /** @class */ (function () {
         var r = 64 + Math.floor(random.next() * 64);
         var b = 64 + Math.floor(random.next() * 64);
         var g = 64 + Math.floor(random.next() * 64);
-        return "rgb(".concat(r, ",").concat(g, ",").concat(b, ")");
+        // return `rgb(${r},${g},${b})`;
+        var h = Math.floor(random.next() * 360);
+        var s = Math.floor(random.next() * 100);
+        var l = Math.floor(random.next() * 100);
+        var hsl = "hsl(".concat(h, ",").concat(s, "%,").concat(l, "%)");
+        console.log(hsl);
+        return "hsl(".concat(h, ",").concat(s, "%,").concat(l, "%)");
+        // return `rgb(${r},${g},${b})`;
     };
     return GrooveBox;
 }());

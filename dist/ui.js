@@ -13,12 +13,14 @@ import PhraseSelector from "./ui/phraseselector.js";
 import GeneratorSavedStates from "./ui/generatorsavedstates.js";
 import GenChangeCanvas from "./ui/genchangecanvas.js";
 import TempoDisplay from "./ui/tempodisplay.js";
+import MouseHandler from "./mousehandler.js";
 var UI = /** @class */ (function () {
     function UI(groovebox) {
         var _this = this;
         this.lastClipLength = -1;
         var sequencerSteps = document.querySelectorAll(".step");
         this.sequencerSteps = [];
+        this.mouseHandler = new MouseHandler(this, groovebox);
         sequencerSteps.forEach(function (sequencerStep) {
             console.log("sequencerStep", sequencerStep.textContent);
             _this.sequencerSteps.push(sequencerStep);

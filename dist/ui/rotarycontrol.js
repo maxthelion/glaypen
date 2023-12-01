@@ -61,12 +61,12 @@ var RotaryControl = /** @class */ (function () {
         return false;
     };
     RotaryControl.prototype.setValue = function (value) {
-        var modifiedValue = Math.floor(value * this.valueScale);
-        console.log("setValue", value, modifiedValue);
+        var modifiedValue = Math.floor(value * this.getValueScale());
+        // console.log("setValue", value, modifiedValue)
         this.grooveBox.setGeneratorParam(this.paramName, modifiedValue);
     };
     RotaryControl.prototype.readValue = function () {
-        var value = this.grooveBox.generatorManager.getNumberAttribute(this.paramName) / this.valueScale;
+        var value = this.grooveBox.generatorManager.getNumberAttribute(this.paramName) / this.getValueScale();
         // console.log("readValue", value)
         return value;
     };
@@ -75,9 +75,12 @@ var RotaryControl = /** @class */ (function () {
         return (value != undefined) ? value.toString() : "0";
     };
     RotaryControl.prototype.getIncrement = function () {
-        var increment = 1 / this.valueScale;
-        // console.log("getIncrement", this.valueScale, increment)
+        var increment = 1 / this.getValueScale();
+        // console.log("getIncrement", this.getValueScale(), increment)
         return increment;
+    };
+    RotaryControl.prototype.getValueScale = function () {
+        return this.valueScale;
     };
     RotaryControl.prototype.renderCircle = function () {
         if (this.rotaryCanvas) {
@@ -99,7 +102,7 @@ var RotaryControl = /** @class */ (function () {
         }
     };
     RotaryControl.prototype.renderWithValue = function (value) {
-        console.log("renderWithValue", value);
+        // console.log("renderWithValue", value)
         // this.textLabel.innerHTML = value.toString();
         if (value != undefined) {
             var ctx = this.rotaryCanvas.getContext('2d');

@@ -74,13 +74,13 @@ export default class RotaryControl implements Renderable {
     }
 
     setValue(value: number) {
-        let modifiedValue = Math.floor(value * this.valueScale );
-        console.log("setValue", value, modifiedValue)
+        let modifiedValue = Math.floor(value * this.getValueScale() );
+        // console.log("setValue", value, modifiedValue)
         this.grooveBox.setGeneratorParam(this.paramName, modifiedValue);
     }
 
     readValue() { 
-        let value = this.grooveBox.generatorManager.getNumberAttribute(this.paramName) /  this.valueScale;
+        let value = this.grooveBox.generatorManager.getNumberAttribute(this.paramName) /  this.getValueScale();
         // console.log("readValue", value)
         return  value;
     }
@@ -89,11 +89,14 @@ export default class RotaryControl implements Renderable {
         return (value != undefined) ? value.toString() : "0"; 
     }
     getIncrement() { 
-        let increment = 1 / this.valueScale;
-        // console.log("getIncrement", this.valueScale, increment)
+        let increment = 1 / this.getValueScale();
+        // console.log("getIncrement", this.getValueScale(), increment)
         return increment; 
     }
 
+    getValueScale() {
+        return this.valueScale;
+    }
 
     renderCircle(){
         if(this.rotaryCanvas) {
@@ -116,7 +119,7 @@ export default class RotaryControl implements Renderable {
     }
 
     renderWithValue(value: number) {
-        console.log("renderWithValue", value)
+        // console.log("renderWithValue", value)
         // this.textLabel.innerHTML = value.toString();
         if (value != undefined){
             let ctx = this.rotaryCanvas.getContext('2d')!;

@@ -17,6 +17,7 @@ import PhraseSelector from "./ui/phraseselector.js";
 import GeneratorSavedStates from "./ui/generatorsavedstates.js";
 import GenChangeCanvas from "./ui/genchangecanvas.js";
 import TempoDisplay from "./ui/tempodisplay.js";
+import MouseHandler from "./mousehandler.js";
 
 
 
@@ -35,12 +36,13 @@ export default class UI {
     generatorParamsPanel: GeneratorParamsPanel;
     lastClipLength: number = -1;
     clockIndicator: HTMLElement;
-
+    mouseHandler: MouseHandler;
 
 
     constructor(groovebox: GrooveBox) {
         var sequencerSteps = document.querySelectorAll(".step");
         this.sequencerSteps = [];
+        this.mouseHandler = new MouseHandler(this, groovebox);
         sequencerSteps.forEach((sequencerStep) => {
             console.log("sequencerStep", sequencerStep.textContent);
             this.sequencerSteps.push(sequencerStep as HTMLElement)

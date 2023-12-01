@@ -368,7 +368,14 @@ export default class GrooveBox {
         let r = 64 + Math.floor(random.next() * 64);
         let b = 64 + Math.floor(random.next() * 64);
         let g = 64 + Math.floor(random.next() * 64);
-        return `rgb(${r},${g},${b})`;
+        // return `rgb(${r},${g},${b})`;
+        let h = Math.floor(random.next() * 360);
+        let s = Math.floor(random.next() * 100);
+        let l = Math.floor(random.next() * 100);
+        let hsl = `hsl(${h},${s}%,${l}%)`;
+        console.log(hsl);
+        return `hsl(${h},${s}%,${l}%)`;
+        // return `rgb(${r},${g},${b})`;
     }
 }
 

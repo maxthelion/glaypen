@@ -21,26 +21,26 @@ var ChordGenerator = /** @class */ (function (_super) {
     }
     ChordGenerator.prototype.availablePitches = function () {
         var chords = this.grooveBox.chords;
+        var chordKey = this.grooveBox.generatorManager.getNumberAttribute("chordKey");
+        var chordOctaveRoot = this.grooveBox.generatorManager.getNumberAttribute("chordOctaveRoot");
+        var chordScaleIndex = this.grooveBox.generatorManager.getNumberAttribute("chordScaleIndex");
         var chordRoot = this.grooveBox.generatorManager.getNumberAttribute("chordRoot");
         var chordIndex = this.grooveBox.generatorManager.getNumberAttribute("chordIndex");
+        var scaleStart = chordKey + (chordOctaveRoot * 12);
+        var scalePitches = this.grooveBox.scales[chordScaleIndex][1];
         var chordPitches = chords[chordIndex][1];
         var pitches = [];
         for (var i = 0; i < chordPitches.length; i++) {
-            var pitch = chordRoot + chordPitches[i];
+            var pitch = scaleStart + chordPitches[i] + chordRoot;
             pitches.push(pitch);
         }
         return pitches;
     };
     ChordGenerator.prototype.getNextPitch = function () {
-        var chordIndex = this.grooveBox.generatorManager.getNumberAttribute("chordIndex");
-        var scalePitches = this.grooveBox.chords[chordIndex][1];
-        var root = this.grooveBox.generatorManager.getNumberAttribute("chordRoot");
-        var pitchRange = scalePitches.length;
-        // let octaveRange = this.grooveBox.generatorManager.getNumberAttribute("octaveRange");
-        // let octaveProbability = this.grooveBox.generatorManager.getNumberAttribute("octaveProbability") / 128;
+        var pitches = this.availablePitches();
+        var pitchRange = pitches.length;
         var pitchInterval = Math.floor(Math.random() * pitchRange);
-        pitchInterval = pitchInterval % scalePitches.length;
-        var pitch = root + scalePitches[pitchInterval];
+        var pitch = pitches[pitchInterval];
         return pitch;
     };
     return ChordGenerator;

@@ -18,21 +18,38 @@ export default class PitchGenerator {
         return pitch;
     }
 
+    availableIntervals() {
+        let scaleKey = this.generatorManager.currentGeneratorParams.scaleKey;
+        let intervals = [];
+        let tonic = this.generatorManager.currentGeneratorParams.tonic;
+        for (let i = 0; i < this.availablePitches().length; i++) {
+            let interval = scaleKey + i;
+            
+            intervals.push(i + tonic);
+        }
+        return intervals;
+    }
+
     availablePitches() {
         let tonic = this.generatorManager.currentGeneratorParams.tonic;
+        let scaleOctaveRoot = this.generatorManager.currentGeneratorParams.scaleOctaveRoot;
+        let scaleKey = this.generatorManager.currentGeneratorParams.scaleKey;
+        let scaleStart = scaleKey + (scaleOctaveRoot * 12);
         let scaleIndex = this.generatorManager.currentGeneratorParams.scaleIndex;
         let scalePitches = this.grooveBox.scales[scaleIndex][1];
         let pitchRange = this.generatorManager.currentGeneratorParams.pitchRange;
         let pitches = [];
         for (let i = 0; i < pitchRange; i++) {
-            let pitch = tonic + scalePitches[i];
+            let pitch = scaleStart + scalePitches[((i + tonic) % scalePitches.length)];
             pitches.push(pitch);
         }
         return pitches;
     }
 
     getNextPitch() {
-        
+        let scaleOctaveRoot = this.generatorManager.currentGeneratorParams.scaleOctaveRoot;
+        let scaleKey = this.generatorManager.currentGeneratorParams.scaleKey;
+        let scaleStart = scaleKey + (scaleOctaveRoot * 12);
         let scaleIndex = this.generatorManager.currentGeneratorParams.scaleIndex;
         let scalePitches = this.grooveBox.scales[scaleIndex][1];
         let tonic = this.generatorManager.currentGeneratorParams.tonic;
@@ -54,7 +71,7 @@ export default class PitchGenerator {
         // }
         // this.lastPitch = pitchInterval;
         pitchInterval = pitchInterval % scalePitches.length;
-        var pitch = tonic + scalePitches[pitchInterval];
+        var pitch = scaleStart + scalePitches[((pitchInterval + tonic) % scalePitches.length)];
         if (Math.random() > (octaveProbability) ) {
             let octaveChange = Math.floor( Math.random() * octaveRange) - Math.floor(octaveRange / 2);
             pitch += (octaveChange * 12);

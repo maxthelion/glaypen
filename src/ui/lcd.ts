@@ -24,6 +24,7 @@ export default class LCD implements Renderable {
     update() {
         if (this.ctx !== null) {
             this.ctx.clearRect(0, 0, this.htmlCanvas.width, this.htmlCanvas.height);
+            this.drawOctaves();
             var stepHeight = this.canvasHeight / 128;
             if (this.grooveBox.modeIndex === 1 || this.grooveBox.modeIndex === 2) {
                 let clip = this.grooveBox.clipSequencer?.clip!;
@@ -68,6 +69,18 @@ export default class LCD implements Renderable {
                 }
             }
         }
+    }
+
+    drawOctaves() {
+        for(let i = 0; i < 11; i++) {
+            
+            this.ctx!.fillStyle = "rgba(255, 255, 255, " + (0.5- ((i * 0.1) / 2 )) + ")";
+            this.ctx!.fillRect(0, i * 12 * this.cellHeight(), this.canvasWidth, this.cellHeight() * 12);
+        }
+    }
+
+    cellHeight() {
+        return this.canvasHeight / 128;
     }
 
     renderStepPitches(step: Step, index: number, stepWidth: number, stepHeight: number) {

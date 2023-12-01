@@ -7,6 +7,7 @@ export default class BaseControlSet implements Renderable {
     element: HTMLElement;
     renderables: Renderable[];
     headElement: HTMLElement;
+    footElement: HTMLElement;
     grooveBox: GrooveBox;
     controlSet: HTMLElement;
     ui: UI;
@@ -26,6 +27,8 @@ export default class BaseControlSet implements Renderable {
         this.controlSet.classList.add("pitchcontrol");
         this.controlSet.classList.add("gencontrolset");
         this.element.appendChild(this.controlSet);
+        this.footElement = document.createElement("div");
+        this.element.appendChild(this.footElement);
 
         this.addModeButtons(this.getSubModeLabels());
         this.renderables = [];
@@ -67,10 +70,11 @@ export default class BaseControlSet implements Renderable {
     }
 
     setSubControls(){
-        console.log("setSubControls")
+        // console.log("setSubControls")
         let controlSet = this.controlSet;
         this.subRenderables = [];
         controlSet.innerHTML = "";
+        this.footElement.innerHTML = "";
     }
 
     update(): void {

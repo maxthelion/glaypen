@@ -27,7 +27,13 @@ var GeneratorManager = /** @class */ (function () {
             stepMode: 0,
             pitchMode: 0,
             scaleKey: 60,
+            scaleOctaveRoot: 0,
+            scaleIntervalProbabilities: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            chordOctaveRoot: 0,
             chordKey: 60,
+            chordScaleIndex: 0,
+            chordIndex: 0,
+            chordRoot: 0,
             color: "#000000",
             stepPulseNumber: 4,
             manualSteps: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -39,11 +45,10 @@ var GeneratorManager = /** @class */ (function () {
         this.grooveBox = grooveBox;
         var storedParams = this.grooveBox.storageBox.getGeneratorParams();
         if (storedParams !== undefined && storedParams !== null) {
-            if (storedParams.stepMode === undefined) {
-                storedParams.stepMode = 0;
-            }
-            if (storedParams.pitchMode === undefined) {
-                storedParams.pitchMode = 0;
+            for (var key in this.defaultGeneratorParams) {
+                if (!storedParams.hasOwnProperty(key)) {
+                    storedParams[key] = this.defaultGeneratorParams[key];
+                }
             }
             this.currentGeneratorParams = storedParams;
         }
@@ -59,6 +64,16 @@ var GeneratorManager = /** @class */ (function () {
             this.currentGeneratorParams.manualSteps = this.defaultGeneratorParams.manualSteps;
         }
         this.currentGeneratorParams.manualSteps[step] = probability;
+        this.grooveBox.storageBox.setGeneratorParams(this.currentGeneratorParams);
+    };
+    GeneratorManager.prototype.getScale = function () {
+        return this.grooveBox.scales[this.currentGeneratorParams.scaleIndex][1];
+    };
+    GeneratorManager.prototype.getChordScale = function () {
+        return this.grooveBox.scales[this.currentGeneratorParams.chordScaleIndex][1];
+    };
+    GeneratorManager.prototype.setIntervalProbability = function (index, probability) {
+        this.currentGeneratorParams.scaleIntervalProbabilities[index] = probability;
         this.grooveBox.storageBox.setGeneratorParams(this.currentGeneratorParams);
     };
     GeneratorManager.prototype.getCurrentParams = function () {
@@ -158,7 +173,13 @@ var GeneratorManager = /** @class */ (function () {
         var r = 192 - Math.floor(tonicColor + scaleColor + stepsInBarColor);
         var g = 192 - Math.floor(stepProbabilityColor + pitchRangeColor);
         var b = 192 - Math.floor(octaveProbabilityColor + octaveRangeColor);
-        return "rgb(".concat(r, ",").concat(g, ",").concat(b, ")");
+        // return `rgb(${r},${g},${b})`;
+        var h = Math.floor(tonicColor + scaleColor + stepsInBarColor);
+        var s = Math.floor(stepProbabilityColor + pitchRangeColor);
+        var l = Math.floor(octaveProbabilityColor + octaveRangeColor);
+        var hsl = "hsl(".concat(h, ",").concat(s, "%,").concat(l, "%)");
+        console.log(hsl);
+        return "hsl(".concat(h, ",").concat(s, "%,").concat(l, "%)");
     };
     GeneratorManager.prototype.generateRandomSettings = function () {
         this.generatorParams = {

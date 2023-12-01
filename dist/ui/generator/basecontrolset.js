@@ -13,6 +13,8 @@ var BaseControlSet = /** @class */ (function () {
         this.controlSet.classList.add("pitchcontrol");
         this.controlSet.classList.add("gencontrolset");
         this.element.appendChild(this.controlSet);
+        this.footElement = document.createElement("div");
+        this.element.appendChild(this.footElement);
         this.addModeButtons(this.getSubModeLabels());
         this.renderables = [];
         this.setSubControls();
@@ -48,10 +50,11 @@ var BaseControlSet = /** @class */ (function () {
         throw new Error("Method not implemented.");
     };
     BaseControlSet.prototype.setSubControls = function () {
-        console.log("setSubControls");
+        // console.log("setSubControls")
         var controlSet = this.controlSet;
         this.subRenderables = [];
         controlSet.innerHTML = "";
+        this.footElement.innerHTML = "";
     };
     BaseControlSet.prototype.update = function () {
         this.modeButtons.forEach(function (button) {

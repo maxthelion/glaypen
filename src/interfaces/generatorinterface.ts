@@ -15,4 +15,7 @@ export default interface GeneratorParamsInterface {
     "chordIndex": number;
     "chordRoot": number;
     "manualSteps": number[];
+    "scaleKey": number;
+    "intervalProbabilities": number[];
+    "chordScaleIndex": number;
 }

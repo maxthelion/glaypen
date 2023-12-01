@@ -13,6 +13,7 @@ var LCD = /** @class */ (function () {
         var _a, _b;
         if (this.ctx !== null) {
             this.ctx.clearRect(0, 0, this.htmlCanvas.width, this.htmlCanvas.height);
+            this.drawOctaves();
             var stepHeight = this.canvasHeight / 128;
             if (this.grooveBox.modeIndex === 1 || this.grooveBox.modeIndex === 2) {
                 var clip = (_a = this.grooveBox.clipSequencer) === null || _a === void 0 ? void 0 : _a.clip;
@@ -61,6 +62,15 @@ var LCD = /** @class */ (function () {
                 }
             }
         }
+    };
+    LCD.prototype.drawOctaves = function () {
+        for (var i = 0; i < 11; i++) {
+            this.ctx.fillStyle = "rgba(255, 255, 255, " + (0.5 - ((i * 0.1) / 2)) + ")";
+            this.ctx.fillRect(0, i * 12 * this.cellHeight(), this.canvasWidth, this.cellHeight() * 12);
+        }
+    };
+    LCD.prototype.cellHeight = function () {
+        return this.canvasHeight / 128;
     };
     LCD.prototype.renderStepPitches = function (step, index, stepWidth, stepHeight) {
         var _this = this;
