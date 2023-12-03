@@ -73,8 +73,20 @@ var GeneratorManager = /** @class */ (function () {
         return this.grooveBox.scales[this.currentGeneratorParams.chordScaleIndex][1];
     };
     GeneratorManager.prototype.setIntervalProbability = function (index, probability) {
+        console.log("setIntervalProbability", index, probability);
         this.currentGeneratorParams.scaleIntervalProbabilities[index] = probability;
         this.grooveBox.storageBox.setGeneratorParams(this.currentGeneratorParams);
+    };
+    GeneratorManager.prototype.getIntervalProbability = function (index) {
+        if (index !== undefined) {
+            return this.currentGeneratorParams.scaleIntervalProbabilities[index];
+        }
+        else {
+            return 1;
+        }
+    };
+    GeneratorManager.prototype.getIntervalProbabilities = function () {
+        return this.currentGeneratorParams.scaleIntervalProbabilities;
     };
     GeneratorManager.prototype.getCurrentParams = function () {
         return this.currentGeneratorParams;

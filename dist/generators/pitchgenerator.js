@@ -57,13 +57,33 @@ var PitchGenerator = /** @class */ (function () {
         //     this.direction = -1;
         // }
         // this.lastPitch = pitchInterval;
-        pitchInterval = pitchInterval % scalePitches.length;
+        var intervalProbabilities = this.generatorManager.getIntervalProbabilities();
+        intervalProbabilities = intervalProbabilities.slice(tonic, pitchRange);
+        if (intervalProbabilities != undefined && intervalProbabilities.length > 0) {
+            pitchInterval = this.randomPitchIntervalFromProbabilities(intervalProbabilities);
+            console.log("pitchInterval", pitchInterval, intervalProbabilities);
+        }
+        else {
+            pitchInterval = pitchInterval % scalePitches.length;
+        }
         var pitch = scaleStart + scalePitches[((pitchInterval + tonic) % scalePitches.length)];
         if (Math.random() > (octaveProbability)) {
             var octaveChange = Math.floor(Math.random() * octaveRange) - Math.floor(octaveRange / 2);
             pitch += (octaveChange * 12);
         }
         return pitch;
+    };
+    PitchGenerator.prototype.randomPitchIntervalFromProbabilities = function (intervalProbabilities) {
+        var random = Math.random();
+        var total = intervalProbabilities.reduce(function (a, b) { return a + b; }, 0);
+        var sum = 0;
+        for (var i = 0; i < intervalProbabilities.length; i++) {
+            sum += intervalProbabilities[i];
+            if (random <= sum / total) {
+                return i;
+            }
+        }
+        return 0;
     };
     return PitchGenerator;
 }());

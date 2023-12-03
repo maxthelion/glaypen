@@ -113,12 +113,12 @@ var GrooveBox = /** @class */ (function () {
     };
     GrooveBox.prototype.playPitch = function (pitch, velocity) {
         if (velocity === void 0) { velocity = 127; }
-        var maxLength = 1000;
         if (this.playingPitches[pitch] != undefined) {
             var noteOffMessage = [0x80, pitch, 0x40];
             this.midiManager.currentOutput().send(noteOffMessage);
             this.playingPitches[pitch] = undefined;
         }
+        this.clearExpiredNotes();
         // console.log("playPitch", pitch, velocity);
         var velocityInHex = velocity.toString(16);
         var noteOnMessage = [0x90, pitch, Number('0x' + velocityInHex)]; // Note on, middle C, full velocity
@@ -126,12 +126,13 @@ var GrooveBox = /** @class */ (function () {
         this.midiManager.currentOutput().send(noteOnMessage); // Send note on message to first MIDI output device
     };
     GrooveBox.prototype.clearExpiredNotes = function () {
+        var maxLength = 200;
         for (var key in this.playingPitches) {
             if (Object.prototype.hasOwnProperty.call(this.playingPitches, key)) {
                 var time = this.playingPitches[key];
                 var pitch = parseInt(key);
                 // console.log("time", key, time, pitch, this.playingPitches);
-                if (time != undefined && window.performance.now() - time > 500) {
+                if (time != undefined && window.performance.now() - time > maxLength) {
                     var noteOffMessage = [0x80, pitch, 0x40];
                     this.midiManager.currentOutput().send(noteOffMessage);
                     this.playingPitches[pitch] = undefined;

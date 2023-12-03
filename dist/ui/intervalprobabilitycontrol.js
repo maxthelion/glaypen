@@ -1,13 +1,13 @@
 var IntervalProbabilityControl = /** @class */ (function () {
     function IntervalProbabilityControl(ui, grooveBox, index) {
         var _this = this;
-        this.probability = 1;
         this.dragging = false;
         this.grooveBox = grooveBox;
         this.ui = ui;
         this.element = document.createElement("div");
         this.element.classList.add("intervalholder");
         var button = document.createElement("a");
+        this.intervalNumber = index;
         button.href = "#";
         button.classList.add("chordbutton");
         button.classList.add("intervalbutton");
@@ -33,17 +33,7 @@ var IntervalProbabilityControl = /** @class */ (function () {
         this.probabilityControl.addEventListener("mousedown", function (e) {
             var element = e.target;
             var intervalNumber = element.dataset.intervalNumber;
-            _this.ui.mouseHandler.setDragging(e, (function (x, y) {
-                console.log("dragging", _this, intervalNumber, x, y);
-                if (y < 0) {
-                    y = 0;
-                }
-                else if (y > 50) {
-                    y = 50;
-                }
-                var probability = (y / 50);
-                _this.probability = probability;
-            }).bind(_this), function () { });
+            _this.ui.mouseHandler.startIntervalDrag(e, intervalNumber);
             e.preventDefault();
             return false;
         });
@@ -51,23 +41,28 @@ var IntervalProbabilityControl = /** @class */ (function () {
             _this.dragging = false;
         });
         this.probabilityControl.addEventListener("mousemove", function (e) {
-            if (_this.dragging) {
+            if (_this.ui.mouseHandler.intervalDragging == true) {
                 var element = e.target;
-                var intervalNumber = element.dataset.intervalNumber;
-                var y = e.offsetY;
-                var height = element.clientHeight;
-                var probability = 1 - (y / height);
-                console.log("intervalNumber", intervalNumber, y, probability);
-                //this.probability = probability;
+                var intervalNumber = _this.intervalNumber; // parseInt(element.dataset.intervalNumber!);
+                if (!isNaN(intervalNumber)) {
+                    var y = e.offsetY;
+                    var clientHeight = _this.probabilityControl.clientHeight;
+                    var probability = 1 - (y / clientHeight);
+                    _this.grooveBox.generatorManager.setIntervalProbability(intervalNumber, probability);
+                }
             }
         });
     }
+    IntervalProbabilityControl.prototype.getProbability = function () {
+        return this.grooveBox.generatorManager.getIntervalProbability(this.intervalNumber);
+    };
     IntervalProbabilityControl.prototype.update = function () {
         var _a;
         var button = this.probabilityControl;
         var intervals = (_a = this.grooveBox.currentSequencer()) === null || _a === void 0 ? void 0 : _a.pitchGenerator.availableIntervals();
         // if (this.probability < 1){
-        this.amountBar.style.height = (100 - (this.probability * 100)).toString() + "%";
+        var probability = this.getProbability();
+        this.amountBar.style.height = (100 - (probability * 100)).toString() + "%";
         // }
         if (intervals.includes(parseInt(button.dataset.intervalNumber))) {
             this.probabilityControl.classList.add("active");

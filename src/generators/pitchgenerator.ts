@@ -70,12 +70,34 @@ export default class PitchGenerator {
         //     this.direction = -1;
         // }
         // this.lastPitch = pitchInterval;
-        pitchInterval = pitchInterval % scalePitches.length;
+        let intervalProbabilities = this.generatorManager.getIntervalProbabilities();
+        intervalProbabilities = intervalProbabilities.slice(tonic, pitchRange);
+        if (intervalProbabilities != undefined && intervalProbabilities.length > 0) {
+            pitchInterval = this.randomPitchIntervalFromProbabilities(intervalProbabilities);
+            console.log("pitchInterval", pitchInterval, intervalProbabilities);
+        } else {
+            pitchInterval = pitchInterval % scalePitches.length;
+        }    
         var pitch = scaleStart + scalePitches[((pitchInterval + tonic) % scalePitches.length)];
         if (Math.random() > (octaveProbability) ) {
             let octaveChange = Math.floor( Math.random() * octaveRange) - Math.floor(octaveRange / 2);
             pitch += (octaveChange * 12);
         }  
         return pitch;
+    
     }
+
+    randomPitchIntervalFromProbabilities(intervalProbabilities: number[]) : number {
+        let random = Math.random();
+        let total = intervalProbabilities.reduce((a, b) => a + b, 0);
+        let sum = 0;
+        for (let i = 0; i < intervalProbabilities.length; i++) {
+            sum += intervalProbabilities[i];
+            if (random <= sum / total) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
 }

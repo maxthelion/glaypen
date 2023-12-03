@@ -8,8 +8,8 @@ export default class IntervalProbabilityControl implements Renderable{
     ui: UI;
     probabilityControl: HTMLElement;
     amountBar: HTMLElement;
-    probability: number = 1;
     dragging: boolean = false;
+    intervalNumber: number;
 
     constructor(ui: UI, grooveBox: GrooveBox, index: number) {
         this.grooveBox = grooveBox;
@@ -17,6 +17,7 @@ export default class IntervalProbabilityControl implements Renderable{
         this.element  = document.createElement("div");
         this.element.classList.add("intervalholder");
         let button = document.createElement("a");
+        this.intervalNumber = index;
         button.href = "#";
         button.classList.add("chordbutton");
         button.classList.add("intervalbutton");
@@ -44,43 +45,42 @@ export default class IntervalProbabilityControl implements Renderable{
         this.probabilityControl.addEventListener("mousedown", (e) => {
             let element = e.target as HTMLElement;
             let intervalNumber = element.dataset.intervalNumber!;
-            this.ui.mouseHandler.setDragging(e, ((x:number, y:number) => {
-                console.log("dragging",this, intervalNumber, x, y);
-                if (y < 0){
-                    y = 0;
-                } else if (y > 50){
-                    y = 50;
-                }
-                let probability = (y / 50);
-                this.probability = probability;
-            }).bind(this), () => {});
+            this.ui.mouseHandler.startIntervalDrag(e, intervalNumber);
             e.preventDefault();
             return false;
         })
         this.probabilityControl.addEventListener("mouseup", (e) => {
             this.dragging = false;
         })
+        
         this.probabilityControl.addEventListener("mousemove", (e) => {
-            if (this.dragging){
+            if (this.ui.mouseHandler.intervalDragging == true){
                 let element = e.target as HTMLElement;
-                let intervalNumber = element.dataset.intervalNumber!;
-                let y = e.offsetY;
-                let height = element.clientHeight;
-                let probability = 1 - (y / height);
-                console.log("intervalNumber", intervalNumber, y, probability);
-                //this.probability = probability;
+                let intervalNumber = this.intervalNumber // parseInt(element.dataset.intervalNumber!);
+                
+                if (!isNaN(intervalNumber)){
+                    let y = e.offsetY;
+                    let clientHeight = this.probabilityControl.clientHeight;
+                    let probability = 1 - (y / clientHeight);
+                    this.grooveBox.generatorManager.setIntervalProbability(intervalNumber, probability);
+                }
             }
         })
+    }
+
+    getProbability(): number {
+        return this.grooveBox.generatorManager.getIntervalProbability(this.intervalNumber);
     }
 
     update(): void {
         let button = this.probabilityControl;
         let intervals  = this.grooveBox.currentSequencer()?.pitchGenerator.availableIntervals()
         // if (this.probability < 1){
-            this.amountBar.style.height = (100 - (this.probability * 100)).toString() + "%";
+            let probability = this.getProbability()
+            this.amountBar.style.height = (100 - (probability * 100)).toString() + "%";
         // }
 
-        if (intervals.includes(parseInt(button.dataset.intervalNumber))){
+        if (intervals!.includes(parseInt(button.dataset.intervalNumber))){
             this.probabilityControl.classList.add("active");
         } else {
             this.probabilityControl.classList.remove("active");

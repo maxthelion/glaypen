@@ -4,6 +4,7 @@ var MouseHandler = /** @class */ (function () {
         this.dragging = false;
         this.initialX = 0;
         this.initialY = 0;
+        this.intervalDragging = false;
         document.addEventListener("mouseup", function (e) {
             _this.clearMouseListeners();
         });
@@ -16,26 +17,30 @@ var MouseHandler = /** @class */ (function () {
         this.dragging = true;
         this.initialX = e.clientX;
         this.initialY = e.clientY;
-        this.childMouseMove = onMove;
+        // this.childMouseMove = onMove;
     };
     MouseHandler.prototype.addMouseListener = function (initialX, initialY) {
+    };
+    MouseHandler.prototype.startIntervalDrag = function (e, intervalNumber) {
+        this.intervalDragging = true;
     };
     MouseHandler.prototype.clearMouseListeners = function () {
         //document.removeEventListener("mousemove", this.mouseMoveListener);
         //document.removeEventListener("mouseup", this.mouseUpListener);
         this.childMouseMove = undefined;
         this.dragging = false;
+        this.intervalDragging = false;
     };
     MouseHandler.prototype.onMouseMove = function (event) {
-        if (this.dragging == true && this.childMouseMove !== undefined) {
-            var x = event.clientX;
-            var y = event.clientY;
-            this.childMouseMove(this.initialX - x, this.initialY - y);
-            return;
-        }
-        // console.log(x, y)
-        // this.grooveBox.setMousePosition(grooveBoxX, grooveBoxY);
-        return false;
+        // if (this.dragging == true && this.childMouseMove !== undefined) {
+        //     let x = event.clientX;
+        //     let y = event.clientY;
+        //     this.childMouseMove(this.initialX - x, this.initialY - y);
+        //     return;
+        // }
+        // // console.log(x, y)
+        // // this.grooveBox.setMousePosition(grooveBoxX, grooveBoxY);
+        // return false;
     };
     return MouseHandler;
 }());

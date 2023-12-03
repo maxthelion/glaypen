@@ -144,12 +144,12 @@ export default class GrooveBox {
     }
     
     playPitch(pitch: number, velocity: number = 127) {
-        let maxLength = 1000;
         if (this.playingPitches[pitch] != undefined) {
             var noteOffMessage = [0x80, pitch, 0x40];   
             this.midiManager.currentOutput()!.send(noteOffMessage); 
             this.playingPitches[pitch] = undefined;
         }
+        this.clearExpiredNotes();
         // console.log("playPitch", pitch, velocity);
         let velocityInHex = velocity.toString(16);
         var noteOnMessage = [0x90, pitch, Number('0x' + velocityInHex)];    // Note on, middle C, full velocity
@@ -158,12 +158,13 @@ export default class GrooveBox {
     }
 
     clearExpiredNotes() {
+        let maxLength = 200;
         for (const key in this.playingPitches) {
             if (Object.prototype.hasOwnProperty.call(this.playingPitches, key)) {
                 const time = this.playingPitches[key];
                 const pitch = parseInt(key);
                 // console.log("time", key, time, pitch, this.playingPitches);
-                if (time != undefined && window.performance.now() - time > 500) {
+                if (time != undefined && window.performance.now() - time > maxLength) {
                     var noteOffMessage = [0x80, pitch, 0x40];   
                     this.midiManager.currentOutput()!.send(noteOffMessage); 
                     this.playingPitches[pitch] = undefined;

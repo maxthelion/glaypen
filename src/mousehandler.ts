@@ -7,6 +7,7 @@ export default class MouseHandler {
     initialX: number = 0;
     initialY: number = 0;
     childMouseMove?: Function;
+    intervalDragging: boolean = false;
 
     constructor(ui: UI, grooveBox: GrooveBox) {
         document.addEventListener("mouseup", (e) => {    
@@ -14,7 +15,6 @@ export default class MouseHandler {
         });
 
         document.addEventListener("mousemove", (e) => {
-            
             this.onMouseMove(e);
         })
     }
@@ -24,11 +24,14 @@ export default class MouseHandler {
         this.dragging = true;
         this.initialX = e.clientX;
         this.initialY = e.clientY;
-        this.childMouseMove = onMove;
+        // this.childMouseMove = onMove;
     }
 
     addMouseListener(initialX: number, initialY: number){
         
+    }
+    startIntervalDrag(e: MouseEvent, intervalNumber: string) {
+        this.intervalDragging = true;
     }
 
     clearMouseListeners(){
@@ -36,19 +39,20 @@ export default class MouseHandler {
         //document.removeEventListener("mouseup", this.mouseUpListener);
         this.childMouseMove = undefined;
         this.dragging = false;
+        this.intervalDragging = false;
     }
 
     onMouseMove(event: MouseEvent) {
         
-        if (this.dragging == true && this.childMouseMove !== undefined) {
-            let x = event.clientX;
-            let y = event.clientY;
-            this.childMouseMove(this.initialX - x, this.initialY - y);
-            return;
-        }
-        // console.log(x, y)
-        // this.grooveBox.setMousePosition(grooveBoxX, grooveBoxY);
-        return false;
+        // if (this.dragging == true && this.childMouseMove !== undefined) {
+        //     let x = event.clientX;
+        //     let y = event.clientY;
+        //     this.childMouseMove(this.initialX - x, this.initialY - y);
+        //     return;
+        // }
+        // // console.log(x, y)
+        // // this.grooveBox.setMousePosition(grooveBoxX, grooveBoxY);
+        // return false;
     }
 
 }

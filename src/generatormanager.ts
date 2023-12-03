@@ -82,10 +82,23 @@ export default class GeneratorManager {
     }
 
     setIntervalProbability(index: number, probability: number) {
+        console.log("setIntervalProbability", index, probability);
         this.currentGeneratorParams.scaleIntervalProbabilities[index] = probability;
         this.grooveBox.storageBox.setGeneratorParams(this.currentGeneratorParams);
     }
-    
+
+    getIntervalProbability(index?: number) {
+        if (index !== undefined) {
+            return this.currentGeneratorParams.scaleIntervalProbabilities[index];
+        } else {
+            return 1;
+        }
+    }
+
+    getIntervalProbabilities()  {
+        return this.currentGeneratorParams.scaleIntervalProbabilities;
+    }
+
     getCurrentParams() {
         return this.currentGeneratorParams;
     }
