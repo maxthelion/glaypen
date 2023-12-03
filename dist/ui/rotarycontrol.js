@@ -1,5 +1,6 @@
 var RotaryControl = /** @class */ (function () {
     function RotaryControl(ui, grooveBox) {
+        var _this = this;
         this.cachedValue = -1;
         this.lastReadTime = 0;
         this.valueScale = 128;
@@ -14,7 +15,7 @@ var RotaryControl = /** @class */ (function () {
         this.valueLabel.classList.add("rotaryvaluelabel");
         this.element.appendChild(this.valueLabel);
         this.rotaryCanvas.width = 60;
-        this.rotaryCanvas.height = 60;
+        this.rotaryCanvas.height = 50;
         // this.renderCircle();
         this.labelElement = document.createElement("div");
         this.labelElement.textContent = "label";
@@ -23,7 +24,23 @@ var RotaryControl = /** @class */ (function () {
         this.renderWithValue(0.2);
         this.update();
         this.element.addEventListener("wheel", this.onWheel.bind(this));
+        this.element.addEventListener("mousedown", function (e) {
+            _this.ui.mouseHandler.startRotaryDrag(e, _this);
+            e.preventDefault();
+            return false;
+        });
     }
+    RotaryControl.prototype.onMouseMove = function (x, y) {
+        var maxy = 60;
+        if (y > maxy) {
+            y = maxy;
+        }
+        else if (y < -maxy) {
+            y = -maxy;
+        }
+        var value = ((y + 100) / 2) / maxy;
+        this.setValue(value);
+    };
     RotaryControl.prototype.update = function () {
         if (this.cachedValue !== this.readValue()) {
             console.log("update", this.labelElement.textContent, this.readValue());
@@ -115,7 +132,7 @@ var RotaryControl = /** @class */ (function () {
             max = (max + 0.5);
             var displayedValue = min + (value * range);
             var x = this.rotaryCanvas.width * .5;
-            var y = this.rotaryCanvas.height * .5;
+            var y = this.rotaryCanvas.height * .6;
             // console.log("displayedValue", value, displayedValue, min,max)
             ctx.clearRect(0, 0, this.rotaryCanvas.width, this.rotaryCanvas.height);
             ctx.beginPath();

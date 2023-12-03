@@ -5,6 +5,7 @@ var MouseHandler = /** @class */ (function () {
         this.initialX = 0;
         this.initialY = 0;
         this.intervalDragging = false;
+        this.rotaryDragging = false;
         document.addEventListener("mouseup", function (e) {
             _this.clearMouseListeners();
         });
@@ -24,14 +25,25 @@ var MouseHandler = /** @class */ (function () {
     MouseHandler.prototype.startIntervalDrag = function (e, intervalNumber) {
         this.intervalDragging = true;
     };
+    MouseHandler.prototype.startRotaryDrag = function (e, rotary) {
+        this.rotaryDragging = true;
+        this.initialX = e.clientX;
+        this.initialY = e.clientY;
+        this.targetRotary = rotary;
+    };
     MouseHandler.prototype.clearMouseListeners = function () {
-        //document.removeEventListener("mousemove", this.mouseMoveListener);
-        //document.removeEventListener("mouseup", this.mouseUpListener);
         this.childMouseMove = undefined;
         this.dragging = false;
         this.intervalDragging = false;
+        this.rotaryDragging = false;
     };
     MouseHandler.prototype.onMouseMove = function (event) {
+        if (this.rotaryDragging == true && this.targetRotary !== undefined) {
+            var x = event.clientX;
+            var y = event.clientY;
+            this.targetRotary.onMouseMove(this.initialX - x, this.initialY - y);
+            return;
+        }
         // if (this.dragging == true && this.childMouseMove !== undefined) {
         //     let x = event.clientX;
         //     let y = event.clientY;
@@ -40,7 +52,7 @@ var MouseHandler = /** @class */ (function () {
         // }
         // // console.log(x, y)
         // // this.grooveBox.setMousePosition(grooveBoxX, grooveBoxY);
-        // return false;
+        return false;
     };
     return MouseHandler;
 }());

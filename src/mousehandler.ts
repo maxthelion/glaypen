@@ -1,5 +1,6 @@
 import GrooveBox from "./groovebox.js";
 import UI from "./ui.js";
+import RotaryControl from "./ui/rotarycontrol.js";
 
 export default class MouseHandler {
 
@@ -8,6 +9,8 @@ export default class MouseHandler {
     initialY: number = 0;
     childMouseMove?: Function;
     intervalDragging: boolean = false;
+    rotaryDragging: boolean = false;
+    targetRotary?: RotaryControl;
 
     constructor(ui: UI, grooveBox: GrooveBox) {
         document.addEventListener("mouseup", (e) => {    
@@ -30,20 +33,33 @@ export default class MouseHandler {
     addMouseListener(initialX: number, initialY: number){
         
     }
+
     startIntervalDrag(e: MouseEvent, intervalNumber: string) {
         this.intervalDragging = true;
+        
+    }
+
+    startRotaryDrag(e: MouseEvent, rotary: RotaryControl) {
+        this.rotaryDragging = true;
+        this.initialX = e.clientX;
+        this.initialY = e.clientY;
+        this.targetRotary = rotary;
     }
 
     clearMouseListeners(){
-        //document.removeEventListener("mousemove", this.mouseMoveListener);
-        //document.removeEventListener("mouseup", this.mouseUpListener);
         this.childMouseMove = undefined;
         this.dragging = false;
         this.intervalDragging = false;
+        this.rotaryDragging = false;
     }
 
     onMouseMove(event: MouseEvent) {
-        
+        if (this.rotaryDragging == true && this.targetRotary !== undefined) {
+            let x = event.clientX;
+            let y = event.clientY;
+            this.targetRotary.onMouseMove(this.initialX - x, this.initialY - y);
+            return;
+        }
         // if (this.dragging == true && this.childMouseMove !== undefined) {
         //     let x = event.clientX;
         //     let y = event.clientY;
@@ -52,7 +68,7 @@ export default class MouseHandler {
         // }
         // // console.log(x, y)
         // // this.grooveBox.setMousePosition(grooveBoxX, grooveBoxY);
-        // return false;
+        return false;
     }
 
 }

@@ -27,7 +27,7 @@ export default class RotaryControl implements Renderable {
         this.valueLabel.classList.add("rotaryvaluelabel");
         this.element.appendChild(this.valueLabel);
         this.rotaryCanvas.width = 60;
-        this.rotaryCanvas.height = 60;
+        this.rotaryCanvas.height = 50;
         // this.renderCircle();
 
         this.labelElement = document.createElement("div");
@@ -37,6 +37,22 @@ export default class RotaryControl implements Renderable {
         this.renderWithValue(0.2);
         this.update();
         this.element.addEventListener("wheel", this.onWheel.bind(this));
+        this.element.addEventListener("mousedown", (e) => {
+            this.ui.mouseHandler.startRotaryDrag(e, this);
+            e.preventDefault();
+            return false;
+        })
+    }
+
+    onMouseMove(x: number, y: number) {
+        let maxy = 60;
+        if (y > maxy) { 
+            y = maxy;
+        } else if (y < -maxy) {
+            y = -maxy;
+        }
+        let value = ((y + 100) / 2) / maxy;
+        this.setValue(value);
     }
     
     update(): void {
@@ -132,7 +148,7 @@ export default class RotaryControl implements Renderable {
             max = (max + 0.5);
             let displayedValue = min + (value * range);
             let x = this.rotaryCanvas.width    * .5;
-            let y = this.rotaryCanvas.height   * .5;
+            let y = this.rotaryCanvas.height   * .6;
             // console.log("displayedValue", value, displayedValue, min,max)
             ctx.clearRect(0, 0, this.rotaryCanvas.width, this.rotaryCanvas.height);
             ctx.beginPath();

@@ -38,8 +38,7 @@ export default class IntervalProbabilityControl implements Renderable{
             let y = e.offsetY;
             let height = element.clientHeight;
             let probability = 1 - (y / height);
-            console.log("intervalNumber", intervalNumber, y, probability);
-            this.probability = probability;
+            this.grooveBox.generatorManager.setIntervalProbability(intervalNumber, probability);
         })
         this.probabilityControl.style.cursor = "pointer";
         this.probabilityControl.addEventListener("mousedown", (e) => {

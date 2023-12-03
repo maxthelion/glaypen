@@ -26,8 +26,7 @@ var IntervalProbabilityControl = /** @class */ (function () {
             var y = e.offsetY;
             var height = element.clientHeight;
             var probability = 1 - (y / height);
-            console.log("intervalNumber", intervalNumber, y, probability);
-            _this.probability = probability;
+            _this.grooveBox.generatorManager.setIntervalProbability(intervalNumber, probability);
         });
         this.probabilityControl.style.cursor = "pointer";
         this.probabilityControl.addEventListener("mousedown", function (e) {
