@@ -150,6 +150,36 @@ export default class GeneratorManager {
         this.storageBox.setGeneratorParams(this.currentGeneratorParams);
     }
 
+    loadOrSaveAtIndex(index: number) {
+        let savedParams = this.presetAtIndex(index)
+        if (savedParams !== null) {
+            this.currentGeneratorParams = savedParams;
+            this.generatorParamsArray.push(this.currentGeneratorParams);
+            this.currentGenParamIndex = this.generatorParamsArray.length - 1;
+            this.genChanges.push([this.currentGenParamIndex, this.grooveBox.currentSequencer()!.absoluteStep]);
+            this.genParamPresetIndex = index;
+        } else {
+            this.genParamPresetIndex = index;
+            this.storageBox.set(`genParam${index}`, JSON.stringify(this.currentGeneratorParams));
+        }
+    }
+
+    loadedPresetIndex() {
+        return this.genParamPresetIndex;
+    }
+
+    clearPresetAtIndex(index: number) {
+        this.storageBox.clear(`genParam${index}`);
+    }
+
+    presetAtIndex(index: number) {
+        let storedPreset = this.storageBox.get(`genParam${index}`);
+        if (storedPreset !== null) {
+            return JSON.parse(storedPreset);
+        }
+        return null;
+    }
+
     setGenParamsFromIndex(index: number) {
         let matchedParams = this.genChanges.filter((genChange) => {
             return genChange[1] <= index;
@@ -200,30 +230,27 @@ export default class GeneratorManager {
     }
 
     colorFromGenParams(generatorParams: GeneratorParamsInterface): string {
-        let maxCol = 64
-        let tonicColor = generatorParams.tonic / 2;
-        let scaleColor = generatorParams.scaleIndex / this.grooveBox.scales.length * maxCol;
-        let stepsInBarColor = generatorParams.stepsInBar / 16 * maxCol;
-        let stepProbabilityColor = generatorParams.stepProbability / 2;
-        let pitchRangeColor = generatorParams.pitchRange / 12 * maxCol;
-        let octaveRangeColor = generatorParams.octaveRange / 5 * maxCol;
-        let octaveProbabilityColor = generatorParams.octaveProbability / 2;
-        let r = 192 - Math.floor(tonicColor + scaleColor + stepsInBarColor);
-        let g = 192 - Math.floor(stepProbabilityColor + pitchRangeColor );
-        let b = 192 - Math.floor(octaveProbabilityColor + octaveRangeColor);
-        
-        // return `rgb(${r},${g},${b})`;
-        let h = Math.floor(tonicColor + scaleColor + stepsInBarColor);
-        let s = Math.floor(stepProbabilityColor + pitchRangeColor );
-        let l = Math.floor(octaveProbabilityColor + octaveRangeColor);
-        let hsl = `hsl(${h},${s}%,${l}%)`;
-        console.log(hsl);
-        return `hsl(${h},${s}%,${l}%)`;
+        let hue = (generatorParams.scaleIndex / this.grooveBox.scales.length) * 360;
+        let saturation = (this.stepDensity() * 50) + 25;
+        let lightness = (this.pitchRoot() * 50) + 25;
+        let hsl = `hsl(${hue},${saturation}%,${lightness}%)`;
+        return hsl;
+    }
 
+    // for generating colors
+    pitchRoot() {
+        return (this.currentGeneratorParams.scaleOctaveRoot / 10);
+    }
+
+    // for generating colors
+    stepDensity() {
+        let stepsInBar = this.currentGeneratorParams.stepsInBar;
+        let stepProbability = this.currentGeneratorParams.stepProbability;
+        return (stepsInBar / 16) * (stepProbability / 128);
     }
 
     generateRandomSettings() {
-        this.generatorParams = {
+        this.currentGeneratorParams = {
             "tonic": 64 + (32 - Math.floor(Math.random() * 64)),
             "scaleIndex": Math.floor(Math.random() * this.scales.length),
             "stepsInBar": (Math.floor(Math.random() * 4) +1) * 4,
@@ -231,7 +258,6 @@ export default class GeneratorManager {
             "pitchRange": Math.floor(Math.random() * 12) + 1,
             "octaveRange": Math.floor(Math.random() * 5) + 1,
             "octaveProbability": Math.floor(Math.random() * 128),
-            color: this.randomColor(Math.floor(Math.random() * 1000))
         }
     }
 }

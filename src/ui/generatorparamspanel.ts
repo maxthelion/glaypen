@@ -40,8 +40,9 @@ export default class GeneratorParamsPanel {
                 this.setGeneratorPart(partid!);
             })
         })
-        this.setGeneratorPart("0")
-        
+
+        let part = this.grooveBox.storageBox.get("generatorpart") || "0";
+        this.setGeneratorPart(part)
 
         this.paramElements = this.element.querySelectorAll(".genparam");
         
@@ -68,6 +69,7 @@ export default class GeneratorParamsPanel {
     }
 
     setGeneratorPart(partId: string) {
+        this.grooveBox.storageBox.set("generatorpart", partId)
         let generatorPartsTabs = document.querySelector("#generatorpartstabs") as HTMLDivElement;
         let generatorPartsTabsButtons = generatorPartsTabs.querySelectorAll(".generatorpartstab");
         generatorPartsTabsButtons.forEach((button) => {

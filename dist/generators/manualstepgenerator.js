@@ -20,10 +20,11 @@ var ManualStepGenerator = /** @class */ (function (_super) {
         return _super.call(this, grooveBox) || this;
     }
     ManualStepGenerator.prototype.stepProbability = function (step) {
+        var params = this.grooveBox.generatorManager.currentGeneratorParams;
         // console.log("manual step generator", step, this.grooveBox.generatorParams.manualSteps);
-        if (this.grooveBox.generatorParams.manualSteps !== undefined) {
-            if (this.grooveBox.generatorParams.manualSteps[step] !== undefined) {
-                var probability = this.grooveBox.generatorParams.manualSteps[step] / 128;
+        if (params.manualSteps !== undefined) {
+            if (params.manualSteps[step] !== undefined) {
+                var probability = params.manualSteps[step] / 128;
                 return probability;
             }
         }

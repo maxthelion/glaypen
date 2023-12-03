@@ -24,7 +24,8 @@ var GeneratorParamsPanel = /** @class */ (function () {
                 _this.setGeneratorPart(partid);
             });
         });
-        this.setGeneratorPart("0");
+        var part = this.grooveBox.storageBox.get("generatorpart") || "0";
+        this.setGeneratorPart(part);
         this.paramElements = this.element.querySelectorAll(".genparam");
         this.paramElements.forEach(function (paramElement) {
             if (paramElement.id !== "scale") {
@@ -48,6 +49,7 @@ var GeneratorParamsPanel = /** @class */ (function () {
     }
     GeneratorParamsPanel.prototype.setGeneratorPart = function (partId) {
         var _a;
+        this.grooveBox.storageBox.set("generatorpart", partId);
         var generatorPartsTabs = document.querySelector("#generatorpartstabs");
         var generatorPartsTabsButtons = generatorPartsTabs.querySelectorAll(".generatorpartstab");
         generatorPartsTabsButtons.forEach(function (button) {

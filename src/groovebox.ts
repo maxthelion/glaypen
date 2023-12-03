@@ -25,7 +25,7 @@ export default class GrooveBox {
     manualPitchOptions: number[] = [];
     lastPitchReadAt?: number;
     clipIndex?: number;
-    playingPitches: any = {};
+    
     phraseIndex?: number;
 
     scales: ScalePair[] = [
@@ -111,7 +111,7 @@ export default class GrooveBox {
         // draw loop
         setInterval(() => {
             this.ui.update();
-            this.clearExpiredNotes();
+            this.midiManager.noteOutputHandler.clearExpiredNotes();
         }, 50);
     }
 
@@ -144,33 +144,7 @@ export default class GrooveBox {
     }
     
     playPitch(pitch: number, velocity: number = 127) {
-        if (this.playingPitches[pitch] != undefined) {
-            var noteOffMessage = [0x80, pitch, 0x40];   
-            this.midiManager.currentOutput()!.send(noteOffMessage); 
-            this.playingPitches[pitch] = undefined;
-        }
-        this.clearExpiredNotes();
-        // console.log("playPitch", pitch, velocity);
-        let velocityInHex = velocity.toString(16);
-        var noteOnMessage = [0x90, pitch, Number('0x' + velocityInHex)];    // Note on, middle C, full velocity
-        this.playingPitches[pitch] = window.performance.now();
-        this.midiManager.currentOutput()!.send(noteOnMessage);  // Send note on message to first MIDI output device
-    }
-
-    clearExpiredNotes() {
-        let maxLength = 200;
-        for (const key in this.playingPitches) {
-            if (Object.prototype.hasOwnProperty.call(this.playingPitches, key)) {
-                const time = this.playingPitches[key];
-                const pitch = parseInt(key);
-                // console.log("time", key, time, pitch, this.playingPitches);
-                if (time != undefined && window.performance.now() - time > maxLength) {
-                    var noteOffMessage = [0x80, pitch, 0x40];   
-                    this.midiManager.currentOutput()!.send(noteOffMessage); 
-                    this.playingPitches[pitch] = undefined;
-                }
-            }
-        }
+        this.midiManager.playPitch(pitch, velocity);
     }
 
     playStep(step: Step) {
@@ -355,6 +329,7 @@ export default class GrooveBox {
 
     generatorButtonPressed(index: number) {
         console.log("generatorButtonPressed", index)
+        this.generatorManager.loadOrSaveAtIndex(index);
         // if (this.storedGenParams[index] != undefined) {
         //     this.generatorParams = Object.assign({}, this.storedGenParams[index]);
         //     this.genParamPresetIndex = index;

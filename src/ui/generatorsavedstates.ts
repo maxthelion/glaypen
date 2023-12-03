@@ -29,15 +29,31 @@ export default class GeneratorSavedStates implements Renderable{
                 let index = element.dataset.index!;
                 grooveBox.generatorButtonPressed(parseInt(index));
             })
+
+            element.addEventListener("contextmenu", (e) => {
+                let element = e.target as HTMLElement;
+                let index = element.dataset.index!;
+                grooveBox.generatorManager.clearPresetAtIndex(parseInt(index));
+                e.preventDefault();
+                return false;
+            })
         });
     }
 
     update(): void {
-        this.elements.forEach((element) => {    
-            if (this.grooveBox.generatorParamsIndex !== null && this.grooveBox.generatorParamsIndex !== undefined) {
-                if (element.dataset.index === this.grooveBox.generatorParamsIndex.toString()) {
-                  element.style.backgroundColor = "red";
-                }
+        let genManager = this.grooveBox.generatorManager;
+        this.elements.forEach((element, index) => {
+            let storedPreset = genManager.presetAtIndex(index);
+            if (storedPreset !== null) {
+                element.style.backgroundColor = storedPreset.color;
+            } else {
+                element.style.backgroundColor = "transparent";
+            }
+
+            if (genManager.loadedPresetIndex() === index) {
+                element.classList.add("active");
+            } else {
+                element.classList.remove("active");
             }
         })
     }

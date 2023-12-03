@@ -82,6 +82,10 @@ export default class PitchControl extends BaseControlSet {
                 this.addRotaryControl("pitchRange", "Pitch range", 12);
 
                 this.addIntervalChooser();
+
+                this.addRotaryControl("octaveRange", "Octave range", 10);
+                this.addRotaryControl("octaveProbability", "Octave probability", 128);
+                
                 break;
             case 1:
                 //

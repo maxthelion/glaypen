@@ -39,6 +39,9 @@ var StorageBox = /** @class */ (function () {
     StorageBox.prototype.clearClipAtIndex = function (index) {
         this.storage.removeItem("clip".concat(index));
     };
+    StorageBox.prototype.clear = function (key) {
+        this.storage.removeItem(key);
+    };
     return StorageBox;
 }());
 export default StorageBox;

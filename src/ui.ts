@@ -70,7 +70,7 @@ export default class UI {
 
         let randomiseButton = document.querySelector("#randomiseBtn") as HTMLElement;
         randomiseButton.addEventListener("click", (e) => {
-            groovebox.generateRandomSettings();
+            groovebox.generatorManager.generateRandomSettings();
         })
         this.generatorParamsPanel = new GeneratorParamsPanel(this, groovebox);
         this.clipParamsPanel = new ClipParamsPanel(this, groovebox);

@@ -30,7 +30,8 @@ var EuclidianStepGenerator = /** @class */ (function (_super) {
     }
     EuclidianStepGenerator.prototype.stepProbability = function (step) {
         var stepsInBar = 16;
-        var probability = this.euclidianRhythm(this.grooveBox.generatorParams.stepPulseNumber, stepsInBar)[step];
+        var generatorParams = this.grooveBox.generatorManager.currentGeneratorParams;
+        var probability = this.euclidianRhythm(generatorParams.stepPulseNumber, stepsInBar)[step];
         // console.log("stepProbability", step, probability)
         return probability;
     };

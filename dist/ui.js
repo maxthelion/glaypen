@@ -48,7 +48,7 @@ var UI = /** @class */ (function () {
         this.addClockIndicator();
         var randomiseButton = document.querySelector("#randomiseBtn");
         randomiseButton.addEventListener("click", function (e) {
-            groovebox.generateRandomSettings();
+            groovebox.generatorManager.generateRandomSettings();
         });
         this.generatorParamsPanel = new GeneratorParamsPanel(this, groovebox);
         this.clipParamsPanel = new ClipParamsPanel(this, groovebox);

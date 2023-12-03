@@ -76,6 +76,8 @@ var PitchControl = /** @class */ (function (_super) {
                 // pitchProbability Rotary
                 this.addRotaryControl("pitchRange", "Pitch range", 12);
                 this.addIntervalChooser();
+                this.addRotaryControl("octaveRange", "Octave range", 10);
+                this.addRotaryControl("octaveProbability", "Octave probability", 128);
                 break;
             case 1:
                 //

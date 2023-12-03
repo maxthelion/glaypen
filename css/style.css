@@ -185,9 +185,27 @@ body {
 } */
 #generatorSavedStates {
     display: grid;
-    grid-template-columns: repeat(16, 1fr);
+    grid-template-columns: repeat(8, 1fr);
     grid-gap: 5px;
     align-items: center
+}
+#generatorSavedStates>div{
+    background-color: #ccc;
+    line-height: 100%;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 2px;
+}
+#generatorSavedStates div a {
+    display: block;
+    color: #000;
+    height: 100%;
+    border-radius: 2px;
+    font-size: small;
+}
+#generatorSavedStates div a.active {
+    color: yellow !important;
+    text-shadow: 0 0 10px #fff;
 }
 #historycanvas {
     background-color: #222;

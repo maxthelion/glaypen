@@ -7,10 +7,11 @@ export default class ManualStepGenerator extends StepGenerator {
     }
 
     stepProbability(step: number) {
+        let params = this.grooveBox.generatorManager.currentGeneratorParams;
         // console.log("manual step generator", step, this.grooveBox.generatorParams.manualSteps);
-        if (this.grooveBox.generatorParams.manualSteps !== undefined) {
-            if (this.grooveBox.generatorParams.manualSteps[step] !== undefined) {
-                let probability = this.grooveBox.generatorParams.manualSteps[step] / 128;
+        if (params.manualSteps !== undefined) {
+            if (params.manualSteps[step] !== undefined) {
+                let probability = params .manualSteps[step] / 128;
                 return probability;
             }
         } 

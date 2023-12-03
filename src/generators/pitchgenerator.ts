@@ -74,7 +74,7 @@ export default class PitchGenerator {
         intervalProbabilities = intervalProbabilities.slice(tonic, pitchRange);
         if (intervalProbabilities != undefined && intervalProbabilities.length > 0) {
             pitchInterval = this.randomPitchIntervalFromProbabilities(intervalProbabilities);
-            console.log("pitchInterval", pitchInterval, intervalProbabilities);
+            // console.log("pitchInterval", pitchInterval, intervalProbabilities);
         } else {
             pitchInterval = pitchInterval % scalePitches.length;
         }    

@@ -1,5 +1,5 @@
 import Clip, { ClipRawData } from "./clip";
-import { GeneratorParams } from "./groovebox";
+import GeneratorParamsInterface from "./interfaces/generatorinterface";
 
 export default class StorageBox {
     storage: Storage;
@@ -16,11 +16,11 @@ export default class StorageBox {
         this.storage.setItem(key, value);
     }
 
-    setGeneratorParams(generatorParams: GeneratorParams) {
+    setGeneratorParams(generatorParams: GeneratorParamsInterface) {
         this.storage.setItem("generatorParams", JSON.stringify(generatorParams));
     }
 
-    getGeneratorParams(): GeneratorParams | undefined {
+    getGeneratorParams(): GeneratorParamsInterface | undefined {
         if (this.storage.getItem("generatorParams") != null && this.storage.getItem("generatorParams") != undefined) {
             return JSON.parse(this.storage.getItem("generatorParams")!)
         } else {
@@ -48,5 +48,9 @@ export default class StorageBox {
 
     clearClipAtIndex(index: number) {
         this.storage.removeItem(`clip${index}`);
+    }
+
+    clear(key: string) {
+        this.storage.removeItem(key);
     }
 }

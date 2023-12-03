@@ -130,6 +130,33 @@ var GeneratorManager = /** @class */ (function () {
         this.genChanges.push([this.currentGenParamIndex, this.grooveBox.currentSequencer().absoluteStep]);
         this.storageBox.setGeneratorParams(this.currentGeneratorParams);
     };
+    GeneratorManager.prototype.loadOrSaveAtIndex = function (index) {
+        var savedParams = this.presetAtIndex(index);
+        if (savedParams !== null) {
+            this.currentGeneratorParams = savedParams;
+            this.generatorParamsArray.push(this.currentGeneratorParams);
+            this.currentGenParamIndex = this.generatorParamsArray.length - 1;
+            this.genChanges.push([this.currentGenParamIndex, this.grooveBox.currentSequencer().absoluteStep]);
+            this.genParamPresetIndex = index;
+        }
+        else {
+            this.genParamPresetIndex = index;
+            this.storageBox.set("genParam".concat(index), JSON.stringify(this.currentGeneratorParams));
+        }
+    };
+    GeneratorManager.prototype.loadedPresetIndex = function () {
+        return this.genParamPresetIndex;
+    };
+    GeneratorManager.prototype.clearPresetAtIndex = function (index) {
+        this.storageBox.clear("genParam".concat(index));
+    };
+    GeneratorManager.prototype.presetAtIndex = function (index) {
+        var storedPreset = this.storageBox.get("genParam".concat(index));
+        if (storedPreset !== null) {
+            return JSON.parse(storedPreset);
+        }
+        return null;
+    };
     GeneratorManager.prototype.setGenParamsFromIndex = function (index) {
         var matchedParams = this.genChanges.filter(function (genChange) {
             return genChange[1] <= index;
@@ -174,27 +201,24 @@ var GeneratorManager = /** @class */ (function () {
         }
     };
     GeneratorManager.prototype.colorFromGenParams = function (generatorParams) {
-        var maxCol = 64;
-        var tonicColor = generatorParams.tonic / 2;
-        var scaleColor = generatorParams.scaleIndex / this.grooveBox.scales.length * maxCol;
-        var stepsInBarColor = generatorParams.stepsInBar / 16 * maxCol;
-        var stepProbabilityColor = generatorParams.stepProbability / 2;
-        var pitchRangeColor = generatorParams.pitchRange / 12 * maxCol;
-        var octaveRangeColor = generatorParams.octaveRange / 5 * maxCol;
-        var octaveProbabilityColor = generatorParams.octaveProbability / 2;
-        var r = 192 - Math.floor(tonicColor + scaleColor + stepsInBarColor);
-        var g = 192 - Math.floor(stepProbabilityColor + pitchRangeColor);
-        var b = 192 - Math.floor(octaveProbabilityColor + octaveRangeColor);
-        // return `rgb(${r},${g},${b})`;
-        var h = Math.floor(tonicColor + scaleColor + stepsInBarColor);
-        var s = Math.floor(stepProbabilityColor + pitchRangeColor);
-        var l = Math.floor(octaveProbabilityColor + octaveRangeColor);
-        var hsl = "hsl(".concat(h, ",").concat(s, "%,").concat(l, "%)");
-        console.log(hsl);
-        return "hsl(".concat(h, ",").concat(s, "%,").concat(l, "%)");
+        var hue = (generatorParams.scaleIndex / this.grooveBox.scales.length) * 360;
+        var saturation = (this.stepDensity() * 50) + 25;
+        var lightness = (this.pitchRoot() * 50) + 25;
+        var hsl = "hsl(".concat(hue, ",").concat(saturation, "%,").concat(lightness, "%)");
+        return hsl;
+    };
+    // for generating colors
+    GeneratorManager.prototype.pitchRoot = function () {
+        return (this.currentGeneratorParams.scaleOctaveRoot / 10);
+    };
+    // for generating colors
+    GeneratorManager.prototype.stepDensity = function () {
+        var stepsInBar = this.currentGeneratorParams.stepsInBar;
+        var stepProbability = this.currentGeneratorParams.stepProbability;
+        return (stepsInBar / 16) * (stepProbability / 128);
     };
     GeneratorManager.prototype.generateRandomSettings = function () {
-        this.generatorParams = {
+        this.currentGeneratorParams = {
             "tonic": 64 + (32 - Math.floor(Math.random() * 64)),
             "scaleIndex": Math.floor(Math.random() * this.scales.length),
             "stepsInBar": (Math.floor(Math.random() * 4) + 1) * 4,
@@ -202,7 +226,6 @@ var GeneratorManager = /** @class */ (function () {
             "pitchRange": Math.floor(Math.random() * 12) + 1,
             "octaveRange": Math.floor(Math.random() * 5) + 1,
             "octaveProbability": Math.floor(Math.random() * 128),
-            color: this.randomColor(Math.floor(Math.random() * 1000))
         };
     };
     return GeneratorManager;

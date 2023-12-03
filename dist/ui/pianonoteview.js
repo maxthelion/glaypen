@@ -8,7 +8,7 @@ var PianoNoteView = /** @class */ (function () {
         this.element.innerHTML = "";
         this.canvas = document.createElement('canvas');
         this.canvas.width = 350;
-        this.canvas.height = 80;
+        this.canvas.height = 30;
         this.ctx = this.canvas.getContext('2d');
         this.element.appendChild(this.canvas);
     }

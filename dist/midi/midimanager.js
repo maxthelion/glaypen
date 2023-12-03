@@ -1,5 +1,6 @@
 import MidiInputHandler from "./midiinputhandler.js";
 import MidiNoteInputHandler from "./midinotehandler.js";
+import MidiNoteOutput from "./midinoteoutput.js";
 var MidiManager = /** @class */ (function () {
     function MidiManager(grooveBox, midiAccess) {
         this.midiAccess = midiAccess;
@@ -10,7 +11,11 @@ var MidiManager = /** @class */ (function () {
         this.noteOutput = this.getOutput();
         this.clockInputHandler = new MidiInputHandler(this.grooveBox, this.clockInput);
         this.noteInputHandler = new MidiNoteInputHandler(this.grooveBox, this.noteInput);
+        this.noteOutputHandler = new MidiNoteOutput(this.grooveBox, this.noteOutput);
     }
+    MidiManager.prototype.playPitch = function (pitch, velocity) {
+        this.noteOutputHandler.playPitch(pitch, velocity);
+    };
     MidiManager.prototype.getOutputIdFromStorage = function () {
         var outputId = this.storageBox.get("outputPortId");
         return outputId || "";

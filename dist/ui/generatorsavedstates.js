@@ -20,15 +20,30 @@ var GeneratorSavedStates = /** @class */ (function () {
                 var index = element.dataset.index;
                 grooveBox.generatorButtonPressed(parseInt(index));
             });
+            element.addEventListener("contextmenu", function (e) {
+                var element = e.target;
+                var index = element.dataset.index;
+                grooveBox.generatorManager.clearPresetAtIndex(parseInt(index));
+                e.preventDefault();
+                return false;
+            });
         });
     }
     GeneratorSavedStates.prototype.update = function () {
-        var _this = this;
-        this.elements.forEach(function (element) {
-            if (_this.grooveBox.generatorParamsIndex !== null && _this.grooveBox.generatorParamsIndex !== undefined) {
-                if (element.dataset.index === _this.grooveBox.generatorParamsIndex.toString()) {
-                    element.style.backgroundColor = "red";
-                }
+        var genManager = this.grooveBox.generatorManager;
+        this.elements.forEach(function (element, index) {
+            var storedPreset = genManager.presetAtIndex(index);
+            if (storedPreset !== null) {
+                element.style.backgroundColor = storedPreset.color;
+            }
+            else {
+                element.style.backgroundColor = "transparent";
+            }
+            if (genManager.loadedPresetIndex() === index) {
+                element.classList.add("active");
+            }
+            else {
+                element.classList.remove("active");
             }
         });
     };

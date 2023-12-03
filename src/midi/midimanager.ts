@@ -2,6 +2,7 @@ import GrooveBox from "../groovebox.js";
 import StorageBox from "../storagebox.js";
 import MidiInputHandler from "./midiinputhandler.js";
 import MidiNoteInputHandler from "./midinotehandler.js";
+import MidiNoteOutput from "./midinoteoutput.js";
 
 export default class MidiManager {
     midiAccess: MIDIAccess
@@ -12,6 +13,7 @@ export default class MidiManager {
     grooveBox: GrooveBox;
     noteInputHandler: MidiNoteInputHandler;
     clockInputHandler: MidiInputHandler;
+    noteOutputHandler: MidiNoteOutput;
     
     constructor(grooveBox: GrooveBox, midiAccess: MIDIAccess) {
         this.midiAccess = midiAccess;
@@ -22,8 +24,13 @@ export default class MidiManager {
         this.noteOutput = this.getOutput();
         this.clockInputHandler = new MidiInputHandler(this.grooveBox, this.clockInput!);
         this.noteInputHandler = new MidiNoteInputHandler(this.grooveBox, this.noteInput!);
+        this.noteOutputHandler = new MidiNoteOutput(this.grooveBox, this.noteOutput!);
     }
 
+    playPitch(pitch: number, velocity: number) {
+        this.noteOutputHandler.playPitch(pitch, velocity);
+    }
+    
     getOutputIdFromStorage(): string {
         let outputId = this.storageBox.get("outputPortId");
         return outputId ||  "";
